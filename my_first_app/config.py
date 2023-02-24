@@ -10,7 +10,7 @@ class Config(object):
     """Base config for all environments"""
 
     # Never put SECRET_KEY in GitHub for a deployed app!
-    SECRET_KEY = ""
+    SECRET_KEY = secret_key
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(
         basedir, "flask_bp.db"
