@@ -1,0 +1,40 @@
+{% extends 'layout.html' %}
+{% set title = 'Paralympics Home' %}
+{% block content %}
+
+
+####THIS IS FROM CHATGPT
+<head>
+    <title>Map with Markers</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha384-Yx0zjhaub+UFdIe/GRsX9XtGpfA1Fs82f8dYO2bVzJfahpUy8XzWJjU5x6CW51L6" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha384-DeZr8vfroLPq3OLrKlyQ2zatAsMk8elYpIo7+d1F+nRn70CJS+8oW6PUKjP/5civ" crossorigin=""></script>
+</head>
+<body>
+    <div id="map" style="height: 400px;"></div>
+    <script>
+        var map = L.map('map').setView([51.505, -0.09], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+            maxZoom: 18
+        }).addTo(map);
+
+        {% for report in reports %}
+            L.marker([{{ report.latitude }}, {{ report.longitude }}]).addTo(map).on('click', function(e) {
+                document.getElementById('latitude').value = e.latlng.lat;
+                document.getElementById('longitude').value = e.latlng.lng;
+                document.getElementById('report-form').style.display = 'block';
+            });
+        {% endfor %}
+
+        function submitReport() {
+            var latitude = document.getElementById('latitude').value;
+            var longitude = document.getElementById('longitude').value;
+            var text = document.getElementById('text').value;
+            fetch('/submit', {
+                method: 'POST',
+                body: new FormData(document.getElementById('report-form'))
+            }).then(function(response) {
+                if (response.ok) {
+                    alert('Report submitted!');
+                    document.getElementById('report-form
+{% endblock %}
