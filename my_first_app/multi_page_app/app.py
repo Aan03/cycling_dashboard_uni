@@ -1,3 +1,4 @@
+"""
 import dash
 import dash_bootstrap_components as dbc
 from dash import Input, Output, html, dcc
@@ -45,3 +46,4 @@ def display_page(pathname):
 if __name__ == '__main__':
 
     app.run_server(debug=True)  # , host='0.0.0.0')
+"""
