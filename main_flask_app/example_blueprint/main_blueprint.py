@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template
+from multi_page_app import *
 example_blueprint = Blueprint('example_blueprint', __name__, template_folder = "templates", static_folder="static")
 
 #@example_blueprint.route('/')
@@ -9,7 +10,4 @@ example_blueprint = Blueprint('example_blueprint', __name__, template_folder = "
 def index():
     return render_template("index.html")
 
-@example_blueprint.route("/dashboard/")
-def indexdash():
-    return render_template("dashboard.html")
 

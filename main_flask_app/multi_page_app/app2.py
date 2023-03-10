@@ -6,7 +6,7 @@ import dash_bootstrap_components as dbc
 import plotly.express as px
 import pandas as pd
 
-import app4
+from multi_page_app.app4 import df_grouped
 
 
 in_dir = "multi_page_app/data"
@@ -18,7 +18,7 @@ borough_names['name'] = borough_names['name'].replace(
     ["Lewishaw", "Wandworth"], ["Lewisham", "Wandsworth"]
     )
 
-df_grouped = (app4.df_grouped)
+df_grouped = (df_grouped)
 london_total = (df_grouped["Total"].sum())
 
 PRK_COVER_count = int((df_grouped["PRK_COVER"]).sum())

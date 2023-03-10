@@ -1,0 +1,14 @@
+pandas
+geopandas
+dash
+dash-bootstrap-components
+pytest
+selenium
+pyproj
+plotly.express
+requests
+psutil
+multiprocess
+dash[testing]
+area
+axe-selenium-python
