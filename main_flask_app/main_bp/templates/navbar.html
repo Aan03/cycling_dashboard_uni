@@ -1,7 +1,7 @@
 <!-- from https://getbootstrap.com/docs/5.2/components/navbar/ -->
 <nav class="navbar navbar-expand-lg bg-light">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{{ url_for('main_bp.index')}}">Paralympics</a>
+        <a class="navbar-brand" href="{{ url_for('main_bp.index')}}">Cycling Map</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -13,19 +13,36 @@
                         id="nav-home">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{{ url_for('main_bp.dash')}}" id="nav-dashboard">Dashboard</a>
+                    <a class="nav-link active" aria-current="page" href="{{ url_for('main_bp.dash')}}" 
+                        id="nav-dashboard">Statistics Dashboard</a>
                 </li>
-            </ul>
-            <!--
-            <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="/dashboard/" id="nav-dashboard">Dashboard</a>
-            </li>
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/reports/" id="nav-Reports">Reports</a>
+                    <a class="nav-link active" aria-current="page" href="{{ url_for('main_bp.reports')}}" 
+                        id="nav-dashboard">Reports</a>
                 </li>
-            </ul>
-            -->
+
+                {% if current_user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{{ url_for('auth_bp.profile') }}" 
+                        id="nav-dashboard">Profile</a>
+                </li>
+                {% endif %}
+                {% if not current_user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{{ url_for('auth_bp.login') }}" 
+                        id="nav-dashboard">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{{ url_for('auth_bp.sign_up') }}" 
+                        id="nav-dashboard">Sign Up</a>
+                </li>
+                {% endif %}
+                {% if current_user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{{ url_for('auth_bp.logout') }}" 
+                        id="nav-dashboard">Logout</a>
+                </li>
+                {% endif %}
         </div>
     </div>
 </nav>

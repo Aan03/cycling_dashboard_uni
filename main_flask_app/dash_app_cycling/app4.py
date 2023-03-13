@@ -7,9 +7,10 @@ import plotly.express as px
 import pandas as pd
 import geopandas as gpd
 import area
-from area import area
 
-in_dir = "multi_page_app/data"
+import os
+data_dir = os.path.abspath(os.path.dirname(__file__))
+in_dir = data_dir + "/data"
 borough_names = pd.read_csv((f'{in_dir}/{"boroughs.csv"}'))
 cycle_parking_data = pd.read_csv((f'{in_dir}/{"cycle_parking_data.csv"}'))
 borough_count = pd.read_csv((f'{in_dir}/{"borough_count.csv"}'))

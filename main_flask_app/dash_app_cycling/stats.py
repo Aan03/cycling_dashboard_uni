@@ -1,9 +1,9 @@
 # Statistics page
 from dash import html, dcc, Dash
 import dash_bootstrap_components as dbc
-import multi_page_app.app2 as app2 # barcharts
-import multi_page_app.app3 as app3 # linecharts
-import multi_page_app.app4 as app4# choropleths
+import main_flask_app.dash_app_cycling.app2 as app2 # barcharts
+import main_flask_app.dash_app_cycling.app3 as app3 # linecharts
+import main_flask_app.dash_app_cycling.app4 as app4# choropleths
 
 def create_dash_app(flask_app):
     """Creates Dash as a route in Flask
