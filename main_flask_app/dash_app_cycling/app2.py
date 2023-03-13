@@ -6,10 +6,12 @@ import dash_bootstrap_components as dbc
 import plotly.express as px
 import pandas as pd
 
-from multi_page_app.app4 import df_grouped
 
+from main_flask_app.dash_app_cycling.app4 import df_grouped
 
-in_dir = "multi_page_app/data"
+import os
+data_dir = os.path.abspath(os.path.dirname(__file__))
+in_dir = data_dir + "/data"
 borough_names = pd.read_csv((f'{in_dir}/{"boroughs.csv"}'))
 cycle_parking_data = pd.read_csv((f'{in_dir}/{"cycle_parking_data.csv"}'))
 
