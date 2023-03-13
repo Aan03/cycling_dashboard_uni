@@ -2,11 +2,10 @@ from flask import Blueprint, render_template, redirect, url_for, request, sessio
 from flask_login import UserMixin, login_required, current_user, login_user, LoginManager, logout_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
-import wtforms
-
 from main_flask_app.dash_app_cycling import *
 from main_flask_app import db
 from main_flask_app.models import user
+
 
 
 auth_bp = Blueprint('auth_bp', __name__, template_folder = "templates")
