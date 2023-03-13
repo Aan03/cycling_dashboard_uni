@@ -1,7 +1,76 @@
 {% extends 'layout.html' %}
 {% set title = 'Cycling Map' %}
 {% block content %}
+<head>
+  <title>leaflet-map-csv</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
 
-<h1>Index page, map and report button here</h1>
+  <!-- Load Leaflet code library - see updates at http://leafletjs.com/download.html-->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+        
+  <!-- Load jQuery and PapaParse to read data from a CSV file 
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
+  https://handsondataviz.org/leaflet-maps-with-csv.html
+-->
+  <!-- Position the map with Cascading Style Sheet (CSS) -->
+  <!--
+  #body { margin:"50%"; padding:0; }
+  
+    -->
+  <style>
+    
+    #map { position: absolute; top:10%; bottom:0; right:50%; left:0; }
+    
+  </style>
+  
+</head>
 
+  <h1 id="demo"></h1>
+
+  <!-- Insert HTML division tag to layout the map -->
+  <div id="map"></div>
+
+  <!-- Insert Javascript (.js) code to create the map -->
+  <script>
+
+  // Set up initial map center and zoom level
+  var map = L.map('map', {
+    preferCanvas: true, //added to decrease speed
+    center: [51.51, -0.1], // EDIT latitude, longitude to re-center map
+    zoom: 10,  // EDIT from 1 to 18 -- decrease to zoom out, increase to zoom in
+    scrollWheelZoom: true,
+    tap: false
+  });
+
+  /* Control panel to display map layers 
+  var controlLayers = L.control.layers( null, null, {
+    position: "topright",
+    collapsed: false
+  }).addTo(map);
+  */
+
+  // display Carto basemap tiles with light features and labels
+  var light = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>'
+  }).addTo(map); // EDIT - insert or remove ".addTo(map)" before last semicolon to display by default
+  //controlLayers.addBaseLayer(light, 'Carto Light basemap');
+
+
+  // see more basemap options at https://leaflet-extras.github.io/leaflet-providers/preview/
+
+  
+  const markers = JSON.parse('{{ markers | safe }}');
+  for(var i in markers){
+    var marker_lat = markers[i].Latitude;
+    var marker_long = markers[i].Longitude;
+    var marker_title = markers[i].Title;
+    var marker_new = L.circleMarker([marker_lat, marker_long]).bindPopup(marker_title);
+    marker_new.addTo(map);
+  }
+  
+  
+  </script>
 {% endblock %}

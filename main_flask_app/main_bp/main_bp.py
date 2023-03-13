@@ -7,12 +7,6 @@ main_bp = Blueprint('main_bp', __name__, template_folder = "templates", static_f
 basedir = os.path.abspath(os.path.dirname(__file__))
 print(basedir)
 
-
-
-@main_bp.route("/")
-def index():
-    return render_template("index.html")
-
 @main_bp.route("/dashboard")
 def dash():
     return render_template("dashboard.html")
@@ -21,13 +15,12 @@ def dash():
 def reports():
     return render_template("reports.html")
 
-@main_bp.route("/map")
-def map():
+@main_bp.route("/")
+def index():
     myFile = open(basedir + "/templates/cycle_parking_coordinates.csv", "r")
     reader = csv.DictReader(myFile)
     myList = list()
     for dictionary in reader:
         myList.append(dictionary)    
     markers = (myList)
-    
-    return render_template('map.html', markers=json.dumps(markers))
+    return render_template('index.html', markers=json.dumps(markers))
