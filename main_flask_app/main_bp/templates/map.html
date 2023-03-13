@@ -59,20 +59,15 @@ https://handsondataviz.org/leaflet-maps-with-csv.html
   // see more basemap options at https://leaflet-extras.github.io/leaflet-providers/preview/
 
   // Read markers data from data.csv
-  $.get('./data.csv', function(csvString) {
-
-
-    // gdf = gpd.read_file('multi_page_app/data/cycle_parking.json')
-    // df1 = gdf[['FEATURE_ID', 'BOROUGH', 'PRK_COVER', 'PRK_SECURE', 'PRK_LOCKER']]
-    // geoms = gdf['geometry'].tolist()
+  $.get('./cycle_parking_coordinates.csv', function(csvString) {
 
     // Use PapaParse to convert string to array of objects
-    var data = Papa.parse(csvString, {header: true, dynamicTyping: true}).data;
+    var cycle_parking_coordinates = Papa.parse(csvString, {header: true, dynamicTyping: true}).data;
 
     // For each row in data, create a marker and add it to the map
     // For each row, columns `Latitude`, `Longitude`, and `Title` are required
-    for (var i in data) {
-      var row = data[i];
+    for (var i in cycle_parking_coordinates) {
+      var row = cycle_parking_coordinates[i];
 
       var marker = L.marker([row.Latitude, row.Longitude], {
         opacity: 1
