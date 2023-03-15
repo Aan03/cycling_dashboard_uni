@@ -23,15 +23,16 @@
   <style>
     
     #map { position: absolute; top:10%; bottom:0; right:50%; left:0; }
-    
+    #test { position: absolute; top:10%; bottom:0; right:0; left:60%; }
+  
   </style>
   
 </head>
 
-  <h1 id="demo"></h1>
-
   <!-- Insert HTML division tag to layout the map -->
   <div id="map"></div>
+
+  <p id="test">filters and add reports?</p>
 
   <!-- Insert Javascript (.js) code to create the map -->
   <script>
@@ -63,14 +64,116 @@
 
   
   const markers = JSON.parse('{{ markers | safe }}');
+  const markers_info = JSON.parse('{{ markers_info | safe }}');
+  
+
   for(var i in markers){
     var marker_lat = markers[i].Latitude;
     var marker_long = markers[i].Longitude;
-    var marker_title = markers[i].Title;
-    var marker_new = L.circleMarker([marker_lat, marker_long]).bindPopup(marker_title);
+    
+    var marker_new = L.circleMarker([marker_lat, marker_long])
+
+    marker_new.myJsonData = markers_info[i]
+    var marker_title = marker_new.myJsonData.Title;
+    var marker_photo1 = marker_new.myJsonData.PHOTO1_URL;
+    var marker_photo2 = marker_new.myJsonData.PHOTO2_URL;
+    var borough_marker = marker_new.myJsonData.BOROUGH
+    var capacity_marker = marker_new.myJsonData.PRK_CPT
+    var secured_marker = marker_new.myJsonData.PRK_SECURE
+    var locker_marker = marker_new.myJsonData.PRK_LOCKER
+    var covered_marker = marker_new.myJsonData.PRK_COVER
+
+    for_image_one = 
+      "<div><img src= " + marker_photo1 + " id= marker_image, alt=" + '"Image of bike rack"' + ", width= 150px, height= 150px></div>" +
+      "<div><button id=" + "image_one" + ">Image One</button>" +
+      "<button id=" + "image_two" + ">Image Two</button></div>" +
+      "<div><p>" + "Borough: " + borough_marker + "</p>" +
+      "<p>" + "Capacity: " + capacity_marker + "</p>" +
+      "<p>" + "Secured: " + secured_marker + "</p>" +
+      "<p>" + "Covered: " + covered_marker + "</p>" +
+      "<p>" + "Locker: " + locker_marker + "</p></div>"
+  
+    marker_new.bindPopup(for_image_one);
+    
     marker_new.addTo(map);
+    
+    marker_new.addEventListener("click", onMarkerClick)
+    
+
+    
+    function onMarkerClick(e) {
+    console.log(this.options)
+    var current_marker = e.target;
+    var popup = current_marker.getPopup();
+
+    
+
+    var marker_photo1 = current_marker.myJsonData.PHOTO1_URL;
+    var marker_photo2 = current_marker.myJsonData.PHOTO2_URL;
+    var borough_marker = current_marker.myJsonData.BOROUGH
+    var capacity_marker = current_marker.myJsonData.PRK_CPT
+    var secured_marker = current_marker.myJsonData.PRK_SECURE
+    var locker_marker = current_marker.myJsonData.PRK_LOCKER
+    var covered_marker = current_marker.myJsonData.PRK_COVER
+    
+    image_one =
+      "<div><img src= " + marker_photo1 + " id= marker_image, alt=" + '"Image of bike rack"' + ", width= 150px, height= 150px></div>"
+      
+    image_two = 
+      "<div><img src= " + marker_photo2 + " id= marker_image, alt=" + '"Image of bike rack"' + ", width= 150px, height= 150px></div>"
+      
+    buttons_info =
+      "<div><button id=" + "image_one" + ">Image One</button>" +
+      "<button id=" + "image_two" + ">Image Two</button></div>" +
+      "<div><p>" + "Borough: " + borough_marker + "</p>" +
+      "<p>" + "Capacity: " + capacity_marker + "</p>" +
+      "<p>" + "Secured: " + secured_marker + "</p>" +
+      "<p>" + "Covered: " + covered_marker + "</p>" +
+      "<p>" + "Locker: " + locker_marker + "</p></div>"
+
+    for_image_one = (image_one + buttons_info)
+    for_image_two = (image_two + buttons_info)
+
+    console.log(marker_photo1, marker_photo2)
+    console.log(current_marker.myJsonData)
+  
+    console.log(popup.isOpen())
+    function img1() {
+        popup.setContent(for_image_one)
+        console.log("one clicked")
+        document.getElementById('image_one').onclick = function() {img1()}
+        document.getElementById('image_two').onclick = function() {img2()}
+
+      }
+
+    function img2() {
+        popup.setContent(for_image_two)
+        console.log("two clicked")
+        document.getElementById('image_one').onclick = function() {img1()}
+        document.getElementById('image_two').onclick = function() {img2()}
+ 
+        
+        
+      }
+
+    document.getElementById('image_one').onclick = function() {img1()}
+    document.getElementById('image_two').onclick = function() {img2()}
+
+
+    console.log(current_marker)
+
+    }
   }
   
+    
+
+    
+   
+
+    
   
+  //}
+
+//}
   </script>
 {% endblock %}

@@ -15,12 +15,22 @@ def dash():
 def reports():
     return render_template("reports.html")
 
+
+myFile = open(basedir + "/templates/cycle_parking_data.csv", "r")
+reader = csv.DictReader(myFile)
+myList = list()
+for dictionary in reader:
+    myList.append(dictionary)
+markers_info = (myList)
+
+myFile = open(basedir + "/templates/cycle_parking_coordinates.csv", "r")
+reader = csv.DictReader(myFile)
+myList = list()
+for dictionary in reader:
+    myList.append(dictionary)    
+markers = (myList)
+
 @main_bp.route("/")
 def index():
-    myFile = open(basedir + "/templates/cycle_parking_coordinates.csv", "r")
-    reader = csv.DictReader(myFile)
-    myList = list()
-    for dictionary in reader:
-        myList.append(dictionary)    
-    markers = (myList)
-    return render_template('index.html', markers=json.dumps(markers))
+    return render_template('index.html', markers=json.dumps(markers), 
+                           markers_info=json.dumps(markers_info))
