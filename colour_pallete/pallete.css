@@ -1,6 +1,6 @@
 :root {
-    --colour1 : #222522;
-    --colour2 : #305030;
-    --colour3 : #507050;
-    --colour4 : #f0fff0;
+    --dark : #222522;
+    --headings : #305030;
+    --subheadings : #507050;
+    --pale : #f0fff0;
 }
