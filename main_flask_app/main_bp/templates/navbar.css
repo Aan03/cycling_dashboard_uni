@@ -1,0 +1,23 @@
+nav {
+    background-color: #305030; /* Set the background color to the headinigs green */
+    padding: 10px; /* Add some padding around the navigation bar */
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; /* Set the font family */
+  }
+  
+  ul {
+    list-style-type: none; /* Remove the bullet points from the list */
+    margin: 0;
+    padding: 0;
+  }
+  
+  li {
+    display: inline-block; /* Display the list items inline */
+    margin-right: 20px; /* Add some space between the list items */
+  }
+  
+  a {
+    color: #f0fff0; /* Set the font color to pale green */
+    text-decoration: none; /* Remove the underline from the links */
+    padding: 5px 10px; /* Add some padding around the links */
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; /* Set the font family */
+  }
