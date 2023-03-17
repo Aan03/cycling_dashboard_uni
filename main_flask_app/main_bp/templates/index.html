@@ -27,13 +27,68 @@
   
   </style>
   
+
+ 
+  
 </head>
 
   <!-- Insert HTML division tag to layout the map -->
   <div id="map"></div>
+  
+  <div id="test">
+  <p>filters and add reports?</p>
 
-  <p id="test">filters and add reports?</p>
+  {% if current_user.is_authenticated %}
 
+  <h1>"Logged in"</h1>
+
+  <div class='message'>
+    <h3>{{ messages['title'] }}</h3>
+    <h3>{{ messages['date'] }}</h3>
+    <h3>{{ messages['time'] }}</h3>
+    <p>{{ messages['content'] }}</p>
+  
+    <h1>"Report Form"</h1>
+  <form method="post">
+    <label for="title">Rack ID</label>
+    <br>
+    <input type="text" name="title" id="rack_id_input"
+           placeholder="Rack ID"
+           value="{{ request.form['title'] }}"></input>
+    <br>
+
+    <label for="title">Date</label>
+    <br>
+    <input type="text" name="date" id="date_input"
+           placeholder="Date"
+           value="{{ request.form['date'] }}"></input>
+    <br>
+
+    <label for="title">Time</label>
+    <br>
+    <input type="text" name="time" id="time_input"
+           placeholder="Time"
+           value="{{ request.form['time'] }}"></input>
+    <br>
+
+    <label for="content">Report Details</label>
+    <br>
+    <textarea name="content"
+              placeholder="Message content"
+              rows="15"
+              cols="60"
+              >{{ request.form['content'] }}</textarea>
+    <br>
+    <button type="submit">Submit</button>
+  </form>
+
+  {% endif %}
+
+  {% if not current_user.is_authenticated %}
+  <h1>"Not logged in"</h1>
+  {% endif %}
+
+  </div>
   <!-- Insert Javascript (.js) code to create the map -->
   <script>
 
@@ -110,10 +165,17 @@
     
     function onMarkerClick(e) {
     console.log(this.options)
+    var date = new Date();
+    var current_date = date.getFullYear()+"-"+(date.getMonth()+1)+"-"+ date.getDate();
+    var current_time = date.getHours()+":"+date.getMinutes()+":"+ date.getSeconds();
     var current_marker = e.target;
+    var title =current_marker.myJsonData.FEATURE_ID;
+    console.log(title)
+    document.getElementById("rack_id_input").value=title;
+    document.getElementById("date_input").value=current_date;
+    document.getElementById("time_input").value=current_time;
     var popup = current_marker.getPopup();
 
-    
 
     var marker_photo1 = current_marker.myJsonData.PHOTO1_URL;
     var marker_photo2 = current_marker.myJsonData.PHOTO2_URL;

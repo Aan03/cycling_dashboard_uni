@@ -30,7 +30,13 @@ for dictionary in reader:
     myList.append(dictionary)    
 markers = (myList)
 
-@main_bp.route("/")
+@main_bp.route("/", methods=['POST', 'GET'])
 def index():
+    messages = [{'title': 'Message One',
+                 'date': 'Message One',
+                 'time': 'Message One',
+             'content': 'Message One Content'},
+            ]
     return render_template('index.html', markers=json.dumps(markers), 
-                           markers_info=json.dumps(markers_info))
+                           markers_info=json.dumps(markers_info), 
+                           messages = messages)
