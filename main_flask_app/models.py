@@ -1,6 +1,6 @@
 from flask_login import UserMixin
 from main_flask_app import db
-#from main_flask_app import ma
+
 #import bcrypt to hash passwords
 
 
@@ -20,8 +20,6 @@ class favourites(UserMixin, db.Model):
     favourite = db.Column(db.String(100))
 
 
-#class ReportsSchema(ma.SQLALchemySchema):
-#""" Marshmallow schema defining the attributes for creating reports."""
 
-#class Meta:
-#model = 
+
+
