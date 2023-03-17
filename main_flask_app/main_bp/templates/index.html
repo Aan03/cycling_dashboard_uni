@@ -70,8 +70,15 @@
   for(var i in markers){
     var marker_lat = markers[i].Latitude;
     var marker_long = markers[i].Longitude;
-    
-    var marker_new = L.circleMarker([marker_lat, marker_long])
+    var radius = 4; // set the radius of the marker to 1 pixel
+    var marker_new = L.circleMarker([marker_lat, marker_long], {
+      radius: radius,
+      stroke: true, // show the outline of the marker
+      weight: 1, // set the thickness of the outline
+      color: 'green', // set the color of the outline
+      fill: false, // do not fill the marker
+      fillOpacity: 0 // set the opacity of the fill to 0
+    })
 
     marker_new.myJsonData = markers_info[i]
     var marker_title = marker_new.myJsonData.Title;
@@ -162,6 +169,36 @@
 
     console.log(current_marker)
 
+
+      /*
+    function onMarkerClick(e) {
+    var marker = e.target;
+    var marker_title = marker.getPopup().getContent(); // get the title of the marker
+    var report_text = prompt("Please enter your report for " + marker_title + ":"); // prompt the user to enter their report
+    if (report_text != null && report_text != "") { // check if the user entered a report
+      // send the report to the API
+      var data = {
+        marker_title: marker_title,
+        report_text: report_text
+      };
+      fetch('/api/save-report', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => {
+        // handle the response from the API
+        console.log(response);
+      })
+      .catch(error => {
+        // handle any errors that occur during the API call
+        console.error(error);
+      });
+    }
+  }
+  */
     }
   }
   
