@@ -18,29 +18,29 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="{{ url_for('main_bp.reports')}}" 
-                        id="nav-dashboard">Reports</a>
+                        id="nav-reports">Reports</a>
                 </li>
 
                 {% if current_user.is_authenticated %}
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="{{ url_for('auth_bp.profile') }}" 
-                        id="nav-dashboard">Profile</a>
+                        id="nav-profile">Profile</a>
                 </li>
                 {% endif %}
                 {% if not current_user.is_authenticated %}
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="{{ url_for('auth_bp.login') }}" 
-                        id="nav-dashboard">Login</a>
+                        id="nav-login">Login</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="{{ url_for('auth_bp.sign_up') }}" 
-                        id="nav-dashboard">Sign Up</a>
+                        id="nav-sign_up">Sign Up</a>
                 </li>
                 {% endif %}
                 {% if current_user.is_authenticated %}
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="{{ url_for('auth_bp.logout') }}" 
-                        id="nav-dashboard">Logout</a>
+                        id="nav-logout">Logout</a>
                 </li>
                 {% endif %}
         </div>

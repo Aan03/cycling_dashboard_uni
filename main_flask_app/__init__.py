@@ -30,7 +30,7 @@ def create_flask_app():
     app.config.from_object(Config)
     app.config['SECRET_KEY'] = secret_key
     
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' +os.path.join(basedir, "app.db")
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' +os.path.join(basedir, "data/app.db")
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["SQLALCHEMY_ECHO"] = True
 

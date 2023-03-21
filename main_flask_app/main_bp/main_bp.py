@@ -5,7 +5,7 @@ import os
 import json
 main_bp = Blueprint('main_bp', __name__, template_folder = "templates", static_folder="static")
 basedir = os.path.abspath(os.path.dirname(__file__))
-print(basedir)
+maindir = os.path.abspath(os.path.join(basedir, os.pardir))
 
 @main_bp.route("/dashboard")
 def dash():
@@ -16,14 +16,14 @@ def reports():
     return render_template("reports.html")
 
 
-myFile = open(basedir + "/templates/cycle_parking_data.csv", "r")
+myFile = open(maindir + "/data/cycle_parking_data.csv", "r")
 reader = csv.DictReader(myFile)
 myList = list()
 for dictionary in reader:
     myList.append(dictionary)
 markers_info = (myList)
 
-myFile = open(basedir + "/templates/cycle_parking_coordinates.csv", "r")
+myFile = open(maindir + "/data/cycle_parking_coordinates.csv", "r")
 reader = csv.DictReader(myFile)
 myList = list()
 for dictionary in reader:
