@@ -21,22 +21,34 @@
   
     -->
   <style>
-    
-    #map { position: absolute; top:10%; bottom:0; right:50%; left:0; }
-    #test { position: absolute; top:10%; bottom:0; right:0; left:60%; }
-  
-  </style>
-  
+  #map {position: absolute; border: 2px solid #44532e;
+        height: 90vh; width: 50vw;}  
 
- 
+  #map_side_options {position: absolute;
+        right:0; 
+        height: 90vh; width: 40vw;}
+
+  </style>
   
 </head>
 
   <!-- Insert HTML division tag to layout the map -->
   <div id="map"></div>
   
-  <div id="test">
+  
+  <div id="map_side_options">
   <p>filters and add reports?</p>
+
+  <div id="checking">
+  <input type="checkbox" id="covered_box" name="covered">
+  <label for="covered_box">Covered</label><br>
+  <input type="checkbox" id="secured_box" name="secured">
+  <label for="covered_box">Secured</label><br>
+  <input type="checkbox" id="locker_box" name="locker">
+  <label for="covered_box">Locker</label><br>
+
+  </div>
+  
 
   {% if current_user.is_authenticated %}
 
@@ -89,6 +101,7 @@
   {% endif %}
 
   </div>
+  
   <!-- Insert Javascript (.js) code to create the map -->
   <script>
 
@@ -120,8 +133,52 @@
   
   const markers = JSON.parse('{{ markers | safe }}');
   const markers_info = JSON.parse('{{ markers_info | safe }}');
-  
 
+  const covered_cbox = document.getElementById('covered_box');
+  const secured_cbox = document.getElementById('secured_box');
+  const locker_cbox = document.getElementById('locker_box');
+
+  function check_false_checked(){
+    if (covered_cbox.checked == false && secured_cbox.checked == false && locker_cbox.checked == false){
+    map.addLayer(all_markers)
+  }
+  }
+
+  covered_cbox.addEventListener('change', (event) => {
+    check_false_checked()
+  if (event.currentTarget.checked) {
+    map.removeLayer(all_markers)
+    map.addLayer(markers_covered)
+  } else {
+    map.removeLayer(markers_covered)
+  }
+  })
+
+  secured_cbox.addEventListener('change', (event) => {
+    check_false_checked()
+  if (event.currentTarget.checked) {
+    map.removeLayer(all_markers)
+    map.addLayer(markers_secured)
+  } else {
+    map.removeLayer(markers_secured)
+  }
+  })
+
+  locker_cbox.addEventListener('change', (event) => {
+    check_false_checked()
+  if (event.currentTarget.checked) {
+    map.removeLayer(all_markers)
+    map.addLayer(markers_locker)
+  } else {
+    map.removeLayer(markers_locker)
+  }
+  })
+
+  
+  var all_markers = L.featureGroup();
+  var markers_covered = L.featureGroup();
+  var markers_secured = L.featureGroup();
+  var markers_locker = L.featureGroup();
   for(var i in markers){
     var marker_lat = markers[i].Latitude;
     var marker_long = markers[i].Longitude;
@@ -157,23 +214,44 @@
   
     marker_new.bindPopup(for_image_one);
     
-    marker_new.addTo(map);
+    //marker_new.addTo(map);
     
     marker_new.addEventListener("click", onMarkerClick)
+
+    marker_new.addTo(all_markers);
     
+    if (secured_marker == "True"){
+      marker_new.addTo(markers_secured);
+    }
+    if (covered_marker == "True"){
+      marker_new.addTo(markers_covered);
+    }
+    if (locker_marker == "True"){
+      marker_new.addTo(markers_locker);
+    }
+
+
+    function report_fill(title) {
+    var date = new Date();
+    formatted_date = date.toLocaleDateString('en-GB', {
+    year: 'numeric', month: '2-digit', day: '2-digit'})
+    formatted_time = date.toLocaleTimeString('en-GB', {
+    hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit'})
+    document.getElementById("rack_id_input").value=title;
+    document.getElementById("date_input").value=formatted_date;
+    document.getElementById("time_input").value=formatted_time;
+    }
 
     
     function onMarkerClick(e) {
     console.log(this.options)
-    var date = new Date();
-    var current_date = date.getFullYear()+"-"+(date.getMonth()+1)+"-"+ date.getDate();
-    var current_time = date.getHours()+":"+date.getMinutes()+":"+ date.getSeconds();
     var current_marker = e.target;
-    var title =current_marker.myJsonData.FEATURE_ID;
-    console.log(title)
-    document.getElementById("rack_id_input").value=title;
-    document.getElementById("date_input").value=current_date;
-    document.getElementById("time_input").value=current_time;
+    var title = current_marker.myJsonData.FEATURE_ID;
+    if ('{{current_user.is_authenticated}}' == "True") {
+      report_fill(title)
+      console.log("worked true")
+    }
+    
     var popup = current_marker.getPopup();
 
 
@@ -206,7 +284,7 @@
     console.log(marker_photo1, marker_photo2)
     console.log(current_marker.myJsonData)
   
-    console.log(popup.isOpen())
+    //console.log(popup.isOpen())
     function img1() {
         popup.setContent(for_image_one)
         console.log("one clicked")
@@ -221,15 +299,13 @@
         document.getElementById('image_one').onclick = function() {img1()}
         document.getElementById('image_two').onclick = function() {img2()}
  
-        
-        
       }
 
     document.getElementById('image_one').onclick = function() {img1()}
     document.getElementById('image_two').onclick = function() {img2()}
 
 
-    console.log(current_marker)
+    //console.log(current_marker)
 
 
       /*
@@ -263,6 +339,8 @@
   */
     }
   }
+  check_false_checked()
+  
   
     
 
