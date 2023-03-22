@@ -10,11 +10,11 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
         
-  <!-- Load jQuery and PapaParse to read data from a CSV file 
+  <!-- Load jQuery and PapaParse to read data from a CSV file -->
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
-  https://handsondataviz.org/leaflet-maps-with-csv.html
--->
+  <!--https://handsondataviz.org/leaflet-maps-with-csv.html-->
+
   <!-- Position the map with Cascading Style Sheet (CSS) -->
   <!--
   #body { margin:"50%"; padding:0; }
@@ -46,6 +46,14 @@
   <label for="covered_box">Secured</label><br>
   <input type="checkbox" id="locker_box" name="locker">
   <label for="covered_box">Locker</label><br>
+
+  <br>
+
+  <select name="borough_select" id="borough_select">
+    {% for borough in boroughs %}
+        <option value="{{borough}}">{{borough}}</option>"
+    {% endfor %}
+  </select>
 
   </div>
   
@@ -127,54 +135,94 @@
   }).addTo(map); // EDIT - insert or remove ".addTo(map)" before last semicolon to display by default
   //controlLayers.addBaseLayer(light, 'Carto Light basemap');
 
-
   // see more basemap options at https://leaflet-extras.github.io/leaflet-providers/preview/
 
-  
   const markers = JSON.parse('{{ markers | safe }}');
   const markers_info = JSON.parse('{{ markers_info | safe }}');
-
   const covered_cbox = document.getElementById('covered_box');
   const secured_cbox = document.getElementById('secured_box');
   const locker_cbox = document.getElementById('locker_box');
 
+  const borough_dd = document.getElementById("borough_select");
+
+
+  borough_dd.addEventListener("change", recheck_boxes)
+
+  function recheck_boxes(){
+    map.removeLayer(all_markers);
+    $('#covered_box').prop('checked', false);
+    $('#secured_box').prop('checked', false);
+    $('#locker_box').prop('checked', false);
+    covered_cbox.addEventListener('change', covered_check);
+    secured_cbox.addEventListener('change', secured_check);
+    locker_cbox.addEventListener('change', locker_check);
+
+  }
   function check_false_checked(){
     if (covered_cbox.checked == false && secured_cbox.checked == false && locker_cbox.checked == false){
     map.addLayer(all_markers)
-  }
-  }
+  }}
 
-  covered_cbox.addEventListener('change', (event) => {
-    check_false_checked()
-  if (event.currentTarget.checked) {
+
+  function check__if_checked(cbox, temp_lyr_group, borough_dd_val, 
+  marker_type){
+    if (cbox.checked == true) {
     map.removeLayer(all_markers)
-    map.addLayer(markers_covered)
+    console.log("ticked")
+    if (borough_dd_val == "All Boroughs"){
+      var temp_lyr_group = marker_type
+      map.addLayer(temp_lyr_group)  
+      }
+    else {
+    map.addLayer(temp_lyr_group)
+      }
   } else {
-    map.removeLayer(markers_covered)
+    map.removeLayer(temp_lyr_group)
   }
-  })
+  }
 
-  secured_cbox.addEventListener('change', (event) => {
+  covered_cbox.addEventListener('change', covered_check)
+
+  function covered_check() {
     check_false_checked()
-  if (event.currentTarget.checked) {
-    map.removeLayer(all_markers)
-    map.addLayer(markers_secured)
-  } else {
-    map.removeLayer(markers_secured)
-  }
-  })
+    var temp_lyr_group_c = L.featureGroup()
+    var borough_dd_val = borough_dd.value
+    markers_locker.eachLayer(function(layer) {
+      if (borough_dd_val == layer.myJsonData.BOROUGH){
+        layer.addTo(temp_lyr_group_c);    
+      }
+    });
+    check__if_checked(covered_cbox, temp_lyr_group_c, borough_dd_val, markers_covered)
+  };
 
-  locker_cbox.addEventListener('change', (event) => {
+  secured_cbox.addEventListener('change', secured_check)
+
+  function secured_check() {
     check_false_checked()
-  if (event.currentTarget.checked) {
-    map.removeLayer(all_markers)
-    map.addLayer(markers_locker)
-  } else {
-    map.removeLayer(markers_locker)
-  }
-  })
+    var temp_lyr_group_s = L.featureGroup()
+    var borough_dd_val = borough_dd.value
+    markers_locker.eachLayer(function(layer) {
+      if (borough_dd_val == layer.myJsonData.BOROUGH){
+        layer.addTo(temp_lyr_group_s);    
+      }
+    });
+    check__if_checked(secured_cbox, temp_lyr_group_s, borough_dd_val, markers_secured)
+  };
 
-  
+  /*locker_cbox.addEventListener('change', locker_check)
+
+  function locker_check() {
+    check_false_checked()
+    var temp_lyr_group_l = L.featureGroup()
+    var borough_dd_val = borough_dd.value
+    markers_locker.eachLayer(function(layer) {
+      if (borough_dd_val == layer.myJsonData.BOROUGH){
+        layer.addTo(temp_lyr_group_l);    
+      }
+    });
+    check__if_checked(locker_cbox, temp_lyr_group_l, borough_dd_val, markers_locker)
+  };
+  */
   var all_markers = L.featureGroup();
   var markers_covered = L.featureGroup();
   var markers_secured = L.featureGroup();
@@ -189,7 +237,8 @@
       weight: 1, // set the thickness of the outline
       color: 'green', // set the color of the outline
       fill: false, // do not fill the marker
-      fillOpacity: 0 // set the opacity of the fill to 0
+      fillOpacity: 0, // set the opacity of the fill to 0
+     // bubblingMouseEvents: false
     })
 
     marker_new.myJsonData = markers_info[i]
@@ -202,23 +251,82 @@
     var locker_marker = marker_new.myJsonData.PRK_LOCKER
     var covered_marker = marker_new.myJsonData.PRK_COVER
 
-    for_image_one = 
-      "<div><img src= " + marker_photo1 + " id= marker_image, alt=" + '"Image of bike rack"' + ", width= 150px, height= 150px></div>" +
-      "<div><button id=" + "image_one" + ">Image One</button>" +
-      "<button id=" + "image_two" + ">Image Two</button></div>" +
-      "<div><p>" + "Borough: " + borough_marker + "</p>" +
-      "<p>" + "Capacity: " + capacity_marker + "</p>" +
-      "<p>" + "Secured: " + secured_marker + "</p>" +
-      "<p>" + "Covered: " + covered_marker + "</p>" +
-      "<p>" + "Locker: " + locker_marker + "</p></div>"
-  
-    marker_new.bindPopup(for_image_one);
     
-    //marker_new.addTo(map);
-    
-    marker_new.addEventListener("click", onMarkerClick)
+    marker_new.bindPopup();
+    marker_new.on('popupopen', function(e) {
+    var marker_new = e.target
+    var marker_title = marker_new.myJsonData.Title;
+    var marker_photo1 = marker_new.myJsonData.PHOTO1_URL;
+    var marker_photo2 = marker_new.myJsonData.PHOTO2_URL;
+    var borough_marker = marker_new.myJsonData.BOROUGH
+    var capacity_marker = marker_new.myJsonData.PRK_CPT
+    var secured_marker = marker_new.myJsonData.PRK_SECURE
+    var locker_marker = marker_new.myJsonData.PRK_LOCKER
+    var covered_marker = marker_new.myJsonData.PRK_COVER
 
+    var main_div = document.createElement("div")
+    var main_div_img = document.createElement("div");
+    var img = document.createElement('img');
+    img.id = "marker_image"
+    img.alt = "Image of bike rack"
+    img.src = marker_photo1;
+    img.style.width = "150px";
+    img.style.height = "150px";
+    main_div_img.appendChild(img);
+    main_div.appendChild(main_div_img)
+
+    var buttons_div = document.createElement("div");
+    var button_one = document.createElement("BUTTON");
+    button_one.id ='image_1_button';
+    button_one.innerHTML = "Image One";
+    var button_two = document.createElement("BUTTON");
+    button_two.id ='image_2_button';
+    button_two.innerHTML = "Image Two";
+    buttons_div.appendChild(button_one)
+    buttons_div.appendChild(button_two)
+    main_div.appendChild(buttons_div)
+
+    var info_div = document.createElement("div")
+    borough_p = document.createElement("p")
+    borough_p.innerHTML = "Borough: " + borough_marker
+    info_div.appendChild(borough_p)
+    capacity_p = document.createElement("p")
+    capacity_p.innerHTML = "Capacity: " + capacity_marker
+    info_div.appendChild(capacity_p)
+    secured_p = document.createElement("p")  
+    secured_p.innerHTML = "Secured: " + secured_marker
+    info_div.appendChild(secured_p)
+    covered_p = document.createElement("p") 
+    covered_p.innerHTML = "Covered: " + covered_marker
+    info_div.appendChild(covered_p)
+    locker_p = document.createElement("p")
+    locker_p.innerHTML = "Locker: " + locker_marker
+    info_div.appendChild(locker_p)
+
+    main_div.appendChild(info_div)
+
+   marker_popup = e.popup; 
+   marker_popup.setContent(main_div)
+   function img1() {
+      img.src = marker_photo1;
+      marker_new.getPopup().setContent(main_div);
+      button_one.addEventListener("click", img1)
+      button_two.addEventListener("click", img2)
+    }
+   function img2() {
+      img.src = marker_photo2;
+      marker_new.getPopup().setContent(main_div);
+      button_one.addEventListener("click", img1)
+      button_two.addEventListener("click", img2)
+    }
+   
+    button_one.addEventListener("click", img1)
+    button_two.addEventListener("click", img2)
+   });
+    
+    
     marker_new.addTo(all_markers);
+    
     
     if (secured_marker == "True"){
       marker_new.addTo(markers_secured);
@@ -252,62 +360,6 @@
       console.log("worked true")
     }
     
-    var popup = current_marker.getPopup();
-
-
-    var marker_photo1 = current_marker.myJsonData.PHOTO1_URL;
-    var marker_photo2 = current_marker.myJsonData.PHOTO2_URL;
-    var borough_marker = current_marker.myJsonData.BOROUGH
-    var capacity_marker = current_marker.myJsonData.PRK_CPT
-    var secured_marker = current_marker.myJsonData.PRK_SECURE
-    var locker_marker = current_marker.myJsonData.PRK_LOCKER
-    var covered_marker = current_marker.myJsonData.PRK_COVER
-    
-    image_one =
-      "<div><img src= " + marker_photo1 + " id= marker_image, alt=" + '"Image of bike rack"' + ", width= 150px, height= 150px></div>"
-      
-    image_two = 
-      "<div><img src= " + marker_photo2 + " id= marker_image, alt=" + '"Image of bike rack"' + ", width= 150px, height= 150px></div>"
-      
-    buttons_info =
-      "<div><button id=" + "image_one" + ">Image One</button>" +
-      "<button id=" + "image_two" + ">Image Two</button></div>" +
-      "<div><p>" + "Borough: " + borough_marker + "</p>" +
-      "<p>" + "Capacity: " + capacity_marker + "</p>" +
-      "<p>" + "Secured: " + secured_marker + "</p>" +
-      "<p>" + "Covered: " + covered_marker + "</p>" +
-      "<p>" + "Locker: " + locker_marker + "</p></div>"
-
-    for_image_one = (image_one + buttons_info)
-    for_image_two = (image_two + buttons_info)
-
-    console.log(marker_photo1, marker_photo2)
-    console.log(current_marker.myJsonData)
-  
-    //console.log(popup.isOpen())
-    function img1() {
-        popup.setContent(for_image_one)
-        console.log("one clicked")
-        document.getElementById('image_one').onclick = function() {img1()}
-        document.getElementById('image_two').onclick = function() {img2()}
-
-      }
-
-    function img2() {
-        popup.setContent(for_image_two)
-        console.log("two clicked")
-        document.getElementById('image_one').onclick = function() {img1()}
-        document.getElementById('image_two').onclick = function() {img2()}
- 
-      }
-
-    document.getElementById('image_one').onclick = function() {img1()}
-    document.getElementById('image_two').onclick = function() {img2()}
-
-
-    //console.log(current_marker)
-
-
       /*
     function onMarkerClick(e) {
     var marker = e.target;

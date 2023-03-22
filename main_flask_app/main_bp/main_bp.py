@@ -30,6 +30,14 @@ for dictionary in reader:
     myList.append(dictionary)    
 markers = (myList)
 
+myFile = open(maindir + "/data/boroughs_list.csv", "r")
+reader = csv.reader(myFile)
+myList = list()
+for borough in reader:
+    myList = myList + borough    
+boroughs = (myList)
+print(boroughs)
+
 @main_bp.route("/", methods=['POST', 'GET'])
 def index():
     messages = [{'title': 'Message One',
@@ -39,4 +47,5 @@ def index():
             ]
     return render_template('index.html', markers=json.dumps(markers), 
                            markers_info=json.dumps(markers_info), 
-                           messages = messages)
+                           messages = messages,
+                           boroughs = boroughs)
