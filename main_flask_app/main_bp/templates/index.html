@@ -139,94 +139,142 @@
 
   const markers = JSON.parse('{{ markers | safe }}');
   const markers_info = JSON.parse('{{ markers_info | safe }}');
-  const covered_cbox = document.getElementById('covered_box');
-  const secured_cbox = document.getElementById('secured_box');
-  const locker_cbox = document.getElementById('locker_box');
+  
 
-  const borough_dd = document.getElementById("borough_select");
+  var borough_dd = document.getElementById("borough_select");
+  var borough_dd_val = borough_dd.value;
+  borough_dd.addEventListener("change", for_each_borough)
 
 
-  borough_dd.addEventListener("change", recheck_boxes)
+  
+function for_each_borough(){
+  var covered_cbox = document.getElementById('covered_box');
+  var secured_cbox = document.getElementById('secured_box');
+  var locker_cbox = document.getElementById('locker_box');
+  only_borough_layer = L.featureGroup()
+  map.removeLayer(all_markers);
+  $('#covered_box').prop('checked', false);
+  $('#secured_box').prop('checked', false);
+  $('#locker_box').prop('checked', false);
+  covered_cbox.addEventListener('change', boxes_check);
+  secured_cbox.addEventListener('change', boxes_check);
+  locker_cbox.addEventListener('change', boxes_check);
+  all_ticked_false()
+  
 
-  function recheck_boxes(){
-    map.removeLayer(all_markers);
-    $('#covered_box').prop('checked', false);
-    $('#secured_box').prop('checked', false);
-    $('#locker_box').prop('checked', false);
-    covered_cbox.addEventListener('change', covered_check);
-    secured_cbox.addEventListener('change', secured_check);
-    locker_cbox.addEventListener('change', locker_check);
+function all_ticked_false(){
+  var borough_dd = document.getElementById("borough_select");
+  var borough_dd_val = borough_dd.value;
+  if (covered_cbox.checked == false && secured_cbox.checked == false && locker_cbox.checked == false){
+      if (borough_dd_val == "All Boroughs"){
+        map.addLayer(all_markers)
+      }
+      else if (borough_dd_val !== "All Boroughs") {
+        all_markers.eachLayer(function(layer) {
+        if (layer.myJsonData.BOROUGH !== borough_dd_val){
+          map.removeLayer(layer)
 
-  }
-  function check_false_checked(){
-    if (covered_cbox.checked == false && secured_cbox.checked == false && locker_cbox.checked == false){
-    map.addLayer(all_markers)
+        }})
+        all_markers.eachLayer(function(layer) {
+        if (layer.myJsonData.BOROUGH == borough_dd_val){
+          layer.addTo(only_borough_layer)
+        }})
+        only_borough_layer.addTo(map)
+  }}
+}
+  
+  function boxes_check(){
+  var borough_dd = document.getElementById("borough_select");
+  var borough_dd_val = borough_dd.value;
+  if (borough_dd_val !== "All Boroughs"){
+    map.removeLayer(only_borough_layer)
+
+      borough_covered = L.featureGroup()
+      markers_covered.eachLayer(function(layer) {
+        if (layer.myJsonData.BOROUGH == borough_dd_val){
+          layer.addTo(borough_covered)
+        }})
+      
+      borough_secured = L.featureGroup()
+      markers_secured.eachLayer(function(layer) {
+        if (layer.myJsonData.BOROUGH == borough_dd_val){
+          layer.addTo(borough_secured)
+        }})
+
+      borough_lockers = L.featureGroup()
+      markers_lockers.eachLayer(function(layer) {
+        if (layer.myJsonData.BOROUGH == borough_dd_val){
+          layer.addTo(borough_lockers)
+        }})
+
+    if (covered_cbox.checked == true) {
+      map.removeLayer(only_borough_layer)
+      map.addLayer(borough_covered)
+    }
+    if (covered_cbox.checked == false) {
+      markers_covered.eachLayer(function(layer) {
+        if (layer.myJsonData.BOROUGH == borough_dd_val){
+          map.removeLayer(layer)
+        }})
+      all_ticked_false()
+    }
+    if (secured_cbox.checked == true) {
+      map.removeLayer(only_borough_layer)
+      map.addLayer(borough_secured)
+    }
+    if (secured_cbox.checked == false) {
+      markers_secured.eachLayer(function(layer) {
+        if (layer.myJsonData.BOROUGH == borough_dd_val){
+          map.removeLayer(layer)
+        }})
+      all_ticked_false()
+    }
+    if (locker_cbox.checked == true) {
+      map.removeLayer(only_borough_layer)
+      map.addLayer(borough_lockers)
+    }
+    if (locker_cbox.checked == false) {
+      markers_lockers.eachLayer(function(layer) {
+        if (layer.myJsonData.BOROUGH == borough_dd_val){
+          map.removeLayer(layer)
+        }})
+      all_ticked_false()
+    }
+
+    } else if (borough_dd_val == "All Boroughs"){
+    if (covered_cbox.checked == true) {
+      map.removeLayer(all_markers)
+      map.addLayer(markers_covered)
+    }
+    if (covered_cbox.checked == false) {
+      map.removeLayer(markers_covered)
+      all_ticked_false()
+    }
+    if (secured_cbox.checked == true) {
+      map.removeLayer(all_markers)
+      map.addLayer(markers_secured)
+    }
+    if (secured_cbox.checked == false) {
+      map.removeLayer(markers_secured)
+      all_ticked_false()
+    }
+    if (locker_cbox.checked == true) {
+      map.removeLayer(all_markers)
+      map.addLayer(markers_lockers)
+    }
+    if (locker_cbox.checked == false) {
+      map.removeLayer(markers_lockers)
+      all_ticked_false()
+    }
   }}
 
+}
 
-  function check__if_checked(cbox, temp_lyr_group, borough_dd_val, 
-  marker_type){
-    if (cbox.checked == true) {
-    map.removeLayer(all_markers)
-    console.log("ticked")
-    if (borough_dd_val == "All Boroughs"){
-      var temp_lyr_group = marker_type
-      map.addLayer(temp_lyr_group)  
-      }
-    else {
-    map.addLayer(temp_lyr_group)
-      }
-  } else {
-    map.removeLayer(temp_lyr_group)
-  }
-  }
 
-  covered_cbox.addEventListener('change', covered_check)
-
-  function covered_check() {
-    check_false_checked()
-    var temp_lyr_group_c = L.featureGroup()
-    var borough_dd_val = borough_dd.value
-    markers_locker.eachLayer(function(layer) {
-      if (borough_dd_val == layer.myJsonData.BOROUGH){
-        layer.addTo(temp_lyr_group_c);    
-      }
-    });
-    check__if_checked(covered_cbox, temp_lyr_group_c, borough_dd_val, markers_covered)
-  };
-
-  secured_cbox.addEventListener('change', secured_check)
-
-  function secured_check() {
-    check_false_checked()
-    var temp_lyr_group_s = L.featureGroup()
-    var borough_dd_val = borough_dd.value
-    markers_locker.eachLayer(function(layer) {
-      if (borough_dd_val == layer.myJsonData.BOROUGH){
-        layer.addTo(temp_lyr_group_s);    
-      }
-    });
-    check__if_checked(secured_cbox, temp_lyr_group_s, borough_dd_val, markers_secured)
-  };
-
-  /*locker_cbox.addEventListener('change', locker_check)
-
-  function locker_check() {
-    check_false_checked()
-    var temp_lyr_group_l = L.featureGroup()
-    var borough_dd_val = borough_dd.value
-    markers_locker.eachLayer(function(layer) {
-      if (borough_dd_val == layer.myJsonData.BOROUGH){
-        layer.addTo(temp_lyr_group_l);    
-      }
-    });
-    check__if_checked(locker_cbox, temp_lyr_group_l, borough_dd_val, markers_locker)
-  };
-  */
   var all_markers = L.featureGroup();
   var markers_covered = L.featureGroup();
   var markers_secured = L.featureGroup();
-  var markers_locker = L.featureGroup();
+  var markers_lockers = L.featureGroup();
   for(var i in markers){
     var marker_lat = markers[i].Latitude;
     var marker_long = markers[i].Longitude;
@@ -242,7 +290,7 @@
     })
 
     marker_new.myJsonData = markers_info[i]
-    var marker_title = marker_new.myJsonData.Title;
+    var marker_id = marker_new.myJsonData.FEATURE_ID;
     var marker_photo1 = marker_new.myJsonData.PHOTO1_URL;
     var marker_photo2 = marker_new.myJsonData.PHOTO2_URL;
     var borough_marker = marker_new.myJsonData.BOROUGH
@@ -253,9 +301,11 @@
 
     
     marker_new.bindPopup();
+
     marker_new.on('popupopen', function(e) {
+      
     var marker_new = e.target
-    var marker_title = marker_new.myJsonData.Title;
+    var marker_id = marker_new.myJsonData.FEATURE_ID;
     var marker_photo1 = marker_new.myJsonData.PHOTO1_URL;
     var marker_photo2 = marker_new.myJsonData.PHOTO2_URL;
     var borough_marker = marker_new.myJsonData.BOROUGH
@@ -263,6 +313,7 @@
     var secured_marker = marker_new.myJsonData.PRK_SECURE
     var locker_marker = marker_new.myJsonData.PRK_LOCKER
     var covered_marker = marker_new.myJsonData.PRK_COVER
+
 
     var main_div = document.createElement("div")
     var main_div_img = document.createElement("div");
@@ -309,25 +360,41 @@
    marker_popup.setContent(main_div)
    function img1() {
       img.src = marker_photo1;
-      marker_new.getPopup().setContent(main_div);
+      marker_popup.setContent(main_div);
       button_one.addEventListener("click", img1)
       button_two.addEventListener("click", img2)
     }
    function img2() {
       img.src = marker_photo2;
-      marker_new.getPopup().setContent(main_div);
+      marker_popup.setContent(main_div);
       button_one.addEventListener("click", img1)
       button_two.addEventListener("click", img2)
     }
    
     button_one.addEventListener("click", img1)
     button_two.addEventListener("click", img2)
+
+    function report_fill(marker_id) {
+    var date = new Date();
+    formatted_date = date.toLocaleDateString('en-GB', {
+    year: 'numeric', month: '2-digit', day: '2-digit'})
+    formatted_time = date.toLocaleTimeString('en-GB', {
+    hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit'})
+    document.getElementById("rack_id_input").value=marker_id;
+    document.getElementById("date_input").value=formatted_date;
+    document.getElementById("time_input").value=formatted_time;
+    }
+    
+    if ('{{current_user.is_authenticated}}' == "True") {
+      report_fill(marker_id)
+    }
+
    });
     
     
     marker_new.addTo(all_markers);
     
-    
+  
     if (secured_marker == "True"){
       marker_new.addTo(markers_secured);
     }
@@ -335,31 +402,14 @@
       marker_new.addTo(markers_covered);
     }
     if (locker_marker == "True"){
-      marker_new.addTo(markers_locker);
+      marker_new.addTo(markers_lockers);
     }
+  }
+  for_each_borough()
 
-
-    function report_fill(title) {
-    var date = new Date();
-    formatted_date = date.toLocaleDateString('en-GB', {
-    year: 'numeric', month: '2-digit', day: '2-digit'})
-    formatted_time = date.toLocaleTimeString('en-GB', {
-    hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit'})
-    document.getElementById("rack_id_input").value=title;
-    document.getElementById("date_input").value=formatted_date;
-    document.getElementById("time_input").value=formatted_time;
-    }
 
     
-    function onMarkerClick(e) {
-    console.log(this.options)
-    var current_marker = e.target;
-    var title = current_marker.myJsonData.FEATURE_ID;
-    if ('{{current_user.is_authenticated}}' == "True") {
-      report_fill(title)
-      console.log("worked true")
-    }
-    
+   
       /*
     function onMarkerClick(e) {
     var marker = e.target;
@@ -389,17 +439,7 @@
     }
   }
   */
-    }
-  }
-  check_false_checked()
-  
-  
-    
-
-    
    
-
-    
   
   //}
 
