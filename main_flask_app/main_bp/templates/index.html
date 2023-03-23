@@ -35,8 +35,9 @@
   <!-- Insert HTML division tag to layout the map -->
   <div id="map"></div>
   <div id="map_side_options">
-  <h2>Filters:</h2>
+  <h2>Map Filters:</h2>
 
+  <p>Type of Bike Rack:</p>
   <div id="checking">
   <input type="checkbox" id="covered_box" name="covered">
   <label for="covered_box">Covered</label><br>
@@ -46,7 +47,7 @@
   <label for="covered_box">Locker</label><br>
 
   <br>
-
+  <p>Borough Selection:</p>
   <select name="borough_select" id="borough_select">
     {% for borough in boroughs %}
         <option value="{{borough}}">{{borough}}</option>"
@@ -58,52 +59,68 @@
 
   {% if current_user.is_authenticated %}
 
-  <h2>Report any thefts or issues below:</h2>
+  <div class='main_report'>
+    <br>
+    <h2>Report Form:</h2>
+    <p>(you can also click on the bike rack marker on 
+      the map to fill out the rack details)</p>
+  <form method="POST" action="/">
+    <label for="title">Rack ID:</label>
+    <br>
+    <input list="list_rack_id" 
+      id="rack_id_input" name="rack_id" 
+      placeholder="Rack ID"
+      required
+      maxlength="9"
+      minlength="9"
+      
+      />
 
-  <div class='message'>
-    <h3>{{ messages['title'] }}</h3>
-    <h3>{{ messages['date'] }}</h3>
-    <h3>{{ messages['time'] }}</h3>
-    <p>{{ messages['content'] }}</p>
+    <datalist id="list_rack_id">
+      {% for rack_id in rack_id_list%}
+      <option value="{{rack_id}}">{{rack_id}}</option>"
+    {% endfor %}
   
-    <h1>"Report Form"</h1>
-  <form method="post">
-    <label for="title">Rack ID</label>
-    <br>
-    <input type="text" name="title" id="rack_id_input"
-           placeholder="Rack ID"
-           value="{{ request.form['title'] }}"></input>
+  </datalist>
+
     <br>
 
-    <label for="title">Date</label>
+    <label for="title">Date:</label>
     <br>
-    <input type="text" name="date" id="date_input"
+    <input type="date" name="date" id="date_input"
            placeholder="Date"
-           value="{{ request.form['date'] }}"></input>
+           required
+           ></input>
     <br>
 
-    <label for="title">Time</label>
+    <label for="title">Time:</label>
     <br>
-    <input type="text" name="time" id="time_input"
+    <input type="time" name="time" id="time_input"
            placeholder="Time"
-           value="{{ request.form['time'] }}"></input>
+           step="60"
+           required
+           min="00-00"
+           ></input>
     <br>
 
-    <label for="content">Report Details</label>
+    <label for="content">Report Details:</label>
     <br>
-    <textarea name="content"
-              placeholder="Message content"
-              rows="15"
+    <textarea name="report_details"
+              placeholder="Report Details:"
+              required
+              rows="10"
               cols="60"
-              >{{ request.form['content'] }}</textarea>
+              style="height: 10vh; width: 35vw;"
+              ></textarea>
     <br>
-    <button type="submit">Submit</button>
+    <button class="button is-block is-info is-large is-fullwidth">Submit</button>
   </form>
 
   {% endif %}
 
   {% if not current_user.is_authenticated %}
-  <p>Login to submit theft reports</p>
+  <br>
+  <p>(Login to submit theft reports)</p>
   {% endif %}
 
   </div>
@@ -374,10 +391,12 @@ function all_ticked_false(){
 
     function report_fill(marker_id) {
     var date = new Date();
-    formatted_date = date.toLocaleDateString('en-GB', {
-    year: 'numeric', month: '2-digit', day: '2-digit'})
+    formatted_day = date.toLocaleDateString('en-GB', {day: '2-digit'})
+    formatted_month = date.toLocaleDateString('en-GB', {month: '2-digit'})
+    formatted_date = [date.getFullYear(), formatted_month, formatted_day].join('-')
+    console.log(formatted_date)
     formatted_time = date.toLocaleTimeString('en-GB', {
-    hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit'})
+    hour12: false, hour: '2-digit', minute: '2-digit'})
     document.getElementById("rack_id_input").value=marker_id;
     document.getElementById("date_input").value=formatted_date;
     document.getElementById("time_input").value=formatted_time;

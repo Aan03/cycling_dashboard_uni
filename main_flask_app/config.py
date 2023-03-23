@@ -3,7 +3,6 @@ from pathlib import Path
 import pathlib
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-print(basedir)
 basedir_pathlib = pathlib.Path(__file__).parent
 
 class Config(object):

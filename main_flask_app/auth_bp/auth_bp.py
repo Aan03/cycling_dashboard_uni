@@ -4,11 +4,8 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from main_flask_app.dash_app_cycling import *
 from main_flask_app import db
-from main_flask_app.models import user
-
+from main_flask_app.models import Users
 from passlib.hash import sha256_crypt
-
-
 
 auth_bp = Blueprint('auth_bp', __name__, template_folder = "templates")
 
@@ -20,7 +17,7 @@ class LoginForm(FlaskForm):
 @auth_bp.route('/profile', methods=['POST', 'GET'])
 @login_required
 def profile():
-    return render_template('profile.html')#name=current_user.name)
+    return render_template('profile.html')
 
 @auth_bp.route('/login', methods=['POST', 'GET'])
 def login():
@@ -29,17 +26,15 @@ def login():
         return render_template('login.html', form = form)
 
     elif request.method == "POST":
-        usernamee = request.form['username']
-        passwordd = request.form['password']
-        user_check = user.query.filter_by(username=usernamee).first()
-        #if not user_check or passwordd != user_check.password:
-        if not user_check or sha256_crypt.verify(passwordd, user_check.password) == False:
+        username_flask = request.form['username']
+        password_flask = request.form['password']
+        user_check = Users.query.filter_by(username=username_flask).first()
+        if not user_check or sha256_crypt.verify(password_flask, user_check.password) == False:
             flash('Please check your login details and try again.')
             return redirect(url_for('auth_bp.login')) 
 
         if user_check:
-            #if (passwordd == user_check.password):
-            if sha256_crypt.verify(passwordd, user_check.password):
+            if sha256_crypt.verify(password_flask, user_check.password):
                 login_user(user_check)
                 return redirect(url_for('auth_bp.profile'))
             else:
@@ -53,23 +48,20 @@ def logout():
 
 @auth_bp.route('/sign_up', methods=['POST', 'GET'])
 def sign_up():
-    # code to validate and add user to database goes here
     if request.method == "GET":
         return render_template('sign_up.html')
     elif request.method == "POST":
-        usernamee = request.form['username']
+        username_flask = request.form['username']
         
-        passwordd = request.form['password']
-        encrypted_password = sha256_crypt.encrypt(passwordd)
+        password_flask = request.form['password']
+        encrypted_password = sha256_crypt.encrypt(password_flask)
 
-        user_check = user.query.filter_by(username=usernamee).first()
+        user_check = Users.query.filter_by(username=username_flask).first()
         if user_check:
             flash("Username taken...")
             return redirect(url_for('auth_bp.sign_up'))
 
-#
-    # create a new user with the form data. Hash the password so the plaintext version isn't saved.
-        new_user = user(username=usernamee, password=encrypted_password)#generate_password_hash(password, method='sha256'))
+        new_user = Users(username=username_flask, password=encrypted_password)
 
     # add the new user to the database
         try:
