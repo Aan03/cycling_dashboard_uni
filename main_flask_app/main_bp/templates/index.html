@@ -34,10 +34,8 @@
 
   <!-- Insert HTML division tag to layout the map -->
   <div id="map"></div>
-  
-  
   <div id="map_side_options">
-  <p>filters and add reports?</p>
+  <h2>Filters:</h2>
 
   <div id="checking">
   <input type="checkbox" id="covered_box" name="covered">
@@ -54,13 +52,13 @@
         <option value="{{borough}}">{{borough}}</option>"
     {% endfor %}
   </select>
-
+  <br>
   </div>
   
 
   {% if current_user.is_authenticated %}
 
-  <h1>"Logged in"</h1>
+  <h2>Report any thefts or issues below:</h2>
 
   <div class='message'>
     <h3>{{ messages['title'] }}</h3>
@@ -105,7 +103,7 @@
   {% endif %}
 
   {% if not current_user.is_authenticated %}
-  <h1>"Not logged in"</h1>
+  <p>Login to submit theft reports</p>
   {% endif %}
 
   </div>

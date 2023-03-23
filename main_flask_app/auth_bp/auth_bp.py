@@ -6,6 +6,8 @@ from main_flask_app.dash_app_cycling import *
 from main_flask_app import db
 from main_flask_app.models import user
 
+from passlib.hash import sha256_crypt
+
 
 
 auth_bp = Blueprint('auth_bp', __name__, template_folder = "templates")
@@ -30,13 +32,15 @@ def login():
         usernamee = request.form['username']
         passwordd = request.form['password']
         user_check = user.query.filter_by(username=usernamee).first()
-        if not user_check or passwordd != user_check.password:
+        #if not user_check or passwordd != user_check.password:
+        if not user_check or sha256_crypt.verify(passwordd, user_check.password) == False:
             flash('Please check your login details and try again.')
             return redirect(url_for('auth_bp.login')) 
 
         if user_check:
-            if (passwordd == user_check.password):
-                login_user(user_check, remember="remember")
+            #if (passwordd == user_check.password):
+            if sha256_crypt.verify(passwordd, user_check.password):
+                login_user(user_check)
                 return redirect(url_for('auth_bp.profile'))
             else:
                 flash("Try password again")
@@ -54,7 +58,9 @@ def sign_up():
         return render_template('sign_up.html')
     elif request.method == "POST":
         usernamee = request.form['username']
+        
         passwordd = request.form['password']
+        encrypted_password = sha256_crypt.encrypt(passwordd)
 
         user_check = user.query.filter_by(username=usernamee).first()
         if user_check:
@@ -63,7 +69,7 @@ def sign_up():
 
 #
     # create a new user with the form data. Hash the password so the plaintext version isn't saved.
-        new_user = user(username=usernamee, password=passwordd)#generate_password_hash(password, method='sha256'))
+        new_user = user(username=usernamee, password=encrypted_password)#generate_password_hash(password, method='sha256'))
 
     # add the new user to the database
         try:
