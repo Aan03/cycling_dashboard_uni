@@ -1,18 +1,13 @@
 from flask import Flask
 from flask_marshmallow import Marshmallow
-
-from flask_login import LoginManager
 from flask import Blueprint, render_template, redirect, url_for, request, session, flash
 from flask_login import UserMixin, login_required, current_user, login_user, LoginManager, logout_user
-
 import secrets
 from flask_sqlalchemy import SQLAlchemy
 import os
 from main_flask_app.dash_app_cycling.stats import create_dash_app
 from main_flask_app.dash_app_cycling import *
 from main_flask_app.config import Config
-from sqlalchemy import create_engine, types
-
 from flask_marshmallow import Marshmallow
 
 #Global Flask-marshmallow object
@@ -25,6 +20,9 @@ db = SQLAlchemy()
 secret_key = secrets.token_urlsafe(16)
 print("\nSecret key for session:\n" + secret_key + "\n")
 
+def page_not_found(e):
+  return render_template('404.html'), 404
+
 def create_flask_app():
     app = Flask(__name__)
     app.config.from_object(Config)
@@ -35,7 +33,7 @@ def create_flask_app():
 
     db.init_app(app)
     
-    from main_flask_app.models import Users, Favourites, Reports
+    from main_flask_app.models import Users
     with app.app_context():
         db.create_all()
     from main_flask_app.main_bp.main_bp import main_bp
@@ -54,11 +52,16 @@ def create_flask_app():
     @login_manager.user_loader
     def load_user(user_id):
         return Users.query.get(int(user_id))
+    
+
+    app.register_error_handler(404, page_not_found)
 
     return app
 
 app = create_flask_app()
 from main_flask_app import models
+
+
 
 if __name__ == '__main__':
     app.run(debug=True, threaded=True)

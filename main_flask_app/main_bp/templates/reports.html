@@ -2,6 +2,35 @@
 {% set title = 'Cycling Map' %}
 {% block content %}
 
-<h1>Reports, add reports here</h1>
+<style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+</style>
+
+<h2>All User Theft Reports:</h2>
+<ul>
+  <li>View all theft reports made by all users here.</li>
+  <li>The table is sorted to show the latest reports at the top.</li>
+</ul>
+<table>
+<tr>
+<th>Bike Rack ID:</th>
+<th>Borough:</th>
+<th>Report Date:</th>
+<th>Report Time:</th>
+<th>Report Details:</th>
+</tr>
+{% for report in reports_table %}
+<tr>
+<td>{{report.rack_id}}</td>
+<td>{{report.report_borough}}</td>
+<td>{{report.report_date}}</td>
+<td>{{report.report_time}}</td>
+<td>{{report.report_details}}</td>
+</tr>
+{% endfor %}
+</table>
 
 {% endblock %}

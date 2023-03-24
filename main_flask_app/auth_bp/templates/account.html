@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+{% set title = 'Cycling Map' %}
+{% block content %}
+
+<h3 class="title">Manage Your Account:</h3>
+<h5>Change your current password:</h5>
+<div class="box">
+    <form method="POST" action="/account">
+        {{update_password_form.password_current.label}}
+        <br>
+        {{update_password_form.password_current()}}
+        <br>
+        {{update_password_form.password_new.label}}
+        <br>
+        {{update_password_form.password_new()}}
+        <br>
+        {{update_password_form.submit()}}
+    </form>
+</div>
+
+{% endblock %}

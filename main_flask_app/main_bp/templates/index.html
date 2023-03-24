@@ -16,10 +16,7 @@
   <!--https://handsondataviz.org/leaflet-maps-with-csv.html-->
 
   <!-- Position the map with Cascading Style Sheet (CSS) -->
-  <!--
-  #body { margin:"50%"; padding:0; }
-  
-    -->
+
   <style>
   #map {position: absolute; border: 2px solid #44532e;
         height: 90vh; width: 50vw;}  
@@ -31,12 +28,9 @@
   </style>
   
 </head>
-
-  <!-- Insert HTML division tag to layout the map -->
   <div id="map"></div>
   <div id="map_side_options">
   <h2>Map Filters:</h2>
-
   <p>Type of Bike Rack:</p>
   <div id="checking">
   <input type="checkbox" id="covered_box" name="covered">
@@ -45,82 +39,52 @@
   <label for="covered_box">Secured</label><br>
   <input type="checkbox" id="locker_box" name="locker">
   <label for="covered_box">Locker</label><br>
-
   <br>
   <p>Borough Selection:</p>
   <select name="borough_select" id="borough_select">
     {% for borough in boroughs %}
-        <option value="{{borough}}">{{borough}}</option>"
+        <option value="{{borough}}">{{borough}}</option>
     {% endfor %}
   </select>
   <br>
   </div>
   
-
   {% if current_user.is_authenticated %}
-
   <div class='main_report'>
     <br>
     <h2>Report Form:</h2>
-    <p>(you can also click on the bike rack marker on 
-      the map to fill out the rack details)</p>
+    <p>It's easier to click on the bike rack marker on 
+      the map to fill out the rack details. You can also 
+      manage your reports on the "My Reports" page.</p>
   <form method="POST" action="/">
-    <label for="title">Rack ID:</label>
+    {{report_form.report_rack_id.label}}
     <br>
-    <input list="list_rack_id" 
-      id="rack_id_input" name="rack_id" 
-      placeholder="Rack ID"
-      required
-      maxlength="9"
-      minlength="9"
-      
-      />
-
-    <datalist id="list_rack_id">
-      {% for rack_id in rack_id_list%}
-      <option value="{{rack_id}}">{{rack_id}}</option>"
-    {% endfor %}
-  
-  </datalist>
-
+    {{report_form.report_rack_id()}}
     <br>
-
-    <label for="title">Date:</label>
+    {{report_form.report_borough.label}}
     <br>
-    <input type="date" name="date" id="date_input"
-           placeholder="Date"
-           required
-           ></input>
+    {{report_form.report_borough()}}
     <br>
-
-    <label for="title">Time:</label>
+    {{report_form.report_date.label}}
     <br>
-    <input type="time" name="time" id="time_input"
-           placeholder="Time"
-           step="60"
-           required
-           min="00-00"
-           ></input>
+    {{report_form.report_date()}}
     <br>
-
-    <label for="content">Report Details:</label>
+    {{report_form.report_time.label}}
     <br>
-    <textarea name="report_details"
-              placeholder="Report Details:"
-              required
-              rows="10"
-              cols="60"
-              style="height: 10vh; width: 35vw;"
-              ></textarea>
+    {{report_form.report_time()}}
     <br>
-    <button class="button is-block is-info is-large is-fullwidth">Submit</button>
+    {{report_form.report_details.label}}
+    <br>
+    {{report_form.report_details()}}
+    <br>
+    <br>
+    {{report_form.report_submit}}
   </form>
-
   {% endif %}
 
   {% if not current_user.is_authenticated %}
   <br>
-  <p>(Login to submit theft reports)</p>
+  <p>Sign up or login to submit and manage theft reports.</p>
   {% endif %}
 
   </div>
@@ -130,38 +94,24 @@
 
   // Set up initial map center and zoom level
   var map = L.map('map', {
-    preferCanvas: true, //added to decrease speed
-    center: [51.51, -0.1], // EDIT latitude, longitude to re-center map
-    zoom: 10,  // EDIT from 1 to 18 -- decrease to zoom out, increase to zoom in
+    preferCanvas: true,
+    center: [51.51, -0.1],
+    zoom: 10,
+    minZoom:10,
     scrollWheelZoom: true,
-    tap: false
+    tap: true
   });
-
-  /* Control panel to display map layers 
-  var controlLayers = L.control.layers( null, null, {
-    position: "topright",
-    collapsed: false
-  }).addTo(map);
-  */
-
-  // display Carto basemap tiles with light features and labels
+  
   var light = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>'
-  }).addTo(map); // EDIT - insert or remove ".addTo(map)" before last semicolon to display by default
-  //controlLayers.addBaseLayer(light, 'Carto Light basemap');
-
-  // see more basemap options at https://leaflet-extras.github.io/leaflet-providers/preview/
+  }).addTo(map);
 
   const markers = JSON.parse('{{ markers | safe }}');
   const markers_info = JSON.parse('{{ markers_info | safe }}');
-  
-
   var borough_dd = document.getElementById("borough_select");
   var borough_dd_val = borough_dd.value;
   borough_dd.addEventListener("change", for_each_borough)
 
-
-  
 function for_each_borough(){
   var covered_cbox = document.getElementById('covered_box');
   var secured_cbox = document.getElementById('secured_box');
@@ -176,7 +126,6 @@ function for_each_borough(){
   locker_cbox.addEventListener('change', boxes_check);
   all_ticked_false()
   
-
 function all_ticked_false(){
   var borough_dd = document.getElementById("borough_select");
   var borough_dd_val = borough_dd.value;
@@ -285,7 +234,6 @@ function all_ticked_false(){
 
 }
 
-
   var all_markers = L.featureGroup();
   var markers_covered = L.featureGroup();
   var markers_secured = L.featureGroup();
@@ -293,15 +241,14 @@ function all_ticked_false(){
   for(var i in markers){
     var marker_lat = markers[i].Latitude;
     var marker_long = markers[i].Longitude;
-    var radius = 4; // set the radius of the marker to 1 pixel
+    var radius = 4;
     var marker_new = L.circleMarker([marker_lat, marker_long], {
       radius: radius,
-      stroke: true, // show the outline of the marker
-      weight: 1, // set the thickness of the outline
-      color: 'green', // set the color of the outline
-      fill: false, // do not fill the marker
-      fillOpacity: 0, // set the opacity of the fill to 0
-     // bubblingMouseEvents: false
+      stroke: true,
+      weight: 1,
+      color: 'green',
+      fill: false,
+      fillOpacity: 0,
     })
 
     marker_new.myJsonData = markers_info[i]
@@ -314,7 +261,6 @@ function all_ticked_false(){
     var locker_marker = marker_new.myJsonData.PRK_LOCKER
     var covered_marker = marker_new.myJsonData.PRK_COVER
 
-    
     marker_new.bindPopup();
 
     marker_new.on('popupopen', function(e) {
@@ -328,7 +274,6 @@ function all_ticked_false(){
     var secured_marker = marker_new.myJsonData.PRK_SECURE
     var locker_marker = marker_new.myJsonData.PRK_LOCKER
     var covered_marker = marker_new.myJsonData.PRK_COVER
-
 
     var main_div = document.createElement("div")
     var main_div_img = document.createElement("div");
@@ -368,7 +313,6 @@ function all_ticked_false(){
     locker_p = document.createElement("p")
     locker_p.innerHTML = "Locker: " + locker_marker
     info_div.appendChild(locker_p)
-
     main_div.appendChild(info_div)
 
    marker_popup = e.popup; 
@@ -397,9 +341,10 @@ function all_ticked_false(){
     console.log(formatted_date)
     formatted_time = date.toLocaleTimeString('en-GB', {
     hour12: false, hour: '2-digit', minute: '2-digit'})
-    document.getElementById("rack_id_input").value=marker_id;
-    document.getElementById("date_input").value=formatted_date;
-    document.getElementById("time_input").value=formatted_time;
+    document.getElementById("report_rack_id").value=marker_id;
+    document.getElementById("report_borough").value=borough_marker;
+    document.getElementById("report_date").value=formatted_date;
+    document.getElementById("report_time").value=formatted_time;
     }
     
     if ('{{current_user.is_authenticated}}' == "True") {
@@ -408,10 +353,8 @@ function all_ticked_false(){
 
    });
     
-    
     marker_new.addTo(all_markers);
     
-  
     if (secured_marker == "True"){
       marker_new.addTo(markers_secured);
     }
@@ -425,8 +368,6 @@ function all_ticked_false(){
   for_each_borough()
 
 
-    
-   
       /*
     function onMarkerClick(e) {
     var marker = e.target;
@@ -456,10 +397,6 @@ function all_ticked_false(){
     }
   }
   */
-   
-  
-  //}
 
-//}
-  </script>
+</script>
 {% endblock %}

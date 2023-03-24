@@ -1,0 +1,65 @@
+{% extends 'layout.html' %}
+{% set title = 'Cycling Map' %}
+{% block content %}
+
+<style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+</style>
+
+<h2>Welcome {{current_user.username}}.</h2>
+
+<h5>Manage/View Your Submitted Theft Reports:</h5>
+<ul>
+  <li>Edit the report details section for each of your reports.
+    <ul><li>Edit the original text in the "Report Details" section then submit your changes by clicking the "Confirm Edits" button.</li></ul>
+  </li>
+  <li>Delete reports.
+    <ul><li>Click the "Delete Report" button for the report you want to delete.</li></ul>
+  </li>
+  <li>The table is sorted to show the latest reports at the top.</li>
+</ul>
+
+{% if user_reports_count == 1 %}
+<h5>You have {{user_reports_count}} active report.</h5>
+{% else %}
+<h5>You have {{user_reports_count}} active reports.</h5>
+{% endif %}
+
+<br>
+<table>
+<tr>
+<th>Bike Rack ID:</th>
+<th>Borough:</th>
+<th>Report Date:</th>
+<th>Report Time:</th>
+<th>Report Details:</th>
+<th>Edit Details Details:</th>
+<th>Delete Report:</th>
+</tr>
+
+{% for report in reports_table %}
+{% if report.reporter_id == current_user.id %}
+
+<tr>
+<td>{{report.rack_id}}</td>
+<td>{{report.report_borough}}</td>
+<td>{{report.report_date}}</td>
+<td>{{report.report_time}}</td>
+<form method="POST" action="{{ url_for('main_bp.edit_report_details', report_id=report.id) }}">
+<td><input type="text" id="editable_details{{report.id}}" 
+  name="editable_details{{report.id}}" value="{{report.report_details}}"></td>
+<td><input type="submit" value="Confirm Edits"></td>
+</form>
+<form method="POST" action="{{ url_for('main_bp.delete_report', report_id=report.id) }}">
+<td><input type="submit" value="Delete Report"></td>
+</form>
+</tr>
+{% endif %}
+{% endfor %}
+</table>
+
+
+{% endblock %}

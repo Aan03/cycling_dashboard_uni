@@ -2,25 +2,19 @@
 {% set title = 'Cycling Map' %}
 {% block content %}
 <div class="column is-4 is-offset-4">
-    <h3 class="title">Sign Up</h3>
+    <h3 class="title">Sign Up:</h3>
     <div class="box">
         <form method="POST" action="/sign_up">
-
-            <div class="field">
-                <div class="control">
-                    <input class="input is-large" type="text" name="username" placeholder="Username" autofocus="">
-                </div>
-            </div>
-
-            <div class="field">
-                <div class="control">
-                    <input class="input is-large" type="password" name="password" placeholder="Password">
-                </div>
-            </div>
-
-            <button class="button is-block is-info is-large is-fullwidth">Sign Up</button>
+            {{sign_up_form.username.label}}
+            <br>
+            {{sign_up_form.username()}}
+            <br>
+            {{sign_up_form.password.label}}
+            <br>
+            {{sign_up_form.password()}}
+            <br>
+            {{sign_up_form.submit()}}
         </form>
     </div>
 </div>
-
 {% endblock %}

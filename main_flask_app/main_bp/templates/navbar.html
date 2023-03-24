@@ -14,17 +14,21 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="{{ url_for('main_bp.dash')}}" 
-                        id="nav-dashboard">Statistics Dashboard</a>
+                        id="nav-dashboard">Dash Statistics</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="{{ url_for('main_bp.reports_page')}}" 
-                        id="nav-reports">Reports</a>
+                        id="nav-reports">All Reports</a>
                 </li>
 
                 {% if current_user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{{ url_for('auth_bp.profile') }}" 
-                        id="nav-profile">Profile</a>
+                    <a class="nav-link active" aria-current="page" href="{{ url_for('main_bp.my_reports') }}" 
+                        id="nav-my_reports">My Reports</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{{ url_for('auth_bp.user_account') }}" 
+                        id="nav-my_reports">Manage Account</a>
                 </li>
                 {% endif %}
                 {% if not current_user.is_authenticated %}
