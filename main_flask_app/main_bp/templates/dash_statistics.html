@@ -1,5 +1,5 @@
 {% extends 'layout.html' %}
-{% set title = 'Dashboard iframe test...' %}
+{% set title = 'Dash Statistics' %}
 {% block content %}
 <style>
 iframe{      
@@ -15,7 +15,9 @@ body {
 }
 </style>
 
+<div id = "dash_div">
 <iframe src="http://localhost:5000/dash_app/"></iframe>
+</div>
 
 
 {% endblock %}
