@@ -1,7 +1,7 @@
 <!-- from https://getbootstrap.com/docs/5.2/components/navbar/ -->
 <nav class="navbar navbar-expand-lg bg-success">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{{ url_for('main_bp.index')}}">Cycling Map</a>
+        <a class="navbar-brand" href="{{ url_for('main_bp.index')}}">Cycle Parking Map</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -19,6 +19,10 @@
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="{{ url_for('main_bp.reports_page')}}" 
                         id="nav-reports">All Reports</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{{ url_for('main_bp.download_data') }}" 
+                        id="nav-my_reports">Download Data</a>
                 </li>
 
                 {% if current_user.is_authenticated %}
