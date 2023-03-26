@@ -10,6 +10,13 @@ import pandas as pd
 from main_flask_app import db, db_session
 from main_flask_app.models import Users, Reports, cycle_parking_data, boroughs_list
 
+from flask import make_response
+from io import StringIO
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_file
+from flask_wtf import FlaskForm
+from wtforms import StringField, validators
+import itertools
+
 main_bp = Blueprint('main_bp', __name__, template_folder = "templates", static_folder="static")
 basedir = os.path.abspath(os.path.dirname(__file__))
 maindir = os.path.abspath(os.path.join(basedir, os.pardir))
@@ -159,3 +166,53 @@ def specific_reports(specific_rack_id):
         else:
             flash("A bike rack with that ID does not exist. You have been returned to the reports page.")
             return redirect(url_for("main_bp.reports_page"))
+
+class BoroughForm(FlaskForm):
+    report_borough = StringField("Borough", validators=[validators.DataRequired()])
+
+@main_bp.route("/download_data", methods=['POST', 'GET'])
+def download_data():
+    print("download_data function called")
+    # Open the CSV file and read the boroughs
+    with open(maindir + "/data/boroughs_list.csv", "r") as file:
+        reader = csv.reader(file)
+        print(file)
+        boroughs = list(itertools.chain.from_iterable(reader))
+        print(boroughs)
+
+    # Create the borough selection form
+    form = BoroughForm()
+    print("before form.validate_on_submit function called")    
+    if form.validate_on_submit():
+        print("after form.validate_on_submit function called")
+        # Get the selected borough from the form data
+        selected_borough = form.report_borough.data
+        print(f"Selected borough: {selected_borough}")
+
+        # Query the database for reports in the selected borough
+        reports_filtered = Reports.query.filter_by(report_borough=selected_borough).all()
+        print(f"Reports: {reports_filtered}")
+
+        # If no reports are found, flash a message and redirect back to the reports page
+        if not reports_filtered:
+            flash("No reports found for selected borough.")
+            return redirect(url_for("main_bp.download_data"))
+
+        # Convert the reports data to a CSV string
+        csv_data = StringIO()
+        writer = csv.writer(csv_data)
+        writer.writerow(['id', 'reporter_id', 'borough', 'date', 'time', 'details'])
+        for report in reports_filtered:
+            writer.writerow([report.id, report.reporter_id, report.report_borough, report.report_date, report.report_time, report.report_details])
+
+        # Create a response with the CSV data and appropriate headers
+        response = make_response(csv_data.getvalue())
+        response.headers["Content-Type"] = "text/csv"
+        response.headers["Content-Disposition"] = f"attachment; filename={selected_borough}_reports.csv"
+
+        # Return the response for downloading the CSV file
+        return response
+
+    # Render the download_reports template with the borough selection form
+    print("download_data function called")
+    return render_template('download_data.html', form=form, boroughs=boroughs)

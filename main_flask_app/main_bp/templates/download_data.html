@@ -1,0 +1,28 @@
+{% extends 'layout.html' %}
+{% set title = 'Cycling Map' %}
+
+{% block content %}
+
+<h1>Download Reports</h1>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class="flashes">
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+<form method="POST" action="{{ url_for('main_bp.download_data') }}">
+  {{ form.csrf_token }}
+  <div class="form-group">
+    <label for="report_borough">Borough</label>
+    <select class="form-control" id="report_borough" name="report_borough">
+      {% for borough in boroughs %}
+        <option>{{ borough }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <button type="submit" class="btn btn-primary">Download Reports</button>
+</form>
+{% endblock %}

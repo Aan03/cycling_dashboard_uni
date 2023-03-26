@@ -1,8 +1,9 @@
 # COMP0034 Coursework 2
 
-1. Run the flask app from the \comp0034-cw2-g-team11 directory and use the following command:
+1. Run the flask app from the \comp0034-cw2-g-team11 directory and use the following commands:
 
-flask --app main_flask_app --debug runs
+pip install -r requirements.txt 
+flask --app main_flask_app --debug run
 
 2. There are two blueprints being used, auth_bp and main_bp. Auth_bp manages the account creation and management of users, while main_bp handles everything else.
 
