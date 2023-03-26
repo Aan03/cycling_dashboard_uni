@@ -1,6 +1,6 @@
 from main_flask_app import db, ma
 from main_flask_app.models import Users, Reports
-
+from marshmallow import post_load
 
 class ReportsSchema(ma.SQLAlchemySchema):
     """Marshmallow schema defining the attributes for creating a report."""
@@ -16,3 +16,7 @@ class ReportsSchema(ma.SQLAlchemySchema):
     report_date = ma.auto_field()
     report_time = ma.auto_field()
     report_details = ma.auto_field()
+
+    @post_load
+    def make_report(self, data, **kwargs):
+        return Reports(**data)
