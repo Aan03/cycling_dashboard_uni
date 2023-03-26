@@ -139,15 +139,22 @@ def index():
 def specific_reports(specific_rack_id):
     if request.method == "GET":
         if specific_rack_id in feature_id_list:
-            specific_reports_to_view = Reports.query.filter_by(rack_id = specific_rack_id).order_by(Reports.report_date.desc(), Reports.report_time.desc())
-            specific_report_count = specific_reports_to_view.count()
             try:
-                flash("You are now viewing reports specifically for bike rack " + str(specific_rack_id) + ".")
-                return render_template("specific_reports.html", specific_reports_to_view=specific_reports_to_view,
-                                    specific_report_count=specific_report_count, 
-                                    specific_rack_id=specific_rack_id)
+                specific_reports_to_view = Reports.query.filter_by(rack_id = specific_rack_id).order_by(Reports.report_date.desc(), 
+                                                                                                        Reports.report_time.desc())
+                specific_report_count = specific_reports_to_view.count()
+                specific_borough = specific_reports_to_view.first().report_borough
+                try:
+                    flash("You are now viewing reports specifically for bike rack " + str(specific_rack_id) + " (" + str(specific_borough) + ").")
+                    return render_template("specific_reports.html", specific_reports_to_view=specific_reports_to_view,
+                                        specific_report_count=specific_report_count, 
+                                        specific_rack_id=specific_rack_id,
+                                        specific_borough=specific_borough)
+                except:
+                    flash("There was an error getting the reports. Please try again later.")
+                    return redirect(url_for("main_bp.reports_page"))
             except:
-                flash("There was an error getting the reports. Please try again later.")
+                flash("That bike rack has no theft reports. You have been returned to the reports page.")
                 return redirect(url_for("main_bp.reports_page"))
         else:
             flash("A bike rack with that ID does not exist. You have been returned to the reports page.")

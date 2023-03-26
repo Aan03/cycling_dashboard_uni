@@ -26,7 +26,7 @@
 <th>Report Date:</th>
 <th>Report Time:</th>
 <th>Report Details:</th>
-<th>All Reports For Bike Rack:</th>
+<th>All Reports For Rack:</th>
 </tr>
 {% for report in reports_table %}
 <tr>
@@ -35,7 +35,8 @@
 <td>{{report.report_date}}</td>
 <td>{{report.report_time}}</td>
 <td>{{report.report_details}}</td>
-<td><a href="{{ url_for('main_bp.specific_reports', specific_rack_id=report.rack_id) }}"">View all reports for {{report.rack_id}}</a></td>
+<td><a href="{{ url_for('main_bp.specific_reports', 
+  specific_rack_id=report.rack_id)}}">View all reports for {{report.rack_id}}</a></td>
 </tr>
 {% endfor %}
 </table>
