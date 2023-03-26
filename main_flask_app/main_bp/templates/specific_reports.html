@@ -1,0 +1,39 @@
+{% extends 'layout.html' %}
+{% set title = 'Specific Theft Reports' %}
+{% block content %}
+
+<style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+</style>
+
+<h2>All Theft Reports for Bike Rack {{ specific_rack_id }}:</h2>
+<ul>
+  <li>View all theft reports made by all users here for bike rack {{ specific_rack_id }}.</li>
+  <li>The table is sorted to show the latest reports at the top.</li>
+</ul>
+{% if specific_report_count == 1 %}
+<h5>There is currently {{specific_report_count}} active theft report for {{ specific_rack_id }}.</h5>
+{% else %}
+<h5>There are currently {{specific_report_count}} active theft reports for {{ specific_rack_id }}.</h5>
+{% endif %}
+<table>
+<tr>
+<th>Borough:</th>
+<th>Report Date:</th>
+<th>Report Time:</th>
+<th>Report Details:</th>
+</tr>
+{% for report in specific_reports_to_view %}
+<tr>
+<td>{{report.report_borough}}</td>
+<td>{{report.report_date}}</td>
+<td>{{report.report_time}}</td>
+<td>{{report.report_details}}</td>
+</tr>
+{% endfor %}
+</table>
+
+{% endblock %}

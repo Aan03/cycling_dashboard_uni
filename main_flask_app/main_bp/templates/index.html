@@ -1,5 +1,5 @@
 {% extends 'layout.html' %}
-{% set title = 'Cycling Map' %}
+{% set title = 'Cycle Parking Map' %}
 {% block content %}
 <head>
   <title>leaflet-map-csv</title>
@@ -106,7 +106,6 @@
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>'
   }).addTo(map);
 
-  const markers = JSON.parse('{{ markers | safe }}');
   const markers_info = JSON.parse('{{ markers_info | safe }}');
   var borough_dd = document.getElementById("borough_select");
   var borough_dd_val = borough_dd.value;
@@ -135,12 +134,12 @@ function all_ticked_false(){
       }
       else if (borough_dd_val !== "All Boroughs") {
         all_markers.eachLayer(function(layer) {
-        if (layer.myJsonData.BOROUGH !== borough_dd_val){
+        if (layer.myJsonData.borough !== borough_dd_val){
           map.removeLayer(layer)
 
         }})
         all_markers.eachLayer(function(layer) {
-        if (layer.myJsonData.BOROUGH == borough_dd_val){
+        if (layer.myJsonData.borough == borough_dd_val){
           layer.addTo(only_borough_layer)
         }})
         only_borough_layer.addTo(map)
@@ -155,19 +154,19 @@ function all_ticked_false(){
 
       borough_covered = L.featureGroup()
       markers_covered.eachLayer(function(layer) {
-        if (layer.myJsonData.BOROUGH == borough_dd_val){
+        if (layer.myJsonData.borough == borough_dd_val){
           layer.addTo(borough_covered)
         }})
       
       borough_secured = L.featureGroup()
       markers_secured.eachLayer(function(layer) {
-        if (layer.myJsonData.BOROUGH == borough_dd_val){
+        if (layer.myJsonData.borough == borough_dd_val){
           layer.addTo(borough_secured)
         }})
 
       borough_lockers = L.featureGroup()
       markers_lockers.eachLayer(function(layer) {
-        if (layer.myJsonData.BOROUGH == borough_dd_val){
+        if (layer.myJsonData.borough == borough_dd_val){
           layer.addTo(borough_lockers)
         }})
 
@@ -177,7 +176,7 @@ function all_ticked_false(){
     }
     if (covered_cbox.checked == false) {
       markers_covered.eachLayer(function(layer) {
-        if (layer.myJsonData.BOROUGH == borough_dd_val){
+        if (layer.myJsonData.borough == borough_dd_val){
           map.removeLayer(layer)
         }})
       all_ticked_false()
@@ -188,7 +187,7 @@ function all_ticked_false(){
     }
     if (secured_cbox.checked == false) {
       markers_secured.eachLayer(function(layer) {
-        if (layer.myJsonData.BOROUGH == borough_dd_val){
+        if (layer.myJsonData.borough == borough_dd_val){
           map.removeLayer(layer)
         }})
       all_ticked_false()
@@ -199,7 +198,7 @@ function all_ticked_false(){
     }
     if (locker_cbox.checked == false) {
       markers_lockers.eachLayer(function(layer) {
-        if (layer.myJsonData.BOROUGH == borough_dd_val){
+        if (layer.myJsonData.borough == borough_dd_val){
           map.removeLayer(layer)
         }})
       all_ticked_false()
@@ -238,9 +237,10 @@ function all_ticked_false(){
   var markers_covered = L.featureGroup();
   var markers_secured = L.featureGroup();
   var markers_lockers = L.featureGroup();
-  for(var i in markers){
-    var marker_lat = markers[i].Latitude;
-    var marker_long = markers[i].Longitude;
+  for(var i in markers_info){
+    console.log(i)
+    var marker_lat = markers_info[i].latitude;
+    var marker_long = markers_info[i].longitude;
     var radius = 4;
     var marker_new = L.circleMarker([marker_lat, marker_long], {
       radius: radius,
@@ -252,28 +252,28 @@ function all_ticked_false(){
     })
 
     marker_new.myJsonData = markers_info[i]
-    var marker_id = marker_new.myJsonData.FEATURE_ID;
-    var marker_photo1 = marker_new.myJsonData.PHOTO1_URL;
-    var marker_photo2 = marker_new.myJsonData.PHOTO2_URL;
-    var borough_marker = marker_new.myJsonData.BOROUGH
-    var capacity_marker = marker_new.myJsonData.PRK_CPT
-    var secured_marker = marker_new.myJsonData.PRK_SECURE
-    var locker_marker = marker_new.myJsonData.PRK_LOCKER
-    var covered_marker = marker_new.myJsonData.PRK_COVER
+    var marker_id = marker_new.myJsonData.feature_id;
+    var marker_photo1 = marker_new.myJsonData.photo1_url;
+    var marker_photo2 = marker_new.myJsonData.photo2_url;
+    var borough_marker = marker_new.myJsonData.borough;
+    var capacity_marker = marker_new.myJsonData.prk_cpt;
+    var secured_marker = marker_new.myJsonData.prk_secure;
+    var locker_marker = marker_new.myJsonData.prk_locker;
+    var covered_marker = marker_new.myJsonData.prk_cover;
 
     marker_new.bindPopup();
 
     marker_new.on('popupopen', function(e) {
       
     var marker_new = e.target
-    var marker_id = marker_new.myJsonData.FEATURE_ID;
-    var marker_photo1 = marker_new.myJsonData.PHOTO1_URL;
-    var marker_photo2 = marker_new.myJsonData.PHOTO2_URL;
-    var borough_marker = marker_new.myJsonData.BOROUGH
-    var capacity_marker = marker_new.myJsonData.PRK_CPT
-    var secured_marker = marker_new.myJsonData.PRK_SECURE
-    var locker_marker = marker_new.myJsonData.PRK_LOCKER
-    var covered_marker = marker_new.myJsonData.PRK_COVER
+    var marker_id = marker_new.myJsonData.feature_id;
+    var marker_photo1 = marker_new.myJsonData.photo1_url;
+    var marker_photo2 = marker_new.myJsonData.photo2_url;
+    var borough_marker = marker_new.myJsonData.borough;
+    var capacity_marker = marker_new.myJsonData.prk_cpt;
+    var secured_marker = marker_new.myJsonData.prk_secure;
+    var locker_marker = marker_new.myJsonData.prk_locker;
+    var covered_marker = marker_new.myJsonData.prk_cover;
 
     var main_div = document.createElement("div")
     var main_div_img = document.createElement("div");

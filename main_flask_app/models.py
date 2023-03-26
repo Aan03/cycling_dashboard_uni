@@ -1,5 +1,11 @@
 from flask_login import UserMixin
-from main_flask_app import db
+from main_flask_app import db, Base
+
+class cycle_parking_data(Base):
+    __table__ = Base.metadata.tables['cycle_parking_data']
+
+class boroughs_list(Base):
+    __table__ = Base.metadata.tables['boroughs_list']
 
 class Users(db.Model, UserMixin):
     __tablename__ = 'users'
