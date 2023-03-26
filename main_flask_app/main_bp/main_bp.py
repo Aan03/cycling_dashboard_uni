@@ -1,6 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for, request, session, flash, jsonify
 from flask_login import UserMixin, login_required, current_user
-#from sqlalchemy import desc
 from main_flask_app.dash_app_cycling import *
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, DateField, TimeField, validators
@@ -19,8 +18,8 @@ new_boroughs = []
 for x in db_session.query(boroughs_list.borough):
     new_boroughs.append(list(x))
 new_boroughs = [element for nestedlist in new_boroughs for element in nestedlist]
-print(new_boroughs)
 
+feature_id_list = []
 marker_data = []
 for x in db_session.query(cycle_parking_data.feature_id, cycle_parking_data.prk_cover,
                           cycle_parking_data.prk_secure, cycle_parking_data.prk_locker,
@@ -33,8 +32,6 @@ for x in db_session.query(cycle_parking_data.feature_id, cycle_parking_data.prk_
             rack_type_converted.append("True")
         if x[i] == "0":
             rack_type_converted.append("False")
-
-        
     each_row = {"feature_id":x[0],
                 "prk_cover":rack_type_converted[0],
                 "prk_secure":rack_type_converted[1],
@@ -47,8 +44,16 @@ for x in db_session.query(cycle_parking_data.feature_id, cycle_parking_data.prk_
                 "longitude":x[9]
                 }
     marker_data.append(each_row)
+    feature_id_list.append(x[0])
 
-print(marker_data[1])
+class ReportForm(FlaskForm):
+    report_rack_id = StringField("Rack ID", validators = [validators.Length(min=9, max=9), validators.DataRequired()])
+    report_borough = StringField("Borough", validators = [validators.DataRequired()])
+    report_date = DateField("Date", validators = [validators.DataRequired()])
+    report_time = TimeField("Time", validators = [validators.DataRequired()])
+    report_details = StringField("Report Details", validators = [validators.DataRequired(), validators.Regexp(r'^[\w.@+-]+$')])
+    report_submit = SubmitField("Submit")
+
 @main_bp.route('/my_reports', methods=['POST', 'GET'])
 @login_required
 def my_reports():
@@ -102,22 +107,6 @@ def reports_page():
     return render_template("reports.html", reports_table=reports_table, 
                            user_reports_count = user_reports_count)
 
-myFile = open(maindir + "/data/cycle_parking_data.csv", "r")
-
-reader = csv.DictReader(myFile)
-myList = list()
-for dictionary in reader:
-    myList.append(dictionary)
-markers_info = (myList)
-
-class ReportForm(FlaskForm):
-    report_rack_id = StringField("Rack ID", validators = [validators.Length(min=9, max=9), validators.DataRequired()])
-    report_borough = StringField("Borough", validators = [validators.DataRequired()])
-    report_date = DateField("Date", validators = [validators.DataRequired()])
-    report_time = TimeField("Time", validators = [validators.DataRequired()])
-    report_details = StringField("Report Details", validators = [validators.DataRequired(), validators.Regexp(r'^[\w.@+-]+$')])
-    report_submit = SubmitField("Submit")
-
 @main_bp.route("/", methods=['POST', 'GET'])
 def index():
     report_form = ReportForm()
@@ -125,7 +114,6 @@ def index():
         return render_template('index.html', 
                            markers_info=json.dumps(marker_data), boroughs = new_boroughs,
                            report_form = report_form)
-    
     elif request.method == "POST":
         reporter_id = current_user.id
         rack_id_flask = request.form['report_rack_id']
@@ -133,20 +121,34 @@ def index():
         date_flask = request.form['report_date']
         time_flask = request.form['report_time']
         report_details_flask = request.form['report_details']
-
-    
         new_report = Reports(reporter_id=reporter_id,
                              report_borough=borough_flask,
                              rack_id=rack_id_flask, 
                              report_date=date_flask, 
                              report_time=time_flask, 
                              report_details=report_details_flask)
-        
         try:
             db.session.add(new_report)
             db.session.commit()
             return redirect(url_for('main_bp.index'))
-
         except:
             flash("There was an error submitting the report. Please try again later.")
             return redirect(url_for('main_bp.index'))
+        
+@main_bp.route("/specific_reports/<string:specific_rack_id>", methods=['GET'])
+def specific_reports(specific_rack_id):
+    if request.method == "GET":
+        if specific_rack_id in feature_id_list:
+            specific_reports_to_view = Reports.query.filter_by(rack_id = specific_rack_id).order_by(Reports.report_date.desc(), Reports.report_time.desc())
+            specific_report_count = specific_reports_to_view.count()
+            try:
+                flash("You are now viewing reports specifically for bike rack " + str(specific_rack_id) + ".")
+                return render_template("specific_reports.html", specific_reports_to_view=specific_reports_to_view,
+                                    specific_report_count=specific_report_count, 
+                                    specific_rack_id=specific_rack_id)
+            except:
+                flash("There was an error getting the reports. Please try again later.")
+                return redirect(url_for("main_bp.reports_page"))
+        else:
+            flash("A bike rack with that ID does not exist. You have been returned to the reports page.")
+            return redirect(url_for("main_bp.reports_page"))
