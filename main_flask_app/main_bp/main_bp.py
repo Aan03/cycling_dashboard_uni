@@ -3,13 +3,13 @@ from flask_login import UserMixin, login_required, current_user
 from main_flask_app.dash_app_cycling import *
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, DateField, TimeField, validators
-import csv
+import requests
 import os
+import csv
 import json
 import pandas as pd
 from main_flask_app import db, db_session
 from main_flask_app.models import Users, Reports, cycle_parking_data, boroughs_list
-
 from flask import make_response
 from io import StringIO
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_file
@@ -21,10 +21,10 @@ main_bp = Blueprint('main_bp', __name__, template_folder = "templates", static_f
 basedir = os.path.abspath(os.path.dirname(__file__))
 maindir = os.path.abspath(os.path.join(basedir, os.pardir))
 
-new_boroughs = []
+all_boroughs_list = []
 for x in db_session.query(boroughs_list.borough):
-    new_boroughs.append(list(x))
-new_boroughs = [element for nestedlist in new_boroughs for element in nestedlist]
+    all_boroughs_list.append(list(x))
+all_boroughs_list = [element for nestedlist in all_boroughs_list for element in nestedlist]
 
 feature_id_list = []
 marker_data = []
@@ -107,6 +107,10 @@ def delete_report(report_id):
 def dash():
     return render_template("dash_statistics.html")
 
+@main_bp.route("/api_instructions")
+def api_instructions():
+    return render_template("api_instructions.html")
+
 @main_bp.route("/reports")
 def reports_page():
     reports_table = Reports.query.order_by(Reports.report_date.desc(), Reports.report_time.desc())
@@ -119,7 +123,7 @@ def index():
     report_form = ReportForm()
     if request.method == "GET":
         return render_template('index.html', 
-                           markers_info=json.dumps(marker_data), boroughs = new_boroughs,
+                           markers_info=json.dumps(marker_data), boroughs = all_boroughs_list,
                            report_form = report_form)
     elif request.method == "POST":
         reporter_id = current_user.id
@@ -170,49 +174,48 @@ def specific_reports(specific_rack_id):
 class BoroughForm(FlaskForm):
     report_borough = StringField("Borough", validators=[validators.DataRequired()])
 
-@main_bp.route("/download_data", methods=['POST', 'GET'])
+@main_bp.route("/download_data", methods=['GET', 'POST'])
 def download_data():
-    print("download_data function called")
-    # Open the CSV file and read the boroughs
-    with open(maindir + "/data/boroughs_list.csv", "r") as file:
-        reader = csv.reader(file)
-        print(file)
-        boroughs = list(itertools.chain.from_iterable(reader))
-        print(boroughs)
-
-    # Create the borough selection form
     form = BoroughForm()
-    print("before form.validate_on_submit function called")    
-    if form.validate_on_submit():
-        print("after form.validate_on_submit function called")
-        # Get the selected borough from the form data
-        selected_borough = form.report_borough.data
-        print(f"Selected borough: {selected_borough}")
-
-        # Query the database for reports in the selected borough
-        reports_filtered = Reports.query.filter_by(report_borough=selected_borough).all()
-        print(f"Reports: {reports_filtered}")
-
-        # If no reports are found, flash a message and redirect back to the reports page
-        if not reports_filtered:
-            flash("No reports found for selected borough.")
+    if request.method == "GET":
+        return render_template('download_data.html', form=form, boroughs=all_boroughs_list)
+    elif request.method == "POST":
+        borough_selected = request.form['report_borough']
+        reports_request = requests.get("http://127.0.0.1:5000/api/reports")
+        reports_json = reports_request.json()
+        reports_list = reports_json["report"]
+        all_reports_count = len(reports_list)
+        if all_reports_count > 0:
+            if borough_selected == "All Boroughs":
+                reports_filtered = reports_list
+            else:
+                count = 0
+                reports_for_borough_only = []
+                for x in reports_list:
+                    if x["report_borough"] == borough_selected:
+                        reports_for_borough_only.append(x)
+                        count = count + 1
+                if count > 0:
+                    reports_filtered = reports_for_borough_only
+                else:
+                    flash("There are no related active reports in " + borough_selected + ". Try again later or select another option.")
+                    return redirect(url_for("main_bp.download_data"))
+        else:
+            flash("There are no related active reports in " + borough_selected + ". Try again later or select another option.")
             return redirect(url_for("main_bp.download_data"))
-
+   
         # Convert the reports data to a CSV string
         csv_data = StringIO()
         writer = csv.writer(csv_data)
-        writer.writerow(['id', 'reporter_id', 'borough', 'date', 'time', 'details'])
+        writer.writerow(['report_id', 'reporter_id', 'borough', 'date', 'time', 'details'])
         for report in reports_filtered:
-            writer.writerow([report.id, report.reporter_id, report.report_borough, report.report_date, report.report_time, report.report_details])
+            writer.writerow([report["id"], report["reporter_id"], report["report_borough"], report["report_date"], report["report_time"], report["report_details"]])
 
         # Create a response with the CSV data and appropriate headers
-        response = make_response(csv_data.getvalue())
-        response.headers["Content-Type"] = "text/csv"
-        response.headers["Content-Disposition"] = f"attachment; filename={selected_borough}_reports.csv"
+        response_csv_file = make_response(csv_data.getvalue())
+        response_csv_file.headers["Content-Type"] = "text/csv"
+        response_csv_file.headers["Content-Disposition"] = f"attachment; filename={borough_selected}_reports.csv"
 
         # Return the response for downloading the CSV file
-        return response
-
-    # Render the download_reports template with the borough selection form
-    print("download_data function called")
-    return render_template('download_data.html', form=form, boroughs=boroughs)
+        
+        return response_csv_file

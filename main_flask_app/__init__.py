@@ -59,6 +59,8 @@ def create_flask_app():
 
     ma.init_app(app)
 
+    with app.app_context():
+        from main_flask_app import api_routes
 
     login_manager = LoginManager()
     login_manager.init_app(app)

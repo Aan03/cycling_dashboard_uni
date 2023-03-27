@@ -1,6 +1,9 @@
 from main_flask_app import ma
-from marshmallow import Schema, fields
+from main_flask_app.models import Reports
 
-class ReportsSchema(ma.Schema):
-    """ Marshmallow schema defining the attributes for creating reports."""
-    fields = ("email", "date_created", "_links")
+class ReportsSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Reports
+        include_fk = True
+
+reports_schema = ReportsSchema(many=True)

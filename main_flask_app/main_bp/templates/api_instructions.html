@@ -1,0 +1,25 @@
+{% extends 'layout.html' %}
+{% set title = 'API Instructions' %}
+
+{% block content %}
+
+<h2>Cycling Parking API Instructions:</h2>
+<h5>API Routes:</h5>
+<ul>
+  <li><a href="http://127.0.0.1:5000/api/reports">http://127.0.0.1:5000/api/reports</a>
+    <ul><li>Get all reports.</li></ul>
+  </li>
+  <br>
+  <li><a href="http://127.0.0.1:5000/api/reports/borough/[Enter borough name]">http://127.0.0.1:5000/api/reports/borough/[Enter borough name]</a>
+    <ul><li>Get all reports for a specific borough.</li></ul>
+    <ul><li>Example: <a href="http://127.0.0.1:5000/api/reports/borough/enfield">Enfield</a> </li></ul>
+  </li>
+  <br>
+  <li><a href="http://127.0.0.1:5000/api/reports/rack/[Enter rack ID]">http://127.0.0.1:5000/api/reports/rack/[Enter rack ID]</a>
+    <ul><li>Get all reports for a specific bike rack.</li></ul>
+    <ul><li>Example: <a href="http://127.0.0.1:5000/api/reports/rack/rwg148175">RWG148175</a></li></ul>
+</ul>
+<br>
+<p>On this website, the "Download Data" page has been designed to use the API to generate a downloadable CSV file.</p>
+
+{% endblock %}
