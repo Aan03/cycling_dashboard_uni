@@ -31,6 +31,7 @@
 <br>
 <table>
 <tr>
+<th>Report ID:</th>
 <th>Bike Rack ID:</th>
 <th>Borough:</th>
 <th>Report Date:</th>
@@ -44,6 +45,7 @@
 {% if report.reporter_id == current_user.id %}
 
 <tr>
+<td>{{report.id}}</td>
 <td>{{report.rack_id}}</td>
 <td>{{report.report_borough}}</td>
 <td>{{report.report_date}}</td>

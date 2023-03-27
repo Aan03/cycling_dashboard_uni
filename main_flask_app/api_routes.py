@@ -60,7 +60,6 @@ def get_rack_id_reports(report_rack_id):
         else:
             return make_response("404: The bike rack ID is incorrect or it does not exist.", 404)
 
-
 rack_id_query = db_session.query(cycle_parking_data.feature_id)
 rack_id_list = []
 for x in rack_id_query:
@@ -96,25 +95,73 @@ def post_report():
                              report_details=post_details)
                 db.session.add(new_report)
                 db.session.commit()
-                return jsonify("Theft report added successfully.")
+                response = jsonify("Theft report added successfully.")
+                return make_response(response, 201)
             else:
                 return jsonify('A bike rack with that ID was not found.')
         else:
             return jsonify('Password recieved was incorrect.')
     else:
-        return jsonify("A user with the username " + new_report["username"] + " does not exist.")
-    
-    
-    
-    
+        return jsonify("A user with the username " + post_username + " does not exist.")
 
+@app.route("/api/reports/edit/<int:report_id>", methods=["PUT"])
+def edit_report_details(report_id):
+    put_request = {"username" : request.json["username"],
+                  "password" : request.json["password"],
+                  "details" : request.json["details"]
+                  }
     
-       
-'''
-@app.route("/api/reports/delete/<id>", methods=["DELETE"])
-def report_delete(id):
-    guide = Guide.query.get(id)
-    db.session.delete(guide)
-    db.session.commit()
+    put_username = (put_request["username"]).lower()
+    put_password = put_request["password"]
+    put_details = request.json["details"]
+    put_report_id = report_id
 
-    return "Guide was successfully deleted"'''
+    user_check = Users.query.filter_by(username=put_username).first()
+    if user_check:
+        if sha256_crypt.verify(put_password, user_check.password) == True:
+            report_check = Reports.query.filter_by(id=put_report_id).first()
+            if report_check:
+                if  user_check.id == report_check.reporter_id:
+                    report_check.report_details = put_details
+                    db.session.commit()
+                    return jsonify("Report details successfully edited.")
+                else:
+                    return jsonify("The report with an id of " + str(put_report_id)
+                                   + " does exist but under a different username.")
+            else:
+                return jsonify("A report with that ID does not exist.")
+        else:
+            return jsonify('Password recieved was incorrect.')
+    else:
+        return jsonify("A user with the username " + (put_username) + 
+                       " does not exist.")
+
+@app.route("/api/reports/delete/<int:report_id>", methods=["DELETE"])
+def delete_report(report_id):
+    delete_request = {"username" : request.json["username"],
+                  "password" : request.json["password"],
+                  }
+
+    delete_req_username = (delete_request["username"]).lower()
+    delete_req_password = delete_request["password"]
+    delete_req_report_id = report_id
+
+    user_check = Users.query.filter_by(username=delete_req_username).first()
+    if user_check:
+        if sha256_crypt.verify(delete_req_password, user_check.password) == True:
+            report_check = Reports.query.filter_by(id=delete_req_report_id).first()
+            if report_check:
+                if  user_check.id == report_check.reporter_id:
+                    Reports.query.filter_by(id=delete_req_report_id).delete()
+                    db.session.commit()
+                    return jsonify("Report deleted successfully.")
+                else:
+                    return jsonify("The report with an id of " + str(delete_req_report_id)
+                                   + " does exist but under a different username.")
+            else:
+                return jsonify("A report with that ID does not exist.")
+        else:
+            return jsonify('Password recieved was incorrect.')
+    else:
+        return jsonify("A user with the username " + delete_req_username["username"] + 
+                       " does not exist.")

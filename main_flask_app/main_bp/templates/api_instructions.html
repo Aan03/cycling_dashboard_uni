@@ -4,22 +4,65 @@
 {% block content %}
 
 <h2>Cycling Parking API Instructions:</h2>
-<h5>API Routes:</h5>
 <ul>
-  <li><a href="http://127.0.0.1:5000/api/reports">http://127.0.0.1:5000/api/reports</a>
+<li>Where a username or password is required in the JSON request body, this refers to an existing user.</li>
+<li>On this website, the "Download Data" page has been designed to use the API to generate a downloadable CSV 
+  file of reports for specified boroughs.</li>
+<li>All the features on the website to do with report management (report creation, deletion and editing) can also be done
+   through the API as long as the user details in the JSON body request are already in the system.</li>
+<li>(Routes were tested using Postman.co)</li>
+</ul>
+<h5>API GET Routes:</h5>
+<ul>
+  <li>http://127.0.0.1:5000/api/reports
     <ul><li>Get all reports.</li></ul>
   </li>
-  <br>
-  <li><a href="http://127.0.0.1:5000/api/reports/borough/[Enter borough name]">http://127.0.0.1:5000/api/reports/borough/[Enter borough name]</a>
+  <li>http://127.0.0.1:5000/api/reports/borough/[Enter borough name]
     <ul><li>Get all reports for a specific borough.</li></ul>
     <ul><li>Example: <a href="http://127.0.0.1:5000/api/reports/borough/enfield">Enfield</a> </li></ul>
   </li>
-  <br>
-  <li><a href="http://127.0.0.1:5000/api/reports/rack/[Enter rack ID]">http://127.0.0.1:5000/api/reports/rack/[Enter rack ID]</a>
+  <li>http://127.0.0.1:5000/api/reports/rack/[Enter rack ID]
     <ul><li>Get all reports for a specific bike rack.</li></ul>
     <ul><li>Example: <a href="http://127.0.0.1:5000/api/reports/rack/rwg148175">RWG148175</a></li></ul>
 </ul>
 <br>
-<p>On this website, the "Download Data" page has been designed to use the API to generate a downloadable CSV file.</p>
-
+<h5>API POST Routes:</h5>
+<ul>
+  <li>http://127.0.0.1:5000/api/reports/create
+    <ul><li>Create a new report.</li>
+        <li>JSON request body format for this request: 
+        <br>
+          {"username" : "[Enter username of report creator]",<br>
+           "password" : "[Enter password of report creator]",<br>
+           "rack_id" : "[Enter bike rack ID]",<br>
+           "details" : "[Enter report details]"}
+        </li>    
+    </ul>
+</ul>
+<br>
+<h5>API PUT Routes:</h5>
+<ul>
+  <li>http://127.0.0.1:5000/api/reports/edit/[Enter report ID]
+    <ul><li>Edit an existing report.</li>
+        <li>JSON request body format for this request: 
+        <br>
+          {"username" : "[Enter username of report creator]",<br>
+           "password" : "[Enter password of report creator]",<br>
+           "details" : "[Enter report details]"}
+        </li>    
+    </ul>
+</ul>
+<br>
+<h5>API DELETE Routes:</h5>
+<ul>
+  <li>http://127.0.0.1:5000/api/reports/delete/[Enter report ID]
+    <ul><li>Delete an existing report.</li>
+      <li>JSON request body format for this request: 
+        <br>
+          {"username" : "[Enter username of report creator]",<br>
+           "password" : "[Enter password of report creator]"}<br>
+        </li>    
+    </ul>
+</ul>
+<br>
 {% endblock %}
