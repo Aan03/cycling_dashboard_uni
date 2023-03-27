@@ -31,7 +31,7 @@ def login():
         return render_template('login.html', login_form = login_form)
 
     elif request.method == "POST":
-        username_flask = request.form['username']
+        username_flask = (request.form['username']).lower()
         password_flask = request.form['password']
         user_check = Users.query.filter_by(username=username_flask).first()
         
@@ -75,14 +75,13 @@ def logout():
     flash("Logged out successfully.")
     return redirect(url_for('main_bp.index'))
 
-
 @auth_bp.route('/sign_up', methods=['POST', 'GET'])
 def sign_up():
     sign_up_form = SignUpForm()
     if request.method == "GET":
         return render_template('sign_up.html', sign_up_form=sign_up_form)
     elif request.method == "POST":
-        username_flask = request.form['username']
+        username_flask = (request.form['username']).lower()
         password_flask = request.form['password']
         encrypted_password = sha256_crypt.encrypt(password_flask)
 
