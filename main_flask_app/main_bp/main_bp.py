@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template, redirect, url_for, request, session, flash, jsonify
-from flask_login import UserMixin, login_required, current_user
+from flask import Blueprint, render_template, redirect, url_for, request, flash, make_response
+from flask_login import login_required, current_user
 from main_flask_app.dash_app_cycling import *
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, DateField, TimeField, validators
@@ -7,15 +7,11 @@ import requests
 import os
 import csv
 import json
-import pandas as pd
 from main_flask_app import db, db_session
-from main_flask_app.models import Users, Reports, cycle_parking_data, boroughs_list
-from flask import make_response
+from main_flask_app.models import Reports, cycle_parking_data, boroughs_list
 from io import StringIO
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_file
 from flask_wtf import FlaskForm
 from wtforms import StringField, validators
-import itertools
 
 main_bp = Blueprint('main_bp', __name__, template_folder = "templates", static_folder="static")
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -181,7 +177,7 @@ def download_data():
         return render_template('download_data.html', form=form, boroughs=all_boroughs_list)
     elif request.method == "POST":
         borough_selected = request.form['report_borough']
-        reports_request = requests.get("http://127.0.0.1:5000/api/reports")
+        reports_request = requests.get("http://localhost:5000/api/reports")
         reports_json = reports_request.json()
         reports_list = reports_json["report"]
         all_reports_count = len(reports_list)
