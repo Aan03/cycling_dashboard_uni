@@ -9,6 +9,7 @@ from passlib.hash import sha256_crypt
 
 auth_bp = Blueprint('auth_bp', __name__, template_folder = "templates")
 
+#Classes for forms
 class LoginForm(FlaskForm):
     username = StringField("Username:", validators = [validators.DataRequired()])
     password = PasswordField("Password:", validators = [validators.DataRequired()])
@@ -24,6 +25,7 @@ class ChangePassword(FlaskForm):
     password_new = PasswordField("Enter your new password:", validators = [validators.DataRequired()])
     submit = SubmitField("Change Password")
 
+#Login users
 @auth_bp.route('/login', methods=['POST', 'GET'])
 def login():
     login_form = LoginForm()
@@ -46,6 +48,7 @@ def login():
             else:
                 flash("Incorrect password. Try again.")
 
+#Allow users to change their passwords
 @auth_bp.route('/account', methods=['POST', 'GET'])
 @login_required
 def user_account():
@@ -68,6 +71,7 @@ def user_account():
 
         return render_template('account.html', update_password_form=update_password_form)
         
+#Logout users
 @auth_bp.route('/logout', methods=['POST', 'GET'])
 @login_required
 def logout():
@@ -75,6 +79,7 @@ def logout():
     flash("Logged out successfully.")
     return redirect(url_for('main_bp.index'))
 
+#Sign up new users
 @auth_bp.route('/sign_up', methods=['POST', 'GET'])
 def sign_up():
     sign_up_form = SignUpForm()
@@ -98,4 +103,5 @@ def sign_up():
             db.session.commit()
             return redirect(url_for('auth_bp.login'))
         except:
-            return "error adding"
+            flash("There was an error in the sign up process. Please try again later.")
+            return redirect(url_for('main_bp.index'))

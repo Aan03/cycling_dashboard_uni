@@ -17,6 +17,9 @@ main_bp = Blueprint('main_bp', __name__, template_folder = "templates", static_f
 basedir = os.path.abspath(os.path.dirname(__file__))
 maindir = os.path.abspath(os.path.join(basedir, os.pardir))
 
+
+#Querying dataset tables from the cycle_parking.db database and 
+# setting up variables/arrays for later use
 all_boroughs_list = []
 for x in db_session.query(boroughs_list.borough):
     all_boroughs_list.append(list(x))
@@ -49,6 +52,8 @@ for x in db_session.query(cycle_parking_data.feature_id, cycle_parking_data.prk_
     marker_data.append(each_row)
     feature_id_list.append(x[0])
 
+#Classes for forms
+##Creating new reports
 class ReportForm(FlaskForm):
     report_rack_id = StringField("Rack ID", validators = [validators.Length(min=9, max=9), validators.DataRequired()])
     report_borough = StringField("Borough", validators = [validators.DataRequired()])
@@ -57,6 +62,12 @@ class ReportForm(FlaskForm):
     report_details = StringField("Report Details", validators = [validators.DataRequired(), validators.Regexp(r'^[\w.@+-]+$')])
     report_submit = SubmitField("Submit")
 
+#Selecting a borough on the "Download Data" page
+class BoroughForm(FlaskForm):
+    report_borough = StringField("Borough", validators=[validators.DataRequired()])
+
+#Accessing reports page but only showing the reports for the logged-in user 
+# which they can then manage
 @main_bp.route('/my_reports', methods=['POST', 'GET'])
 @login_required
 def my_reports():
@@ -70,6 +81,7 @@ def my_reports():
         flash("Your reports have been updated.")
         return render_template('my_reports.html', reports_table = reports_table)
 
+#On the personalised reports page, users can instantly edit report details from the table
 @main_bp.route("/edit_report_details/<int:report_id>", methods=['POST'])
 @login_required
 def edit_report_details(report_id):
@@ -85,6 +97,7 @@ def edit_report_details(report_id):
             flash("There was an error editing the report details. Please try again later.")
             return redirect(url_for("main_bp.my_reports"))
 
+#On the personalised reports page, users can instantly delete reports from the table
 @main_bp.route("/delete_report/<int:report_id>", methods=['POST'])
 @login_required
 def delete_report(report_id):
@@ -99,14 +112,22 @@ def delete_report(report_id):
             flash("There was an error deleting the report. Please try again later.")
             return redirect(url_for("main_bp.my_reports"))
 
+#Viewing the dash statistics app (iframe src used on the html page)
 @main_bp.route("/dash_statistics")
 def dash():
     return render_template("dash_statistics.html")
 
+#Viewing the API instructions page
+@main_bp.route("/api")
+def api_instructions_shortcut():
+    return render_template("api_instructions.html")
+
+#Instructions page on using the API
 @main_bp.route("/api_instructions")
 def api_instructions():
     return render_template("api_instructions.html")
 
+#Viewing all reports by all users
 @main_bp.route("/reports")
 def reports_page():
     reports_table = Reports.query.order_by(Reports.report_date.desc(), Reports.report_time.desc())
@@ -114,6 +135,7 @@ def reports_page():
     return render_template("reports.html", reports_table=reports_table, 
                            user_reports_count = user_reports_count)
 
+#Index page showing the main map from where reports can be created
 @main_bp.route("/", methods=['POST', 'GET'])
 def index():
     report_form = ReportForm()
@@ -142,6 +164,8 @@ def index():
             flash("There was an error submitting the report. Please try again later.")
             return redirect(url_for('main_bp.index'))
         
+#From the main reports page, it is possible to view all reports for a specific bike rack
+# on another page
 @main_bp.route("/specific_reports/<string:specific_rack_id>", methods=['GET'])
 def specific_reports(specific_rack_id):
     if request.method == "GET":
@@ -167,9 +191,7 @@ def specific_reports(specific_rack_id):
             flash("A bike rack with that ID does not exist. You have been returned to the reports page.")
             return redirect(url_for("main_bp.reports_page"))
 
-class BoroughForm(FlaskForm):
-    report_borough = StringField("Borough", validators=[validators.DataRequired()])
-
+#Using the API, data from the SQL database is taken and then made downloadable for users
 @main_bp.route("/download_data", methods=['GET', 'POST'])
 def download_data():
     form = BoroughForm()

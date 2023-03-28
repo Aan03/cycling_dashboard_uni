@@ -5,13 +5,15 @@
 
 <h2>Cycling Parking API Instructions:</h2>
 <ul>
+<li>API can be used to sign up new users who can manage reports too using the API.</li>
 <li>Where a username or password is required in the JSON request body, this refers to an existing user.</li>
 <li>On this website, the "Download Data" page has been designed to use the API to generate a downloadable CSV 
   file of reports for specified boroughs.</li>
 <li>All the features on the website to do with report management (report creation, deletion and editing) can also be done
    through the API as long as the user details in the JSON body request are already in the system.</li>
-<li>(Routes were tested using Postman.co)</li>
+<li>(API routes were tested using Postman.co)</li>
 </ul>
+
 <h5>API GET Routes:</h5>
 <ul>
   <li>http://127.0.0.1:5000/api/reports
@@ -24,45 +26,76 @@
   <li>http://127.0.0.1:5000/api/reports/rack/[Enter rack ID]
     <ul><li>Get all reports for a specific bike rack.</li></ul>
     <ul><li>Example: <a href="http://127.0.0.1:5000/api/reports/rack/rwg148175">RWG148175</a></li></ul>
+  </li>
+  <li>http://127.0.0.1:5000/api/reports/user/[Enter username]
+    <ul><li>Get all reports made by a specific user.</li></ul>
+  </li>
 </ul>
+
 <br>
+
 <h5>API POST Routes:</h5>
 <ul>
   <li>http://127.0.0.1:5000/api/reports/create
-    <ul><li>Create a new report.</li>
-        <li>JSON request body format for this request: 
+    <ul><li>Create a new report.</li></ul>
+    <ul><li>JSON request body format for this request: 
         <br>
           {"username" : "[Enter username of report creator]",<br>
            "password" : "[Enter password of report creator]",<br>
            "rack_id" : "[Enter bike rack ID]",<br>
            "details" : "[Enter report details]"}
-        </li>    
-    </ul>
+    </li></ul>
+  </li>
+
+  <br>
+
+  <li>http://127.0.0.1:5000/api/user/sign_up
+    <ul><li>Sign up a new user.</li></ul>
+    <ul><li>JSON request body format for this request: 
+        <br>
+          {"username" : "[Enter username]",<br>
+           "password" : "[Enter password]"}<br>
+    </li></ul>
+  </li>
 </ul>
+
 <br>
+
 <h5>API PUT Routes:</h5>
 <ul>
   <li>http://127.0.0.1:5000/api/reports/edit/[Enter report ID]
-    <ul><li>Edit an existing report.</li>
-        <li>JSON request body format for this request: 
+    <ul><li>Edit an existing report.</li></ul>
+    <ul><li>JSON request body format for this request: 
         <br>
           {"username" : "[Enter username of report creator]",<br>
            "password" : "[Enter password of report creator]",<br>
-           "details" : "[Enter report details]"}
-        </li>    
-    </ul>
+           "details" : "[Enter new/updated report details]"}
+        </li></ul>
+    </li>
+    <br>
+    <li>http://127.0.0.1:5000/api/user/change_password
+      <ul><li>Changing a current user's password.</li></ul>
+      <ul><li>JSON request body format for this request: 
+          <br>
+            {"username" : "[Enter username]",<br>
+             "current_password" : "[Enter current password]",<br>
+             "new_password" : "[Enter new password]"}
+          </li></ul>
+      </li>
 </ul>
+
 <br>
+
 <h5>API DELETE Routes:</h5>
 <ul>
   <li>http://127.0.0.1:5000/api/reports/delete/[Enter report ID]
-    <ul><li>Delete an existing report.</li>
-      <li>JSON request body format for this request: 
+    <ul><li>Delete an existing report.</li></ul>
+    <ul><li>JSON request body format for this request: 
         <br>
           {"username" : "[Enter username of report creator]",<br>
            "password" : "[Enter password of report creator]"}<br>
-        </li>    
-    </ul>
+      </li></ul>
+  </li>
 </ul>
 <br>
 {% endblock %}

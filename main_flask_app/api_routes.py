@@ -8,15 +8,16 @@ from datetime import datetime
 current_date = datetime.today().strftime('%Y-%m-%d')
 current_time = datetime.today().strftime('%H:%M')
 
+#API GET Routes
+##Get all reports
 @app.route("/api/reports", methods=["GET"])
 def get_all_reports():
-    if request.method == "GET":
-        all_reports = db.session.execute(db.select(Reports).order_by(desc(Reports.report_date), 
-                                                                    desc(Reports.report_time))).scalars()
-        reports_dump = reports_schema.dump(all_reports)
-        response_json = jsonify({"report":reports_dump})
-        response_json.headers["Content-Type"] = "application/json"
-        return make_response(response_json, 200)
+    all_reports = db.session.execute(db.select(Reports).order_by(desc(Reports.report_date), 
+                                                                desc(Reports.report_time))).scalars()
+    reports_dump = reports_schema.dump(all_reports)
+    response_json = jsonify({"report":reports_dump})
+    response_json.headers["Content-Type"] = "application/json"
+    return make_response(response_json, 200)
 
 boroughs = []
 for x in db_session.query(boroughs_list.borough):
@@ -27,18 +28,18 @@ boroughs_lower = []
 for i in boroughs:
     boroughs_lower.append(i.lower())
 
+##Get all reports for a borough
 @app.route("/api/reports/borough/<borough>", methods=["GET"])
 def get_borough_reports(borough):
-    if request.method == "GET":
-        if borough in boroughs_lower:
-            borough_reports = db.session.execute(db.select(Reports).filter(func.lower(Reports.report_borough)
-                    ==borough.lower()).order_by(desc(Reports.report_date), desc(Reports.report_time))).scalars()
-            reports_dump = reports_schema.dump(borough_reports)
-            response_json = jsonify({"report":reports_dump})
-            response_json.headers["Content-Type"] = "application/json"
-            return make_response(response_json, 200)
-        else:
-            return make_response("404: The borough name is incorrect or it does not exist.", 404)
+    if borough in boroughs_lower:
+        borough_reports = db.session.execute(db.select(Reports).filter(func.lower(Reports.report_borough)
+                ==borough.lower()).order_by(desc(Reports.report_date), desc(Reports.report_time))).scalars()
+        reports_dump = reports_schema.dump(borough_reports)
+        response_json = jsonify({"report":reports_dump})
+        response_json.headers["Content-Type"] = "application/json"
+        return make_response(response_json, 200)
+    else:
+        return make_response("404: The borough name is incorrect or it does not exist.", 404)
 
 rack_id_list = []
 for x in db_session.query(cycle_parking_data.feature_id):
@@ -48,17 +49,33 @@ rack_id_list_lower = []
 for i in rack_id_list:
     rack_id_list_lower.append(i.lower())
 
+##Get all reports for a specific bike rack
 @app.route("/api/reports/rack/<report_rack_id>", methods=["GET"])
 def get_rack_id_reports(report_rack_id):
-    if request.method == "GET":
-        if str(report_rack_id) in rack_id_list_lower:
-            rack_id_reports = db.session.execute(db.select(Reports).filter((Reports.rack_id)== 
-                                str(report_rack_id.upper())).order_by(desc(Reports.report_date), desc(Reports.report_time))).scalars()
-            reports_dump = reports_schema.dump(rack_id_reports)
-            response_json = jsonify({"report":reports_dump})
-            return make_response(response_json, 200)
-        else:
-            return make_response("404: The bike rack ID is incorrect or it does not exist.", 404)
+    if str(report_rack_id.lower()) in rack_id_list_lower:
+        rack_id_reports = db.session.execute(db.select(Reports).filter((Reports.rack_id)== 
+                            str(report_rack_id.upper())).order_by(desc(Reports.report_date), desc(Reports.report_time))).scalars()
+        reports_dump = reports_schema.dump(rack_id_reports)
+        response_json = jsonify({"report":reports_dump})
+        return make_response(response_json, 200)
+    else:
+        return make_response(jsonify("404: The bike rack ID is incorrect or it does not exist."), 404)
+
+##Get all reports made by a user
+@app.route("/api/reports/user/<username_get>", methods=["GET"])
+def get_all_reports_for_user(username_get):
+    user_check = Users.query.filter_by(username=username_get).first()
+    if user_check:
+        all_reports_by_user = Reports.query.filter_by(reporter_id = 
+                                user_check.id).order_by(desc(Reports.report_date), desc(Reports.report_time))
+
+        reports_dump = reports_schema.dump(all_reports_by_user)
+        response_json = jsonify({"report":reports_dump})
+        response_json.headers["Content-Type"] = "application/json"
+        return make_response(response_json, 200)
+    else:
+        response = jsonify("404: A user with the username " + username_get + " does not exist.")
+        return make_response(response, 404)
 
 rack_id_query = db_session.query(cycle_parking_data.feature_id)
 rack_id_list = []
@@ -69,6 +86,8 @@ each_rack_borough_list = []
 for x in each_rack_borough_query:
     each_rack_borough_list.append(x[0])
 
+#API POST Routes
+##Create a new report
 @app.route("/api/reports/create", methods=["POST"])
 def post_report():
     new_report = {"username" : request.json["username"],
@@ -98,12 +117,35 @@ def post_report():
                 response = jsonify("Theft report added successfully.")
                 return make_response(response, 201)
             else:
-                return jsonify('A bike rack with that ID was not found.')
+                response = jsonify('404: A bike rack with that ID was not found.')
+                return make_response(response, 404)
         else:
             return jsonify('Password recieved was incorrect.')
     else:
-        return jsonify("A user with the username " + post_username + " does not exist.")
+        response = jsonify("404: A user with the username " + post_username + " does not exist.")
+        return make_response(response, 404)
+    
+##Adding a new user
+@app.route("/api/user/sign_up", methods=["POST"])
+def new_user_api():
+    new_user_request = {"username" : request.json["username"],
+                        "password" : request.json["password"]}
+    
+    new_user_username = new_user_request["username"]
+    new_user_password = new_user_request["password"]
+    encrypted_password = sha256_crypt.encrypt(new_user_password)
 
+    user_check = Users.query.filter_by(username=new_user_username).first()
+    if user_check:
+        return jsonify("A user with the username " + new_user_username + " already exists.")
+    else:
+        new_user = Users(username=new_user_username, password=encrypted_password)
+        db.session.add(new_user)
+        db.session.commit()
+        return jsonify("User " + new_user_username + " has been signed up successfuly.")
+
+#API PUT Routes
+##Edit an existing report
 @app.route("/api/reports/edit/<int:report_id>", methods=["PUT"])
 def edit_report_details(report_id):
     put_request = {"username" : request.json["username"],
@@ -129,18 +171,48 @@ def edit_report_details(report_id):
                     return jsonify("The report with an id of " + str(put_report_id)
                                    + " does exist but under a different username.")
             else:
-                return jsonify("A report with that ID does not exist.")
+                response = jsonify("404: A report with that ID does not exist.")
+                return make_response(response, 404)
         else:
             return jsonify('Password recieved was incorrect.')
     else:
-        return jsonify("A user with the username " + (put_username) + 
+        response = jsonify("404: A user with the username " + put_username + 
                        " does not exist.")
+        return make_response(response, 404)
 
+##Change user password
+@app.route("/api/user/change_password", methods=["PUT"])
+def change_user_password_api():
+    change_password_request = {"username" : request.json["username"],
+                               "current_password" : request.json["current_password"],
+                               "new_password" : request.json["new_password"]
+                               }
+    
+    put_req_username = (change_password_request["username"]).lower()
+    put_req_old_password = change_password_request["current_password"]
+    put_req_new_password = change_password_request["new_password"]
+
+    user_check = Users.query.filter_by(username=put_req_username).first()
+    if user_check:
+        if sha256_crypt.verify(put_req_old_password, user_check.password) == True:
+            new_encrypted_password = sha256_crypt.encrypt(put_req_new_password)
+            user_check.password = new_encrypted_password
+            db.session.commit()
+            return jsonify("Password changed successfully.")
+        else:
+            return jsonify('Current password recieved was incorrect.')
+    else:
+        response = jsonify("404: A user with the username " + put_req_username + 
+                       " does not exist.")
+        return make_response(response, 404)
+
+#API DELETE Routes
+##Delete an existing report
 @app.route("/api/reports/delete/<int:report_id>", methods=["DELETE"])
 def delete_report(report_id):
     delete_request = {"username" : request.json["username"],
-                  "password" : request.json["password"],
-                  }
+                      "password" : request.json["password"]
+                      }
 
     delete_req_username = (delete_request["username"]).lower()
     delete_req_password = delete_request["password"]
@@ -159,9 +231,12 @@ def delete_report(report_id):
                     return jsonify("The report with an id of " + str(delete_req_report_id)
                                    + " does exist but under a different username.")
             else:
-                return jsonify("A report with that ID does not exist.")
+
+                response = jsonify("404: A report with that ID does not exist.")
+                return make_response(response, 404)
         else:
             return jsonify('Password recieved was incorrect.')
     else:
-        return jsonify("A user with the username " + delete_req_username["username"] + 
+        response = jsonify("404: A user with the username " + delete_req_username + 
                        " does not exist.")
+        return make_response(response, 404)

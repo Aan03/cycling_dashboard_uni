@@ -1,5 +1,4 @@
 import os
-#from pathlib import Path
 import pathlib
 
 basedir = os.path.abspath(os.path.dirname(__file__))

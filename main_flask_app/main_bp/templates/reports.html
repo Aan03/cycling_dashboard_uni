@@ -21,6 +21,7 @@
 {% endif %}
 <table>
 <tr>
+<th>Report ID:</th>
 <th>Bike Rack ID:</th>
 <th>Borough:</th>
 <th>Report Date:</th>
@@ -30,6 +31,7 @@
 </tr>
 {% for report in reports_table %}
 <tr>
+<td>{{report.id}}</td>
 <td>{{report.rack_id}}</td>
 <td>{{report.report_borough}}</td>
 <td>{{report.report_date}}</td>
