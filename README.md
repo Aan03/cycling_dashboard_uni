@@ -15,7 +15,7 @@
 
 2. There are three blueprints being used, [auth_bp](main_flask_app/auth_bp/), [main_bp](main_flask_app/main_bp/) and [api_bp](main_flask_app/api_bp/). Auth_bp manages the account creation and management of users, while main_bp handles the rest of the user experience like viewing, creating and managing theft reports. The api_bp manages the API routes.
 
-3. The Flask app is initialised in the __init__.py file.
+3. The Flask app is initialised in the [__init__.py](/main_flask_app/__init__.py) file.
 
 4. User authorisation has been setup with SHA256 encryption for passwords. Users can create theft reports which can be viewed by other users. Users can also edit or delete their reports. Users are also able to change their passwords.
 
@@ -34,6 +34,7 @@
 11. Different configurations are used for normal operations and for testing purposes. These can be found in the [main_flask_app/config.py](/main_flask_app/config.py) file.
 
 ## Example usage of flask app
+(all screenshots can be found in the [site usage screenshots folder.](/screenshots/site_app_usage_screenshots/))
 
 Home view (not logged in):  
 ![Usage #1](screenshots/site_app_usage_screenshots/1_index_page.PNG)
