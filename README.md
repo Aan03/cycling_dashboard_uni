@@ -36,37 +36,37 @@
 ## Example usage of flask app
 
 Home view (not logged in):  
-![Usage #1](https://github.com/ucl-comp0035/comp0034-cw2-g-team_11/blob/main/screenshots/site_app_usage_screenshots/1_index_page.PNG)
+![Usage #1](screenshots/site_app_usage_screenshots/1_index_page.PNG)
 
 All reports page:  
-![Usage #2](screenshots/site_app_usage_screenshots/2_all_user_reports.png)
+![Usage #2](screenshots/site_app_usage_screenshots/2_all_user_reports.PNG)
 
 Download reports page which uses API to get reports (downloaded file shown):  
-![Usage #3](/screenshots/site_app_usage_screenshots/3_download_reports.png)  
+![Usage #3](screenshots/site_app_usage_screenshots/3_download_reports.PNG)  
 
 Dash statistics page:  
-![Usage #4](/screenshots/site_app_usage_screenshots/4_dash_statistics.png)  
+![Usage #4](/screenshots/site_app_usage_screenshots/4_dash_statistics.PNG)  
 
 Sign up page:  
-![Usage #5](/screenshots/site_app_usage_screenshots/5_sign_up.png)  
+![Usage #5](/screenshots/site_app_usage_screenshots/5_sign_up.PNG)  
 
 Login page:  
-![Usage #6](/screenshots/site_app_usage_screenshots/6_login.png)  
+![Usage #6](/screenshots/site_app_usage_screenshots/6_login.PNG)  
 
 Page shown after logging in:  
-![Usage #7](/screenshots/site_app_usage_screenshots/7_logged_in.png)
+![Usage #7](/screenshots/site_app_usage_screenshots/7_logged_in.PNG)
 
 Logged in view of home page showing the map. Users can click on markers to start reports:  
-![Usage #8](/screenshots/site_app_usage_screenshots/8_report_map.png)  
+![Usage #8](/screenshots/site_app_usage_screenshots/8_report_map.PNG)  
 
 Users can manage reports (edit details or delete them):
-![Usage #9](/screenshots/site_app_usage_screenshots/9_manage_reports.png)
+![Usage #9](/screenshots/site_app_usage_screenshots/9_manage_reports.PNG)
 
 Users can change their passwords:  
-![Usage #10](/screenshots/site_app_usage_screenshots/10_change_password.png)  
+![Usage #10](/screenshots/site_app_usage_screenshots/10_change_password.PNG)  
 
 Anyone can view reports for specific bike racks:
-![Usage #11](/screenshots/site_app_usage_screenshots/11_specific_reports.png)  
+![Usage #11](/screenshots/site_app_usage_screenshots/11_specific_reports.PNG)  
 
 ## API Routes
 This information is also available on the website itself on the API Instructions page.
@@ -74,11 +74,11 @@ This information is also available on the website itself on the API Instructions
 ### API GET Routes:
 http://127.0.0.1:5000/api/reports - Get all reports.
 
-http://127.0.0.1:5000/api/reports/borough/(Enter borough name) - Get all reports for a specific borough.
+http://127.0.0.1:5000/api/reports/borough/[Enter borough name] - Get all reports for a specific borough.
 
-http://127.0.0.1:5000/api/reports/rack/(Enter rack ID) - Get all reports for a specific bike rack.
+http://127.0.0.1:5000/api/reports/rack/[Enter rack ID] - Get all reports for a specific bike rack.
 
-http://127.0.0.1:5000/api/reports/user/(Enter username) - Get all reports made by a specific user.
+http://127.0.0.1:5000/api/reports/user/[Enter username] - Get all reports made by a specific user.
 
 ### API POST Routes:
 http://127.0.0.1:5000/api/reports/create - Create a new report.  
