@@ -32,7 +32,7 @@
 ## Example usage of flask app
 
 Home view (not logged in):  
-![Usage #1](screenshots\site_app_usage_screenshots\1_index_page.png)
+![Usage #1](screenshots/site_app_usage_screenshots/1_index_page.png)
 
 All reports page:  
 ![Usage #2](screenshots\site_app_usage_screenshots\2_all_user_reports.png)
@@ -70,39 +70,39 @@ This information is also available on the website itself on the API Instructions
 ### API GET Routes:
 http://127.0.0.1:5000/api/reports - Get all reports.
 
-http://127.0.0.1:5000/api/reports/borough/[Enter borough name] - Get all reports for a specific borough.
+http://127.0.0.1:5000/api/reports/borough/(Enter borough name) - Get all reports for a specific borough.
 
-http://127.0.0.1:5000/api/reports/rack/[Enter rack ID] - Get all reports for a specific bike rack.
+http://127.0.0.1:5000/api/reports/rack/(Enter rack ID) - Get all reports for a specific bike rack.
 
-http://127.0.0.1:5000/api/reports/user/[Enter username] - Get all reports made by a specific user.
+http://127.0.0.1:5000/api/reports/user/(Enter username) - Get all reports made by a specific user.
 
 ### API POST Routes:
 http://127.0.0.1:5000/api/reports/create - Create a new report.  
 JSON request body format for this request:  
-{"username" : "[Enter username of report creator]",  
-"password" : "[Enter password of report creator]",  
-"rack_id" : "[Enter bike rack ID]",  
-"details" : "[Enter report details]"}
+{"username" : "Enter username of report creator",  
+"password" : "Enter password of report creator",  
+"rack_id" : "Enter bike rack ID",  
+"details" : "Enter report details"}
 
 http://127.0.0.1:5000/api/user/sign_up  
 Sign up a new user.  
 JSON request body format for this request:  
-{"username" : "[Enter username]",  
-"password" : "[Enter password]"}
+{"username" : "Enter username",  
+"password" : "Enter password"}
 
 ### API PUT Routes:
 
 http://127.0.0.1:5000/api/reports/edit/[Enter report ID] - Edit an existing report.  
 JSON request body format for this request:  
-{"username" : "[Enter username of report creator]",  
-"password" : "[Enter password of report creator]",  
-"details" : "[Enter new/updated report details]"}
+{"username" : "Enter username of report creator",  
+"password" : "Enter password of report creator",  
+"details" : "Enter new/updated report details"}
 
 http://127.0.0.1:5000/api/user/change_password - Changing a current user's password.  
 JSON request body format for this request:  
-{"username" : "[Enter username]",  
-"current_password" : "[Enter current password]",  
-"new_password" : "[Enter new password]"}
+{"username" : "Enter username",  
+"current_password" : "Enter current password",  
+"new_password" : "Enter new password"}
 
 ### API DELETE Routes:
 

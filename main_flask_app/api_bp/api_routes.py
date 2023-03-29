@@ -95,8 +95,7 @@ def post_report():
     new_report = {"username" : request.json["username"],
                   "password" : request.json["password"],
                   "rack_id" : request.json["rack_id"],
-                  "details" : request.json["details"]
-                  }
+                  "details" : request.json["details"]}
     
     post_username = (new_report["username"]).lower()
     post_password = new_report["password"]
@@ -122,7 +121,8 @@ def post_report():
                 response = jsonify('404: A bike rack with that ID was not found.')
                 return make_response(response, 404)
         else:
-            return jsonify('Password recieved was incorrect.')
+            response = jsonify('Password received was incorrect.')
+            return make_response(response, 200)
     else:
         response = jsonify("404: A user with the username " + post_username + " does not exist.")
         return make_response(response, 404)
@@ -135,31 +135,30 @@ def new_user_api():
     
     new_user_username = new_user_request["username"]
     new_user_password = new_user_request["password"]
-    encrypted_password = sha256_crypt.encrypt(new_user_password)
 
+    encrypted_password = sha256_crypt.encrypt(new_user_password)
     user_check = Users.query.filter_by(username=new_user_username).first()
     if user_check:
-        return jsonify("A user with the username " + new_user_username + " already exists.")
+        response = jsonify("A user with the username " + new_user_username + " already exists.")
+        return make_response(response, 200)
     else:
         new_user = Users(username=new_user_username, password=encrypted_password)
         db.session.add(new_user)
         db.session.commit()
-        return jsonify("User " + new_user_username + " has been signed up successfuly.")
-
+        response = jsonify("User " + new_user_username + " has been signed up successfuly.")
+        return make_response(response, 201)
+    
 #API PUT Routes
 ##Edit an existing report
 @api_bp.route("/api/reports/edit/<int:report_id>", methods=["PUT"])
 def edit_report_details(report_id):
     put_request = {"username" : request.json["username"],
                   "password" : request.json["password"],
-                  "details" : request.json["details"]
-                  }
-    
+                  "details" : request.json["details"]}
     put_username = (put_request["username"]).lower()
     put_password = put_request["password"]
     put_details = request.json["details"]
     put_report_id = report_id
-
     user_check = Users.query.filter_by(username=put_username).first()
     if user_check:
         if sha256_crypt.verify(put_password, user_check.password) == True:
@@ -168,15 +167,17 @@ def edit_report_details(report_id):
                 if  user_check.id == report_check.reporter_id:
                     report_check.report_details = put_details
                     db.session.commit()
-                    return jsonify("Report details successfully edited.")
+                    response = jsonify("Report details successfully edited.")
+                    return make_response(response, 200)
                 else:
-                    return jsonify("The report with an id of " + str(put_report_id)
+                    response = jsonify("The report with an id of " + str(put_report_id)
                                    + " does exist but under a different username.")
+                    return make_response(response, 200)
             else:
                 response = jsonify("404: A report with that ID does not exist.")
                 return make_response(response, 404)
         else:
-            return jsonify('Password recieved was incorrect.')
+            return jsonify('Password received was incorrect.')
     else:
         response = jsonify("404: A user with the username " + put_username + 
                        " does not exist.")
@@ -187,8 +188,7 @@ def edit_report_details(report_id):
 def change_user_password_api():
     change_password_request = {"username" : request.json["username"],
                                "current_password" : request.json["current_password"],
-                               "new_password" : request.json["new_password"]
-                               }
+                               "new_password" : request.json["new_password"]}
     put_req_username = (change_password_request["username"]).lower()
     put_req_old_password = change_password_request["current_password"]
     put_req_new_password = change_password_request["new_password"]
@@ -198,9 +198,11 @@ def change_user_password_api():
             new_encrypted_password = sha256_crypt.encrypt(put_req_new_password)
             user_check.password = new_encrypted_password
             db.session.commit()
-            return jsonify("Password changed successfully.")
+            response = jsonify("Password changed successfully.")
+            return make_response(response, 200)
         else:
-            return jsonify('Current password recieved was incorrect.')
+            response = jsonify('Current password received was incorrect.')
+            return make_response(response, 200)
     else:
         response = jsonify("404: A user with the username " + put_req_username + 
                        " does not exist.")
@@ -212,8 +214,8 @@ def change_user_password_api():
 def delete_report(report_id):
 
     delete_request = {"username" : request.json["username"],
-                      "password" : request.json["password"]
-                      }
+                      "password" : request.json["password"]}
+    
     delete_req_username = (delete_request["username"]).lower()
     delete_req_password = delete_request["password"]
     delete_req_report_id = report_id
@@ -226,15 +228,18 @@ def delete_report(report_id):
                 if  user_check.id == report_check.reporter_id:
                     Reports.query.filter_by(id=delete_req_report_id).delete()
                     db.session.commit()
-                    return jsonify("Report deleted successfully.")
+                    response = jsonify("Report deleted successfully.")
+                    return make_response(response, 200)
                 else:
-                    return jsonify("The report with an id of " + str(delete_req_report_id)
+                    response = jsonify("The report with an id of " + str(delete_req_report_id)
                                    + " does exist but under a different username.")
+                    return make_response(response, 200)
             else:
                 response = jsonify("404: A report with that ID does not exist.")
                 return make_response(response, 404)
         else:
-            return jsonify('Password recieved was incorrect.')
+            response = jsonify('Password received was incorrect.')
+            return make_response(response, 200)
     else:
         response = jsonify("404: A user with the username " + delete_req_username + 
                        " does not exist.")

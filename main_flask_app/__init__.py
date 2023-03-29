@@ -2,7 +2,7 @@ from flask import Flask
 from flask_marshmallow import Marshmallow
 from flask import render_template
 from flask_login import LoginManager
-import secrets
+
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
@@ -10,7 +10,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 import os
 from main_flask_app.dash_app_cycling.stats import create_dash_app
 from main_flask_app.dash_app_cycling import *
-from main_flask_app.config import Config
+from main_flask_app import config
 from main_flask_app.data import csv_to_sql
 from flask_marshmallow import Marshmallow
 
@@ -19,8 +19,7 @@ csv_to_sql.creating_dataset_tables()
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-secret_key = secrets.token_urlsafe(16)
-print("\nSecret key for session:\n" + secret_key + "\n")
+
 
 #Global Flask_SQLAlchemy object
 db = SQLAlchemy()
@@ -40,13 +39,9 @@ ma = Marshmallow()
 def page_not_found(e):
   return render_template('404.html'), 404
 
-def create_flask_app():
+def create_flask_app(config_class):
     app = Flask(__name__)
-    app.config.from_object(Config)
-    app.config['SECRET_KEY'] = secret_key
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, "data/cycle_parking.db")
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    app.config["SQLALCHEMY_ECHO"] = True
+    app.config.from_object(config_class)
     app.register_error_handler(404, page_not_found)
 
     db.init_app(app)
@@ -77,7 +72,7 @@ def create_flask_app():
 
     return app
 
-app = create_flask_app()
+app = create_flask_app(config_class=config.TestingConfig)
 from main_flask_app import models
 
 if __name__ == '__main__':
