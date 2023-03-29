@@ -1,6 +1,6 @@
 # COMP0034 Coursework 2
 
-### This README contains:
+### This README contains
 
 [- General information on the flask app and API](#general-information)  
 [- Walk through of the flask website/app usage](#example-usage-of-flask-app)  
@@ -25,7 +25,12 @@
 
 7. The dataset is stored on the [cycle_parking.db](/main_flask_app/data/cycle_parking.db) database file and loaded from there when needed. In this case it is reloaded each time the flask server starts with the [csv_to_sql.py](/main_flask_app/data/csv_to_sql.py) being used to make sure the dataset is available in SQL form (it does not need to be reloaded in reality but if the database file or dataset tables are missing it ensures that they are available when the server runs). The engine and base type needed to be declared too in SQLAlchemy in order for the dataset tables to be accessed by flask.
 
-8. The API has GET, POST, PUT and DELETE routes. It allows for the creation of users and the creation, deletion and editing of reports. Some screenshots taken during tesing on the API testing website "Postman.co" can be found in the [API Postman.co screenshots folder.](/screenshots/api_postman.co_screenshots/). All the API routes can be found in the [api_bp/api_routes.py](/main_flask_app/api_bp/api_routes.py) file.
+8. The API has GET, POST, PUT and DELETE routes. These were all tested using pytest in the [Testing](#testing) section. The API allows for the creation of users and the creation, deletion and editing of reports. Some screenshots were also taken on the API testing website "Postman.co" and these can be found in the [API Postman.co screenshots folder](/screenshots/api_postman.co_screenshots/).  
+Below is an example of a test on Postman.co:  
+![Postman.co example](screenshots/api_postman.co_screenshots/post_creating_a_new_report/post_api_success.PNG)  
+All the API routes can be found in the [api_bp/api_routes.py](/main_flask_app/api_bp/api_routes.py) file.
+
+
 
 9. The API is used on the site by grabbing report data (for a specific borough or all borough) and creating a downloadable CSV file with that data.
 
@@ -75,11 +80,11 @@ This information is also available on the website itself on the API Instructions
 ### API GET Routes:
 http://127.0.0.1:5000/api/reports - Get all reports.
 
-http://127.0.0.1:5000/api/reports/borough/[Enter borough name] - Get all reports for a specific borough.
+http://127.0.0.1:5000/api/reports/borough/[Enter_borough_name] - Get all reports for a specific borough.
 
-http://127.0.0.1:5000/api/reports/rack/[Enter rack ID] - Get all reports for a specific bike rack.
+http://127.0.0.1:5000/api/reports/rack/[Enter_rack_ID] - Get all reports for a specific bike rack.
 
-http://127.0.0.1:5000/api/reports/user/[Enter username] - Get all reports made by a specific user.
+http://127.0.0.1:5000/api/reports/user/[Enter_username] - Get all reports made by a specific user.
 
 ### API POST Routes:
 http://127.0.0.1:5000/api/reports/create - Create a new report.  
@@ -97,7 +102,7 @@ JSON request body format for this request:
 
 ### API PUT Routes:
 
-http://127.0.0.1:5000/api/reports/edit/[Enter report ID] - Edit an existing report.  
+http://127.0.0.1:5000/api/reports/edit/[Enter_report_ID] - Edit an existing report.  
 JSON request body format for this request:  
 {"username" : "Enter username of report creator",  
 "password" : "Enter password of report creator",  
@@ -111,7 +116,7 @@ JSON request body format for this request:
 
 ### API DELETE Routes:
 
-http://127.0.0.1:5000/api/reports/delete/[Enter report ID]  
+http://127.0.0.1:5000/api/reports/delete/[Enter_report_ID]  
 Delete an existing report.  
 JSON request body format for this request:  
 {"username" : "[Enter username of report creator]",  
