@@ -58,16 +58,14 @@ def create_flask_app():
     #The blueprints needed to be imported first before being registered
     from main_flask_app.main_bp.main_bp import main_bp
     from main_flask_app.auth_bp.auth_bp import auth_bp
+    from main_flask_app.api_bp.api_routes import api_bp
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp)
+    app.register_blueprint(api_bp)
     create_dash_app(app)
 
     #Marshmallow needed to be initialised after the SQLAlchemy database was
     ma.init_app(app)
-
-    #This ensures that routes declared in the api_routes.py page can be recognised by flask
-    with app.app_context():
-        from main_flask_app import api_routes
 
     #Authentication setup
     login_manager = LoginManager()

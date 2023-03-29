@@ -17,4 +17,7 @@ pyproj
 area
 requests
 pytest
+pytest-flask
 selenium
+pytest-cov
+flask-testing
