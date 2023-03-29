@@ -8,6 +8,7 @@ wtforms
 flask_login
 passlib
 flask_marshmallow
+marshmallow-sqlalchemy
 pathlib
 dash_bootstrap_components
 dash
