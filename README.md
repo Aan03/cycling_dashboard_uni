@@ -36,10 +36,10 @@
 ## Example usage of flask app
 
 Home view (not logged in):  
-![Usage #1](/screenshots/site_app_usage_screenshots/1_index_page.png)
+![Usage #1](https://github.com/ucl-comp0035/comp0034-cw2-g-team_11/blob/main/screenshots/site_app_usage_screenshots/1_index_page.PNG)
 
 All reports page:  
-![Usage #2](/screenshots/site_app_usage_screenshots/2_all_user_reports.png)
+![Usage #2](screenshots/site_app_usage_screenshots/2_all_user_reports.png)
 
 Download reports page which uses API to get reports (downloaded file shown):  
 ![Usage #3](/screenshots/site_app_usage_screenshots/3_download_reports.png)  
