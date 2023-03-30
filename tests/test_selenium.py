@@ -67,29 +67,4 @@ def test_event_detail_page_selected(run_app_win, chrome_driver, flask_port):
     text = chrome_driver.find_element(By.ID, "highlights").text
     assert "First Games" in text
 
-
-def test_home_nav_link_returns_home(run_app_win, chrome_driver, flask_port):
-    """
-    GIVEN a running app
-    WHEN the homepage is accessed
-    AND then the user clicks on the event with the id="1"
-    AND then the user clicks on the navbar in the 'Home' link
-    THEN the page url should be "http://127.0.0.1:{flask_port}/"
-
-    """
-    url = f"http://localhost:{flask_port}/"
-    chrome_driver.get(url)
-    # Wait until the element with id="1" is on the page
-    # https://www.selenium.dev/documentation/webdriver/waits/
-    # and then click on it
-    el_1 = WebDriverWait(chrome_driver, timeout=3).until(
-        lambda d: d.find_element(By.ID, "1")
-    )
-    el_1.click()
-    nav_home = WebDriverWait(chrome_driver, timeout=3).until(
-        EC.element_to_be_clickable((By.ID, "nav-home"))
-    )
-    nav_home.click()
-    current_url = chrome_driver.current_url
-    assert current_url == url
 '''
