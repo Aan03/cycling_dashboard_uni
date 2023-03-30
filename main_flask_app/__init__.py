@@ -2,7 +2,6 @@ from flask import Flask
 from flask_marshmallow import Marshmallow
 from flask import render_template
 from flask_login import LoginManager
-
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
@@ -19,18 +18,16 @@ csv_to_sql.creating_dataset_tables()
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-
-
 #Global Flask_SQLAlchemy object
 db = SQLAlchemy()
 
 #Engine and Base type declared so that pre-existing dataset tables in the SQL database
 # could be accessed and used
 engine = create_engine('sqlite:///' + os.path.join(basedir, 
-                                                   "data/cycle_parking.db"))
+                                                   "data/dataset_cycle_parking.db"))
 Base = declarative_base()
 Base.metadata.reflect(engine)
-db_session = scoped_session(sessionmaker(bind=engine))
+db_dataset = scoped_session(sessionmaker(bind=engine))
 
 #Global Flask_marshmallow object
 ma = Marshmallow()
@@ -72,8 +69,4 @@ def create_flask_app(config_class):
 
     return app
 
-app = create_flask_app(config_class=config.TestingConfig)
 from main_flask_app import models
-
-if __name__ == '__main__':
-    app.run(debug=True, threaded=True)
