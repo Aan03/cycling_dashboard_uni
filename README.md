@@ -11,7 +11,7 @@
 1. Run the following commands from the main [/comp0034-cw2-g-team11](/) directory:
 
     pip install -r requirements.txt
-    flask --app main_flask_app --debug run
+    flask --app "main_flask_app:create_flask_app('main_flask_app.config.Config')" run
 
 2. There are three blueprints being used, [auth_bp](main_flask_app/auth_bp/), [main_bp](main_flask_app/main_bp/) and [api_bp](main_flask_app/api_bp/). Auth_bp manages the account creation and management of users, while main_bp handles the rest of the user experience like viewing, creating and managing theft reports. The api_bp manages the API routes.
 
@@ -23,13 +23,20 @@
 
 6. All forms were made using Flask.
 
-7. The dataset is stored on the [cycle_parking.db](/main_flask_app/data/cycle_parking.db) database file and loaded from there when needed. In this case it is reloaded each time the flask server starts with the [csv_to_sql.py](/main_flask_app/data/csv_to_sql.py) being used to make sure the dataset is available in SQL form (it does not need to be reloaded in reality but if the database file or dataset tables are missing it ensures that they are available when the server runs). The engine and base type needed to be declared too in SQLAlchemy in order for the dataset tables to be accessed by flask.
+7. The dataset is stored on the [dataset_cycle_parking.db](/main_flask_app/data/dataset_cycle_parking.db) database file and loaded from there when needed. In this case it is reloaded each time the flask server starts with the [csv_to_sql.py](/main_flask_app/data/csv_to_sql.py) being used to make sure the dataset is available in SQL form (it does not need to be reloaded in reality but if the database file or dataset tables are missing it ensures that they are available when the server runs). The engine and base type were needed to be declared too in SQLAlchemy in order for the dataset tables to be accessed by flask.
 
-8. The API has GET, POST, PUT and DELETE routes. These were all tested using pytest in the [Testing](#testing) section. The API allows for the creation of users and the creation, deletion and editing of reports. Some screenshots were also taken on the API testing website "Postman.co" and these can be found in the [API Postman.co screenshots folder](/screenshots/api_postman.co_screenshots/).  
-Below is an example of a test on Postman.co:  
-![Postman.co example](screenshots/api_postman.co_screenshots/post_creating_a_new_report/post_api_success.PNG)  
+8. The API has GET, POST, PUT and DELETE routes. These were all tested using pytest in the [Testing](#testing) section.  
+Below is an example of an API response on a browser (the Content-Type is "application/json"):  
+
+![API desktop #1](screenshots/api_response_desktop.PNG)
+
+The API allows for the creation of users and the creation, deletion and editing of reports. Some screenshots were also taken on the API testing website "Postman.co" and these can be found in the [API Postman.co screenshots folder](/screenshots/api_postman.co_screenshots/).  
+Below is are examples of API tests on Postman.co:
+
+![Postman.co example #1](screenshots/api_postman.co_screenshots/get_reports_for_specific_borough/borough_api_found.PNG)  
+![Postman.co example #2](screenshots/api_postman.co_screenshots/post_creating_a_new_report/post_api_success.PNG)  
+
 All the API routes can be found in the [api_bp/api_routes.py](/main_flask_app/api_bp/api_routes.py) file.
-
 
 
 9. The API is used on the site by grabbing report data (for a specific borough or all borough) and creating a downloadable CSV file with that data.
@@ -125,8 +132,8 @@ JSON request body format for this request:
 ## Testing
 1. Run the following command from the main [/comp0034-cw2-g-team11](/) directory to initiate testing:
 
-    pytest -v --cov=main_flask_app  
+    pytest -v -W ignore::DeprecationWarning  
 
-2. The tests for the API routes can be found in the [testing/test_api.py](/testing/test_api.py) file.
+2. The tests for the API routes can be found in the [tests/test_api.py](/testing/test_api.py) file.
 
-3. A copy of the clean [cycle_parking.db](/main_flask_app/data/cycle_parking.db) database file is used for testing purposes. This test database is the [test.db](/testing/test.db) file.
+3. A copy of the clean [cycle_parking.db](/main_flask_app/data/cycle_parking.db) database file is used for testing purposes. This test database is generated as the [test.db](/tests/test.db) file. The dataset database is also used.

@@ -10,7 +10,7 @@ def creating_dataset_tables():
     # ---------------------------------------------
 
     # Define the database file name and location
-    db_file = (basedir + "/cycle_parking.db")
+    db_file = (basedir + "/dataset_cycle_parking.db")
 
     # Connect to the database
     connection = sqlite3.connect(db_file)

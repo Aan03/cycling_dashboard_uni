@@ -1,7 +1,7 @@
 from flask import current_app as app, jsonify, make_response, request, Blueprint
 from sqlalchemy import func, desc
 from passlib.hash import sha256_crypt
-from main_flask_app import db, db_session
+from main_flask_app import db, db_dataset
 from main_flask_app.models import Reports, boroughs_list, cycle_parking_data, Users
 from main_flask_app.schemas import reports_schema
 from datetime import datetime
@@ -22,7 +22,7 @@ def get_all_reports():
     return make_response(response_json, 200)
 
 boroughs = []
-for x in db_session.query(boroughs_list.borough):
+for x in db_dataset.query(boroughs_list.borough):
     boroughs.append(list(x))
 boroughs = [element for nestedlist in boroughs for element in nestedlist]
 boroughs.remove("All Boroughs")
@@ -44,7 +44,7 @@ def get_borough_reports(borough):
         return make_response("404: The borough name is incorrect or it does not exist.", 404)
 
 rack_id_list = []
-for x in db_session.query(cycle_parking_data.feature_id):
+for x in db_dataset.query(cycle_parking_data.feature_id):
     rack_id_list.append(list(x))
 rack_id_list = [element for nestedlist in rack_id_list for element in nestedlist]
 rack_id_list_lower = []
@@ -79,11 +79,11 @@ def get_all_reports_for_user(username_get):
         response = jsonify("404: A user with the username " + username_get + " does not exist.")
         return make_response(response, 404)
 
-rack_id_query = db_session.query(cycle_parking_data.feature_id)
+rack_id_query = db_dataset.query(cycle_parking_data.feature_id)
 rack_id_list = []
 for x in rack_id_query:
     rack_id_list.append(x[0])
-each_rack_borough_query = db_session.query(cycle_parking_data.borough)
+each_rack_borough_query = db_dataset.query(cycle_parking_data.borough)
 each_rack_borough_list = []
 for x in each_rack_borough_query:
     each_rack_borough_list.append(x[0])

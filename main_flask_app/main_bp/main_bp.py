@@ -7,7 +7,7 @@ import requests
 import os
 import csv
 import json
-from main_flask_app import db, db_session
+from main_flask_app import db, db_dataset
 from main_flask_app.models import Reports, cycle_parking_data, boroughs_list
 from io import StringIO
 from flask_wtf import FlaskForm
@@ -21,13 +21,13 @@ maindir = os.path.abspath(os.path.join(basedir, os.pardir))
 #Querying dataset tables from the cycle_parking.db database and 
 # setting up variables/arrays for later use
 all_boroughs_list = []
-for x in db_session.query(boroughs_list.borough):
+for x in db_dataset.query(boroughs_list.borough):
     all_boroughs_list.append(list(x))
 all_boroughs_list = [element for nestedlist in all_boroughs_list for element in nestedlist]
 
 feature_id_list = []
 marker_data = []
-for x in db_session.query(cycle_parking_data.feature_id, cycle_parking_data.prk_cover,
+for x in db_dataset.query(cycle_parking_data.feature_id, cycle_parking_data.prk_cover,
                           cycle_parking_data.prk_secure, cycle_parking_data.prk_locker,
                           cycle_parking_data.prk_cpt, cycle_parking_data.borough,
                           cycle_parking_data.photo1_url, cycle_parking_data.photo2_url,
