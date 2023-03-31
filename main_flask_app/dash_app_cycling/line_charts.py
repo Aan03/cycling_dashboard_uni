@@ -112,7 +112,7 @@ thirdyearpd = pd.date_range(start="2022-01-01", end="2022-12-31", freq="D")
 
 
 @dash.callback(
-    Output("report_graph", "figure"), 
+    Output("report_graph", "figure"),
     Input("dropdown_borough", "value"),
     Input("dropdown_year", "value"),
     Input("tick_times", "value"))
@@ -130,7 +130,8 @@ def update_report_chart(dropdown_borough, dropdown_year, tick_times):
         for x in tick_times:
             if x == "All Day":
                 if dropdown_borough == "All Boroughs":
-                    temp_df = (Reports_df[Reports_df.date.dt.year == dropdown_year])
+                    temp_df = (Reports_df[
+                        Reports_df.date.dt.year == dropdown_year])
                     temp_df = temp_df.groupby(by="date")['Count'].sum()
                     temp_df = temp_df.to_frame().reset_index()
                     temp_df = temp_df.set_index('date')
@@ -138,29 +139,38 @@ def update_report_chart(dropdown_borough, dropdown_year, tick_times):
                     temp_df = temp_df.reset_index()
                     plot_df[x] = temp_df["Count"]
                 else:
-                    temp_df = (Reports_df[Reports_df.date.dt.year == dropdown_year])
-                    temp_df = temp_df.loc[temp_df['BOROUGH'] == dropdown_borough]
+                    temp_df = (Reports_df[
+                        Reports_df.date.dt.year == dropdown_year])
+                    temp_df = temp_df.loc[
+                        temp_df['BOROUGH'] == dropdown_borough]
                     temp_df = temp_df.groupby(by="date")['Count'].sum()
                     temp_df = temp_df.to_frame().reset_index()
-                    temp_df = temp_df.set_index('date').reindex(display_dates,fill_value=0)
+                    temp_df = temp_df.set_index('date').reindex(
+                        display_dates, fill_value=0)
                     temp_df = temp_df.reset_index()
                     plot_df[x] = temp_df["Count"]
             else:
                 if dropdown_borough == "All Boroughs":
                     temp_df = Reports_df.loc[(Reports_df['d_time'] == x)]
                     temp_df = temp_df.sort_values('date')
-                    temp_df = temp_df.groupby(by="date")['Count'].sum()
+                    temp_df = temp_df.groupby(
+                        by="date")['Count'].sum()
                     temp_df = temp_df.to_frame().reset_index()
-                    temp_df = temp_df.set_index('date').reindex(display_dates,fill_value=0)
+                    temp_df = temp_df.set_index('date').reindex(
+                        display_dates, fill_value=0)
                     temp_df = temp_df.reset_index()
                     display_count = temp_df["Count"]
                     plot_df[x] = display_count
                 else:
-                    temp_df = Reports_df.loc[(Reports_df['BOROUGH'] == dropdown_borough)
-                                 & (Reports_df['d_time'] == x)].sort_values('date')
+                    temp_df = Reports_df.loc[
+                        (Reports_df[
+                                    'BOROUGH'] == dropdown_borough) & (
+                                    Reports_df['d_time'] == x)
+                                    ].sort_values('date')
                     temp_df = temp_df.groupby(by="date")['Count'].sum()
                     temp_df = temp_df.to_frame().reset_index()
-                    temp_df = temp_df.set_index('date').reindex(display_dates,fill_value=0)
+                    temp_df = temp_df.set_index('date').reindex(
+                        display_dates, fill_value=0)
                     temp_df = temp_df.reset_index()
                     plot_df[x] = temp_df["Count"]
 

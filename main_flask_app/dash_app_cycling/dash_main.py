@@ -1,9 +1,10 @@
 # Statistics page
-from dash import html, dcc, Dash
+from dash import dcc, Dash
 import dash_bootstrap_components as dbc
-import main_flask_app.dash_app_cycling.bar_charts as bar_charts # barcharts
-import main_flask_app.dash_app_cycling.line_charts as line_charts # linecharts
-import main_flask_app.dash_app_cycling.choropleths as choropleths # choropleths
+import main_flask_app.dash_app_cycling.bar_charts as bar_charts  # barcharts
+import main_flask_app.dash_app_cycling.line_charts as line_charts  # linecharts
+import main_flask_app.dash_app_cycling.choropleths as choropleths  # choropleth
+
 
 def create_dash_app(flask_app):
     """Creates Dash as a route in Flask
@@ -33,12 +34,12 @@ def create_dash_app(flask_app):
             value="All Boroughs",
             clearable=False)
 
-
     def stats_layout():
         """Define the statistic page layout."""
         return dbc.Container(children=[
             dbc.Row(children=[
-                dbc.Col(choropleths.app4_layout(), width="100%", align="evenly",),
+                dbc.Col(choropleths.app4_layout(), width="100%",
+                        align="evenly"),
             ]),
             dbc.Row(children=[
                 dbc.Col(all_boroughs(), width="100%"),
@@ -62,6 +63,6 @@ def create_dash_app(flask_app):
                     ),
         ], fluid=True
         )
-    
+
     dash_app.layout = stats_layout()
     return dash_app

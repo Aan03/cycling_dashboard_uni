@@ -66,7 +66,7 @@ def update_bar_chart(BOROUGH, quant_percent):
             total = df_grouped.loc[df_grouped['BOROUGH'] ==
                                    BOROUGH, "Total"].item()
             y_data = [cover, secured, locker, total]
-        title_final = ("Type of & Total Quantity<br>of Bike Racks in<br>" + 
+        title_final = ("Type of & Total Quantity<br>of Bike Racks in<br>" +
                        BOROUGH + ":<br>")
         y_axis_label = "Quantity of Bike Racks"
         x_labels = ["Covered", "Secured", "Locker", "Total"]

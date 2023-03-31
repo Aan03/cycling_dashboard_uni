@@ -2,6 +2,7 @@ import sqlite3
 import pandas as pd
 import os
 
+
 def creating_dataset_tables():
     basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -52,16 +53,17 @@ def creating_dataset_tables():
     cycle_parking_info = (basedir + "/cycle_parking_data.csv")
     cycle_parking_df = pd.read_csv(cycle_parking_info, keep_default_na=False)
     cycle_parking_df.to_sql("cycle_parking_data", connection,
-                    if_exists="append",
-                    index=False,)
+                            if_exists="append",
+                            index=False,)
 
     boroughs_list = (basedir + "/boroughs_list.csv")
     boroughs_list_df = pd.read_csv(boroughs_list, keep_default_na=False)
     boroughs_list_df.to_sql("boroughs_list", connection,
-                    if_exists="append",
-                    index=False,)
+                            if_exists="append",
+                            index=False,)
 
     connection.close()
+
 
 if __name__ == '__main__':
     creating_dataset_tables()

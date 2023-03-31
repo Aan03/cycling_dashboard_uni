@@ -26,9 +26,12 @@ def test_home_page(run_app_win, chrome_driver, flask_port):
     WHEN the homepage is accessed
     AND the user clicks on the event with the id="1"
     THEN a page with the title "Rome" should be displayed
-    AND 
+    AND
     """
     url = f"http://localhost:{flask_port}"
     chrome_driver.get(url)
     # Wait until the element with id="1" is on the page
-    # https://www.selenium.dev/documentation/webdriver/waits/ and then click on it
+    # https://www.selenium.dev/documentation/webdriver/waits/
+    # and then click on it
+
+#GIVEN 

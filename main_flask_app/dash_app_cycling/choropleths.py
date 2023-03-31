@@ -112,7 +112,7 @@ def app4_layout():
         dcc.Dropdown(
             id="prop_or_density",
             options=[{'label': k, 'value': k} for k in all_options.keys()],
-            value="Density",          
+            value="Density",
         ),
         dcc.Graph(id="choropleth_graph", style={"margin": "auto"}),
     ], lang="en")
@@ -133,7 +133,7 @@ def set_initial_button_value(available_options):
 
 
 @dash.callback(
-    Output("choropleth_graph", "figure"), 
+    Output("choropleth_graph", "figure"),
     Input("rack_type", "value"),
     Input("prop_or_density", "value"))
 def display_choropleth(rack_type, prop_or_density):
@@ -142,7 +142,7 @@ def display_choropleth(rack_type, prop_or_density):
         if rack_type == "Locker":
             selected_density = 'PRK_LOCKER_PROP'
             max = max_locker_prop
-            title = "Proportion of racks" + '<br>' + "that are lockers"  
+            title = "Proportion of racks" + '<br>' + "that are lockers"
         elif rack_type == "Cover":
             selected_density = 'PRK_COVER_PROP'
             max = max_cover_prop

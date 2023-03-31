@@ -1,4 +1,5 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash, current_app
+from flask import Blueprint, render_template, redirect, url_for
+from flask import request, flash, current_app
 from flask_login import login_required, current_user, login_user, logout_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, validators
@@ -7,37 +8,49 @@ from main_flask_app import db
 from main_flask_app.models import Users
 from passlib.hash import sha256_crypt
 
-auth_bp = Blueprint('auth_bp', __name__, template_folder = "templates")
+auth_bp = Blueprint('auth_bp', __name__,
+                    template_folder="templates")
 
-#Classes for forms
+
+# Classes for forms
 class LoginForm(FlaskForm):
-    username = StringField("Username:", validators = [validators.DataRequired()])
-    password = PasswordField("Password:", validators = [validators.DataRequired()])
+    username = StringField("Username:", validators=[
+        validators.DataRequired()])
+    password = PasswordField("Password:", validators=[
+        validators.DataRequired()])
     submit = SubmitField("Login")
 
+
 class SignUpForm(FlaskForm):
-    username = StringField("Username:", validators = [validators.DataRequired()])
-    password = PasswordField("Password:", validators = [validators.DataRequired()])
+    username = StringField("Username:", validators=[
+        validators.DataRequired()])
+    password = PasswordField("Password:", validators=[
+        validators.DataRequired()])
     submit = SubmitField("Sign Up")
 
+
 class ChangePassword(FlaskForm):
-    password_current = PasswordField("Enter your current password:", validators = [validators.DataRequired()])
-    password_new = PasswordField("Enter your new password:", validators = [validators.DataRequired()])
+    password_current = PasswordField("Enter your current password:",
+                                     validators=[validators.DataRequired()])
+    password_new = PasswordField("Enter your new password:",
+                                 validators=[validators.DataRequired()])
     submit = SubmitField("Change Password")
 
-#Login users
+
+# Login users
 @auth_bp.route('/login', methods=['POST', 'GET'])
 def login():
     login_form = LoginForm()
     if request.method == "GET":
-        return render_template('login.html', login_form = login_form)
+        return render_template('login.html', login_form=login_form)
 
     elif request.method == "POST":
         username_flask = (request.form['username']).lower()
         password_flask = request.form['password']
         user_check = Users.query.filter_by(username=username_flask).first()
-        
-        if not user_check or sha256_crypt.verify(password_flask, user_check.password) == False:
+  
+        if not user_check or sha256_crypt.verify(password_flask,
+                                                 user_check.password) == False:
             flash('Please check your login details and try again.')
             return redirect(url_for('auth_bp.login'))
 
@@ -48,14 +61,16 @@ def login():
             else:
                 flash("Incorrect password. Try again.")
 
-#Allow users to change their passwords
+
+# Allow users to change their passwords
 @auth_bp.route('/account', methods=['POST', 'GET'])
 @login_required
 def user_account():
     update_password_form = ChangePassword()
     if request.method == "GET":
-        return render_template('account.html', update_password_form=update_password_form)
-    
+        return render_template('account.html',
+                               update_password_form=update_password_form)
+
     elif request.method == "POST":
         curr_entered_pwd = request.form["password_current"]
         new_entered_pwd = request.form["password_new"]
@@ -68,10 +83,11 @@ def user_account():
             db.session.commit()
         else:
             flash("Your current password was entered incorrectly. Try again.")
+        return render_template('account.html',
+                               update_password_form=update_password_form)
 
-        return render_template('account.html', update_password_form=update_password_form)
-        
-#Logout users
+
+# Logout users
 @auth_bp.route('/logout', methods=['POST', 'GET'])
 @login_required
 def logout():
@@ -79,7 +95,8 @@ def logout():
     flash("Logged out successfully.")
     return redirect(url_for('main_bp.index'))
 
-#Sign up new users
+
+# Sign up new users
 @auth_bp.route('/sign_up', methods=['POST', 'GET'])
 def sign_up():
     sign_up_form = SignUpForm()

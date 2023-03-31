@@ -11,7 +11,7 @@ def test_get_reports_all(test_client, test_input, expected):
     WHEN a user makes a GET request for all reports,
     THEN the user should receive a JSON response containing all user reports
          and they should also receive a response code of 200.
-         Or they should receive a response code of 404 if the request 
+         Or they should receive a response code of 404 if the request
          was invalid.
     '''
     response = test_client.get("/api/reports" + test_input)
@@ -32,7 +32,7 @@ def test_get_reports_borough(test_client, test_input, expected):
     WHEN a user makes a GET request for all reports from a specific borough,
     THEN the user should receive a JSON response containing all user reports
          from that borough and they should also receive a response code of 200.
-         Or they should receive a response code of 404 if the request was 
+         Or they should receive a response code of 404 if the request was
          invalid.
     '''
     response = test_client.get("/api/reports/borough/" + test_input)
