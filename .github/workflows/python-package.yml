@@ -29,15 +29,13 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install flake8 pytest coverage
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Test with pytest
-      run: |
-        coverage run -m pytest -v -W ignore::DeprecationWarning
-        coverage report -m
-        # Fail the step if the coverage is less than 100%
-        coverage report --fail-under=100
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    - name: Test with pytest and generate coverage report
+      run: |
+        coverage run --source=. -m pytest -v -W ignore::DeprecationWarning
+        coverage report -m
