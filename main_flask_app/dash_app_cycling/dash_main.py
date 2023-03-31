@@ -1,9 +1,9 @@
 # Statistics page
 from dash import html, dcc, Dash
 import dash_bootstrap_components as dbc
-import main_flask_app.dash_app_cycling.app2 as app2 # barcharts
-import main_flask_app.dash_app_cycling.app3 as app3 # linecharts
-import main_flask_app.dash_app_cycling.app4 as app4# choropleths
+import main_flask_app.dash_app_cycling.bar_charts as bar_charts # barcharts
+import main_flask_app.dash_app_cycling.line_charts as line_charts # linecharts
+import main_flask_app.dash_app_cycling.choropleths as choropleths # choropleths
 
 def create_dash_app(flask_app):
     """Creates Dash as a route in Flask
@@ -29,7 +29,7 @@ def create_dash_app(flask_app):
         """Return a dropdown widget to select the borough."""
         return dcc.Dropdown(
             id="dropdown_borough",
-            options=app2.borough_names.loc[:, "name"],
+            options=bar_charts.borough_names.loc[:, "name"],
             value="All Boroughs",
             clearable=False)
 
@@ -38,21 +38,21 @@ def create_dash_app(flask_app):
         """Define the statistic page layout."""
         return dbc.Container(children=[
             dbc.Row(children=[
-                dbc.Col(app4.app4_layout(), width="100%", align="evenly",),
+                dbc.Col(choropleths.app4_layout(), width="100%", align="evenly",),
             ]),
             dbc.Row(children=[
                 dbc.Col(all_boroughs(), width="100%"),
             ]),
             dbc.Row(children=[
                     dbc.Col(
-                        (app2.app2_layout()),
+                        (bar_charts.app2_layout()),
                         md=4,
                         xs=12,
                         sm=12,
                         align="evenly",
                     ),
                     dbc.Col(
-                        (app3.app3_layout()),
+                        (line_charts.app3_layout()),
                         md=8,
                         xs=12,
                         sm=12,

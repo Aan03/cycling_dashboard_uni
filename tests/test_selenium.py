@@ -25,46 +25,40 @@ def run_app_win(flask_port):
             "main_flask_app:create_flask_app('main_flask_app.config.TestConfig')",
             "run",
             "--port",
-            str(flask_port),
+            str(flask_port)
         ]
     )
     try:
         yield server
+        try:
+            url = f"http://localhost:{flask_port}/api"
+            response = requests.get(url)
+            print("aaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+            print(response)
+        except:
+            print("nopeeeeeeeee")
     finally:
         server.terminate()
 
-def test_home_page_running(run_app_win, flask_port):
+def test_request_flask(run_app_win, flask_port):
     """
     GIVEN a running app
     WHEN the homepage is accessed successfully
     THEN the status code will be 200
     """
-    # localhost has the IP address 127.0.0.1, which refers
-    # back to your own server on your local computer
     url = f"http://localhost:{flask_port}/"
     response = requests.get(url)
     assert response.status_code == 200
 
-'''
-def test_event_detail_page_selected(run_app_win, chrome_driver, flask_port):
+def test_home_page(run_app_win, chrome_driver, flask_port):
     """
     GIVEN a running app
     WHEN the homepage is accessed
     AND the user clicks on the event with the id="1"
     THEN a page with the title "Rome" should be displayed
-    AND the page should contain an element with the id "highlights"
-    should be displayed and contain a text value "First Games"
+    AND 
     """
-    url = f"http://localhost:{flask_port}/"
+    url = f"http://localhost:{flask_port}"
     chrome_driver.get(url)
     # Wait until the element with id="1" is on the page
     # https://www.selenium.dev/documentation/webdriver/waits/ and then click on it
-    el_1 = WebDriverWait(chrome_driver, timeout=3).until(
-        lambda d: d.find_element(By.ID, "1")
-    )
-    el_1.click()
-    # Find the text value of the event highlights
-    text = chrome_driver.find_element(By.ID, "highlights").text
-    assert "First Games" in text
-
-'''

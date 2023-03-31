@@ -7,12 +7,10 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 import os
-from main_flask_app.dash_app_cycling.stats import create_dash_app
 from main_flask_app.dash_app_cycling import *
 from main_flask_app import config
 from main_flask_app.data import csv_to_sql
 from flask_marshmallow import Marshmallow
-
 
 csv_to_sql.creating_dataset_tables()
 
@@ -36,9 +34,11 @@ ma = Marshmallow()
 def page_not_found(e):
   return render_template('404.html'), 404
 
-def create_flask_app(config_class):
+def create_flask_app(config_selected):
+    print(config_selected)
     app = Flask(__name__)
-    app.config.from_object(config_class)
+    app.config.from_object(config_selected)
+    
     app.register_error_handler(404, page_not_found)
 
     db.init_app(app)
@@ -54,7 +54,12 @@ def create_flask_app(config_class):
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(api_bp)
-    create_dash_app(app)
+    
+    #The following was used to prevent a subroutine error where the dash app server
+    # clashed with the flask server during testing.
+    if str(config_selected) == "main_flask_app.config.Config":
+        from main_flask_app.dash_app_cycling.dash_main import create_dash_app
+        create_dash_app(app)
 
     #Marshmallow needed to be initialised after the SQLAlchemy database was
     ma.init_app(app)

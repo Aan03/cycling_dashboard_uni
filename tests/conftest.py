@@ -2,14 +2,13 @@ import pytest
 from main_flask_app import create_flask_app, db
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
-from main_flask_app.config import TestConfig
+from main_flask_app import config
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def app():
     """Create a Flask app configured for testing"""
-    app = create_flask_app(TestConfig)
+    app = create_flask_app(config.TestConfig)
     yield app
-
 
 @pytest.fixture(scope="function")
 def test_client(app):
@@ -32,13 +31,13 @@ def test_client(app):
         db.drop_all()
 
 @pytest.fixture(scope="session")
-def chrome_browser():
+def chrome_driver():
     """Setup options for the Chromedriver when using Selenium"""
     options = Options()
     #options.add_argument("--no-sandbox")
     #options.add_argument("--start-maximized")
     options.add_argument("--disable-gpu")
-    options.add_argument("--headless")
+    #options.add_argument("--headless")
     options.add_argument('window-size=1920x1080')
     driver = webdriver.Chrome("chromedriver.exe")
     yield driver

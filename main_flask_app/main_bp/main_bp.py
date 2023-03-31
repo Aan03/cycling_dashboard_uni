@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash, make_response
+from flask import Blueprint, render_template, redirect, url_for, request, flash, make_response, current_app
 from flask_login import login_required, current_user
 from main_flask_app.dash_app_cycling import *
 from flask_wtf import FlaskForm

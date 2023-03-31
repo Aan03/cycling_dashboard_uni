@@ -1,4 +1,4 @@
-from flask import current_app as app, jsonify, make_response, request, Blueprint
+from flask import current_app, jsonify, make_response, request, Blueprint
 from sqlalchemy import func, desc
 from passlib.hash import sha256_crypt
 from main_flask_app import db, db_dataset

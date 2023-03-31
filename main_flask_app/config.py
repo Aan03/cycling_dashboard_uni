@@ -4,7 +4,6 @@ import secrets
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 basedir_pathlib = pathlib.Path(__file__).parent
-print(basedir_pathlib.parent)
 
 secret_key = secrets.token_urlsafe(16)
 print("\nSecret key for session:\n" + secret_key + "\n")

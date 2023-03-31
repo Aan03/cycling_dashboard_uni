@@ -7,7 +7,7 @@ import plotly.express as px
 import pandas as pd
 
 
-from main_flask_app.dash_app_cycling.app4 import df_grouped
+from main_flask_app.dash_app_cycling.choropleths import df_grouped
 
 import os
 data_dir = os.path.abspath(os.path.dirname(__file__))
