@@ -140,8 +140,7 @@ def post_report():
                 response = jsonify("Theft report added successfully.")
                 return make_response(response, 201)
             else:
-                response = jsonify('404: A bike rack with that ID'
-                                   'was not found.')
+                response = jsonify('404: A bike rack with that ID was not found.')
                 return make_response(response, 404)
         else:
             response = jsonify('Password received was incorrect.')
@@ -173,7 +172,7 @@ def new_user_api():
         db.session.add(new_user)
         db.session.commit()
         response = jsonify("User " + new_user_username
-                           + " has been signed up successfuly.")
+                           + " has been signed up successfully.")
         return make_response(response, 201)
 
 
