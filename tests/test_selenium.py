@@ -6,7 +6,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
-#from selenium.webdriver.common.action_chains import ActionChains
+# from selenium.webdriver.common.action_chains import ActionChains
+
 
 def test_request_flask(run_app_win, flask_port):
     """
@@ -17,6 +18,7 @@ def test_request_flask(run_app_win, flask_port):
     url = f"http://localhost:{flask_port}/"
     response = requests.get(url)
     assert response.status_code == 200
+
 
 def test_home_page(run_app_win, chrome_driver, flask_port):
     """
