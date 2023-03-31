@@ -1,13 +1,11 @@
 # COMP0034 Coursework 2
 
-### This README contains
-
 [- General information on the flask app and API](#general-information)  
 [- Walk through of the flask website/app usage](#example-usage-of-flask-app)  
 [- API Routes](#api-routes)  
 [- Testing](#testing)
 
-## General information
+## General information on code and testing
 1. Run the following commands from the main [/comp0034-cw2-g-team11](/) directory:
 
     pip install -r requirements.txt  
@@ -24,6 +22,14 @@
 6. All forms were made using Flask.
 
 7. The dataset is stored on the [dataset_cycle_parking.db](/main_flask_app/data/dataset_cycle_parking.db) database file and loaded from there when needed. In this case it is reloaded each time the flask server starts with the [csv_to_sql.py](/main_flask_app/data/csv_to_sql.py) being used to make sure the dataset is available in SQL form (it does not need to be reloaded in reality but if the database file or dataset tables are missing it ensures that they are available when the server runs). The engine and base type were needed to be declared too in SQLAlchemy in order for the dataset tables to be accessed by flask.
+
+Below is a free website (https://inloop.github.io/sqlite-viewer/) used to view SQL databases, the first database is the database with the users and reports tables (the users table is shown with both the username and encrypted passwords columns):
+
+![SQL view #1](screenshots/sql_viewer1.PNG)
+
+And next is the view of the dataset database with all the cycle racks and boroughs:
+
+![SQL view #2](screenshots/sql_viewer2.PNG)
 
 8. The API has GET, POST, PUT and DELETE routes. These were all tested using pytest in the [Testing](#testing) section.  
 Below is an example of an API response on a browser (the Content-Type is "application/json"):  
@@ -85,6 +91,7 @@ Anyone can view reports for specific bike racks:
 This information is also available on the website itself on the API Instructions page.
 
 ### API GET Routes:
+
 http://127.0.0.1:5000/api/reports - Get all reports.
 
 http://127.0.0.1:5000/api/reports/borough/[Enter_borough_name] - Get all reports for a specific borough.
@@ -94,6 +101,7 @@ http://127.0.0.1:5000/api/reports/rack/[Enter_rack_ID] - Get all reports for a s
 http://127.0.0.1:5000/api/reports/user/[Enter_username] - Get all reports made by a specific user.
 
 ### API POST Routes:
+
 http://127.0.0.1:5000/api/reports/create - Create a new report.  
 JSON request body format for this request:  
 {"username" : "Enter username of report creator",  
@@ -130,10 +138,16 @@ JSON request body format for this request:
 "password" : "[Enter password of report creator]"}
 
 ## Testing
-1. Run the following command from the main [/comp0034-cw2-g-team11](/) directory to initiate testing:
+1. Run the following command from the main [/comp0034-cw2-g-team11](/) directory to initiate testing (using pytest):
 
     pytest -v -W ignore::DeprecationWarning  
 
-2. The tests for the API routes can be found in the [tests/test_api.py](/testing/test_api.py) file.
+2. The [tests/conftest.py](/tests/conftest.py) file defines fixtures such as the flask test client for routes testing and the chrome driver for selenium testing. 
 
-3. A copy of the clean [cycle_parking.db](/main_flask_app/data/cycle_parking.db) database file is used for testing purposes. This test database is generated as the [test.db](/tests/test.db) file. The dataset database is also used.
+3. The tests for the API routes can be found in the [tests/test_api_routes.py](/tests/test_api_routes.py) file. (Non-pytest API tests can be found in the [Postman.co screenshots folder](screenshots\api_postman.co_screenshots))
+
+4. The tests for the other flask routes can be found in the [tests/test_other_routes.py](/tests/test_other_routes.py) file.
+
+5. The selenium tests can be found in the [tests/test_selenium.py](/tests/test_selenium.py) file.
+
+6. A copy of the clean [cycle_parking.db](/main_flask_app/data/cycle_parking.db) database file is used for testing purposes. This test database is generated as the [test.db](/tests/test.db) file. The dataset database is also used.

@@ -3,6 +3,10 @@ from main_flask_app import create_flask_app, db
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 from main_flask_app import config
+import subprocess
+import socket
+import requests
+import pytest
 
 @pytest.fixture(scope="function")
 def app():
@@ -10,6 +14,9 @@ def app():
     app = create_flask_app(config.TestConfig)
     yield app
 
+#An instance of the app is created as a test client.
+# The test database used by the test using this fixture is cleared 
+# so for each new test, the users and reports are added again to an empty test database.  
 @pytest.fixture(scope="function")
 def test_client(app):
     with app.app_context():   
@@ -29,6 +36,38 @@ def test_client(app):
                                                       "details" : "test2 report details"})
         yield test_client
         db.drop_all()
+
+@pytest.fixture(scope="module")
+def flask_port():
+    """Ask OS for a free port."""
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind(("", 0))
+        addr = s.getsockname()
+        port = addr[1]
+        return port
+
+@pytest.fixture(scope="module")
+def run_app_win(flask_port):
+    """Runs the Flask app for live server testing on Windows"""
+    server = subprocess.Popen(
+        [
+            "flask",
+            "--app",
+            "main_flask_app:create_flask_app('main_flask_app.config.TestConfig')",
+            "run",
+            "--port",
+            str(flask_port)
+        ]
+    )
+    try:
+        yield server
+        try:
+            url = f"http://localhost:{flask_port}/api"
+            response = requests.get(url)
+        except:
+            print("There was an error connecting to the flask server")
+    finally:
+        server.terminate()
 
 @pytest.fixture(scope="session")
 def chrome_driver():
