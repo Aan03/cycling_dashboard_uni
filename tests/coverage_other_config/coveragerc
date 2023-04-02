@@ -1,0 +1,2 @@
+[run]
+omit = tests/*,main_flask_app/data/*,main_flask_app/dash_app_cycling/*,main_flask_app/api_bp/*,main_flask_app/schemas.py
