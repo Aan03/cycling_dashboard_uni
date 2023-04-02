@@ -57,6 +57,7 @@
       the map to fill out the rack details. You can also 
       manage your reports on the "My Reports" page.</p>
   <form method="POST" action="/">
+    {{ report_form.csrf_token}}
     {{report_form.report_rack_id.label}}
     <br>
     {{report_form.report_rack_id()}}
