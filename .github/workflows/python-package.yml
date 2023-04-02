@@ -37,10 +37,10 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: API Routes Testing and Coverage Report
       run: |
-        pytest tests/test_api_routes.py -v --cov=main_flask_app --cov-config=tests/.coverage_api -W ignore::DeprecationWarning
+        pytest tests/test_api_routes.py -v --cov=main_flask_app --cov-config=tests/coverage_api_config/.coveragerc -W ignore::DeprecationWarning
     - name: Other Routes Testing and Coverage Report
       run: |
-        pytest tests/test_other_routes.py -v --cov=main_flask_app --cov-config=tests/.coverage_other -W ignore::DeprecationWarning
+        pytest tests/test_other_routes.py -v --cov=main_flask_app --cov-config=tests/coverage_other_config/.coveragerc -W ignore::DeprecationWarning
     - name: Selenium Testing
       run: |
         pytest tests/test_selenium.py -v -W ignore::DeprecationWarning
