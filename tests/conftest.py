@@ -113,6 +113,15 @@ def selenium_db_setup():
     connection.commit()
     cursor.execute(drop_reports_table)
     connection.commit()
+
+    create_users_table = """CREATE TABLE IF NOT EXISTS users(
+                    id INTEGER PRIMARY KEY,
+                    username TEXT NOT NULL,
+                    password TEXT NOT NULL);
+                    """
+    
+    cursor.execute(create_users_table)
+    connection.commit()
     encrypted_password = sha256_crypt.hash(pytest.test_raw_password)
     cursor.execute("INSERT INTO users (username, password) VALUES(?, ?)", 
                    (pytest.existing_test_user, encrypted_password))
