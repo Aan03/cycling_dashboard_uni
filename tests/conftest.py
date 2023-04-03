@@ -11,7 +11,7 @@ import os
 import sqlite3
 from passlib.hash import sha256_crypt
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def app():
     """Create a Flask app configured for testing"""
     app = create_flask_app(config.TestConfig) 
@@ -47,7 +47,7 @@ def test_client(app):
         db.drop_all()
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def flask_port():
     """Ask OS for a free port."""
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -57,7 +57,7 @@ def flask_port():
         return port
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def run_app_win(flask_port):
     """Runs the Flask app for live server testing on Windows"""
     server = subprocess.Popen(
@@ -81,12 +81,16 @@ def run_app_win(flask_port):
         server.terminate()
         
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def chrome_driver():
   options = Options()
+  options.add_argument("--disable-gpu")
   options.add_argument("--headless=new")
+  options.add_argument("--start-maximized")
+  #options.add_argument("--headless")
+  options.add_argument('window-size=1920x1080')
   driver = Chrome(options=options)
-  driver.maximize_window()
+  #driver.maximize_window()
   yield driver
   driver.quit()
 
