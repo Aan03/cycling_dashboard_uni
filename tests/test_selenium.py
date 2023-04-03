@@ -318,6 +318,8 @@ def test_login_warning(run_app_win, chrome_driver, flask_port, test_input, expec
     WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,'''/html/body/div/div/h3''')))
     chrome_driver.get_screenshot_as_file("screenshots/selenium_screenshots/login_warning.png")
 
+    time.sleep(10)
+
     assert WebDriverWait(chrome_driver, 15).until(EC.text_to_be_present_in_element((By.XPATH, '/html/body/ul/li'), expected))
 
 
@@ -421,6 +423,7 @@ def test_api_instructions_page_selected(run_app_win, chrome_driver, flask_port):
         lambda d: d.find_element(By.XPATH, '//*[@id="nav-api"]')
     )
     nav_home_button.click()
+    time.sleep(10)
     text = chrome_driver.find_element(By.XPATH, "/html/body/div/h5[1]").text
     assert "API GET Routes:" in text
 

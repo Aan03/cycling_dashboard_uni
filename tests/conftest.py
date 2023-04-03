@@ -107,7 +107,7 @@ def selenium_db_setup():
     db_file = (basedir + "/test.db")
     connection = sqlite3.connect(db_file)
     cursor = connection.cursor()
-    drop_users_table = """DELETE FROM users;"""
+    drop_users_table = """DROP TABLE IF EXISTS users;"""
     drop_reports_table = """DELETE FROM reports;"""
     cursor.execute(drop_users_table)
     connection.commit()
