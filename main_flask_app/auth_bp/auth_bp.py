@@ -78,7 +78,7 @@ def user_account():
 
         if sha256_crypt.verify(curr_entered_pwd, user_check.password):
             flash("Password changed successfully.")
-            new_encrypted_password = sha256_crypt.encrypt(new_entered_pwd)
+            new_encrypted_password = sha256_crypt.hash(new_entered_pwd)
             user_check.password = new_encrypted_password
             db.session.commit()
         else:
@@ -105,7 +105,7 @@ def sign_up():
     elif request.method == "POST":
         username_flask = (request.form['username']).lower()
         password_flask = request.form['password']
-        encrypted_password = sha256_crypt.encrypt(password_flask)
+        encrypted_password = sha256_crypt.hash(password_flask)
 
         user_check = Users.query.filter_by(username=username_flask).first()
         if user_check:

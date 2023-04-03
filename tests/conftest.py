@@ -1,6 +1,7 @@
 import pytest
 from main_flask_app import create_flask_app, db
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver import Chrome
 from selenium import webdriver
 from main_flask_app import config
 import subprocess
@@ -8,9 +9,9 @@ import socket
 import requests
 import os
 import sqlite3
+from passlib.hash import sha256_crypt
 
-
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="session")
 def app():
     """Create a Flask app configured for testing"""
     app = create_flask_app(config.TestConfig) 
@@ -46,7 +47,7 @@ def test_client(app):
         db.drop_all()
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="session")
 def flask_port():
     """Ask OS for a free port."""
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -56,7 +57,7 @@ def flask_port():
         return port
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="session")
 def run_app_win(flask_port):
     """Runs the Flask app for live server testing on Windows"""
     server = subprocess.Popen(
@@ -82,17 +83,20 @@ def run_app_win(flask_port):
 
 @pytest.fixture(scope="session")
 def chrome_driver():
-    """Setup options for the Chromedriver when using Selenium"""
-    options = Options()
-    # options.add_argument("--no-sandbox")
-    # options.add_argument("--start-maximized")
-    options.add_argument("--disable-gpu")
-    # options.add_argument("--headless")
-    options.add_argument('window-size=1920x1080')
-    driver = webdriver.Chrome("chromedriver.exe")
-    yield driver
+  options = Options()
+  options.add_argument("--headless=new")
+  driver = Chrome(options=options)
+  driver.maximize_window()
+  yield driver
+  driver.quit()
+
+# Login credentials of a test user
+pytest.existing_test_user = "exisiting_test_user"
+pytest.test_raw_password = "password123"
 
 
+# Fixture used to setup the default database for selenium tests
+# adds a user and a theft report
 @pytest.fixture(scope="function")
 def selenium_db_setup():
     basedir = os.path.abspath(os.path.dirname(__file__))
@@ -104,4 +108,12 @@ def selenium_db_setup():
     cursor.execute(drop_users_table)
     connection.commit()
     cursor.execute(drop_reports_table)
+    connection.commit()
+    encrypted_password = sha256_crypt.hash(pytest.test_raw_password)
+    cursor.execute("INSERT INTO users (username, password) VALUES(?, ?)", 
+                   (pytest.existing_test_user, encrypted_password))
+    connection.commit()
+    cursor.execute('''INSERT INTO reports (reporter_id, rack_id, report_date, 
+                    report_borough, report_time, report_details) VALUES(?, ?, ?, ?, ?, ?)''', 
+                   (1, "RWG004615", "2023-04-02", "Islington", "12:45", "test report"))
     connection.commit()

@@ -209,11 +209,11 @@ def index():
                 
             else:
                 flash("Please ensure that borough is correct."
-                " Selecting the marker is the easiest way to fill out the form correctly.")
+                      " Selecting the marker is the easiest way to fill out the form correctly.")
         else:
             flash("Please ensure that the rack ID "
-              "exists and is from the correct borough."
-              " Selecting the marker is the easiest way to fill out the form correctly.")
+                  "exists and is from the correct borough."
+                  " Selecting the marker is the easiest way to fill out the form correctly.")
         return redirect(url_for('main_bp.index'))
 
 
