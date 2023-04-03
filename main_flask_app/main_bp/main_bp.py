@@ -78,14 +78,6 @@ class ReportForm(FlaskForm):
         validators.DataRequired(), validators.Regexp(r'^[\w.@+-]+$')])
     report_submit = SubmitField("Submit")
 
-    def validate_report_rack_id(self, report_rack_id):
-        if (report_rack_id.data).upper() not in feature_id_list:
-            raise ValidationError('')
-        else:
-            index = feature_id_list.index((report_rack_id.data).upper())
-            if (self.report_borough.data).lower() != (corresponding_borough[index]).lower():
-                raise ValidationError('')
-
 
 # Selecting a borough on the "Download Data" page
 class BoroughForm(FlaskForm):
@@ -187,7 +179,7 @@ def index():
                                markers_info=json.dumps(marker_data),
                                boroughs=all_boroughs_list,
                                report_form=report_form)
-    elif request.method == "POST" and report_form.validate_on_submit():
+    elif request.method == "POST":#report_form.validate_on_submit():
         reporter_id = current_user.id
         rack_id_flask = request.form['report_rack_id']
         borough_flask = request.form['report_borough']
@@ -196,24 +188,33 @@ def index():
         report_details_flask = request.form['report_details']
         
         new_report = Reports(reporter_id=reporter_id,
-                            report_borough=borough_flask,
+                            report_borough=borough_flask.title(),
                             rack_id=rack_id_flask,
                             report_date=date_flask,
                             report_time=time_flask,
                             report_details=report_details_flask)
-        try:
-            db.session.add(new_report)
-            db.session.commit()
-            return redirect(url_for('main_bp.index'))
-        except:
-            flash("There was an error submitting the report."
-                  "Please try again later.")
-            return redirect(url_for('main_bp.index'))
-    else:
-        flash("Please ensure that the rack ID "
+           
+        if (rack_id_flask.upper() in feature_id_list):
+            index = feature_id_list.index((rack_id_flask).upper())
+            if (borough_flask).lower() == (corresponding_borough[index]).lower():
+                try: 
+                    db.session.add(new_report)
+                    db.session.commit()
+                    flash("Report created successfully.")
+                    return redirect(url_for('main_bp.index'))
+                except:
+                    flash("There was an error submitting the report."
+                        "Please try again later.")
+                    return redirect(url_for('main_bp.index'))
+                
+            else:
+                flash("Please ensure that borough is correct."
+                " Selecting the marker is the easiest way to fill out the form correctly.")
+        else:
+            flash("Please ensure that the rack ID "
               "exists and is from the correct borough."
               " Selecting the marker is the easiest way to fill out the form correctly.")
-    return redirect(url_for('main_bp.index'))
+        return redirect(url_for('main_bp.index'))
 
 
 

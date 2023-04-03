@@ -6,12 +6,14 @@ from main_flask_app import config
 import subprocess
 import socket
 import requests
+import os
+import sqlite3
 
 
 @pytest.fixture(scope="function")
 def app():
     """Create a Flask app configured for testing"""
-    app = create_flask_app(config.TestConfig)
+    app = create_flask_app(config.TestConfig) 
     yield app
 
 
@@ -44,7 +46,7 @@ def test_client(app):
         db.drop_all()
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def flask_port():
     """Ask OS for a free port."""
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -54,7 +56,7 @@ def flask_port():
         return port
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def run_app_win(flask_port):
     """Runs the Flask app for live server testing on Windows"""
     server = subprocess.Popen(
@@ -70,13 +72,13 @@ def run_app_win(flask_port):
     try:
         yield server
         try:
-            url = f"http://localhost:{flask_port}/api"
+            url = f"http://localhost:{flask_port}"
             response = requests.get(url)
         except:
             print("There was an error connecting to the flask server")
     finally:
         server.terminate()
-
+        
 
 @pytest.fixture(scope="session")
 def chrome_driver():
@@ -89,3 +91,17 @@ def chrome_driver():
     options.add_argument('window-size=1920x1080')
     driver = webdriver.Chrome("chromedriver.exe")
     yield driver
+
+
+@pytest.fixture(scope="function")
+def selenium_db_setup():
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    db_file = (basedir + "/test.db")
+    connection = sqlite3.connect(db_file)
+    cursor = connection.cursor()
+    drop_users_table = """DELETE FROM users;"""
+    drop_reports_table = """DELETE FROM reports;"""
+    cursor.execute(drop_users_table)
+    connection.commit()
+    cursor.execute(drop_reports_table)
+    connection.commit()

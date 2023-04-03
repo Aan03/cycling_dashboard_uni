@@ -51,8 +51,6 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 .coveragerc
-.coverage_api
-.coverage_other
 
 # Translations
 *.mo

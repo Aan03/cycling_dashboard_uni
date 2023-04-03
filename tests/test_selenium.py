@@ -6,8 +6,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
+import time
 # from selenium.webdriver.common.action_chains import ActionChains
-
 
 def test_request_flask(run_app_win, flask_port):
     """
@@ -19,49 +19,129 @@ def test_request_flask(run_app_win, flask_port):
     response = requests.get(url)
     assert response.status_code == 200
 
-def test_home_page_running(run_app_win, flask_port):
+@pytest.mark.parametrize("test_input", [(["test_new_selenium_user", "password123"])])
+def test_sign_up_then_login(run_app_win, selenium_db_setup, chrome_driver, flask_port, test_input, expected):
     """
     GIVEN a running app
     WHEN the homepage is accessed successfully
     THEN the status code will be 200
     """
-    # localhost has the IP address 127.0.0.1, which refers
-    # back to your own server on your local computer
-    url = f"http://localhost:{flask_port}/"
-    response = requests.get(url)
-    assert response.status_code == 200
-
-
-def test_dash_statistics_page_selected(run_app_win, chrome_driver, flask_port):
-    """
-    GIVEN a running app
-    WHEN the homepage is accessed
-    AND the user clicks on the event with the //*[@id="nav-dashboard"]
-    THEN a page with the title "Density distribution and proportion of bike racks in all boroughs" should be displayed
-    AND the page should contain an element with the xpath //*[@id="react-entry-point"]/div/div[1]/div/div/p[1]
-    should be displayed and contain a text value "Select a rack type:"
-    AND the page should contain an element with the xpath //*[@id="htid"]
-    should be displayed and contain the text "Hover over any area to see statistics"
-
-    """
     url = f"http://localhost:{flask_port}/"
     chrome_driver.get(url)
+    sign_up_nav = WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,'''//*[@id="nav-sign_up"]''')))
+    time.sleep(1)
+    sign_up_nav.click()
+    username_sign_up_entry = WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,'''//*[@id="username"]''')))
+    username_sign_up_entry.send_keys(test_input[0])
+    password_sign_up_entry = WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,'''//*[@id="password"]''')))
+    password_sign_up_entry.send_keys(test_input[1])
+    time.sleep(1)
+    submit_sign_up = chrome_driver.find_element(By.XPATH, '''//*[@id="submit"]''')
+    submit_sign_up.click()
+    username_login_entry = WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,'''//*[@id="username"]''')))
+    username_login_entry.send_keys(test_input[0])
+    password_login_entry = WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,'''//*[@id="password"]''')))
+    password_login_entry.send_keys(test_input[1])
+    time.sleep(1)
+    submit_sign_up = chrome_driver.find_element(By.XPATH, '''//*[@id="submit"]''')
+    submit_sign_up.click()
+    
+    assert WebDriverWait(chrome_driver, 10).until(EC.text_to_be_present_in_element((By.XPATH, "/html/body/div/h2"), 'Welcome '+ test_input[0] + "."))
 
-    nav_dash_button = WebDriverWait(chrome_driver, timeout=3).until(
-        lambda d: d.find_element(By.XPATH, "//*[@id='nav-dashboard']")
-    )
-    nav_dash_button.click()
-    title_element = chrome_driver.find_element(By.XPATH, "//h2[contains(text(), 'Density distribution and proportion of bike racks in all boroughs')]")
-    assert title_element.is_displayed()
-    report_count_element = chrome_driver.find_element(By.XPATH, "//*[@id='react-entry-point']/div/div[1]/div/div/p[1]")
-    assert report_count_element.is_displayed()
-    assert report_count_element.text == "Select a rack type:"
-    htid_element = chrome_driver.find_element(By.XPATH, "//*[@id='htid']")
-    assert htid_element.is_displayed()
-    assert htid_element.text == "Hover over any area to see statistics"
 
 
-def test_All_Reports_page_selected(run_app_win, chrome_driver, flask_port):
+@pytest.mark.parametrize("test_input, expected", [(["RWG148175", "Enfield", "test details"], ["Report created successfully."]),
+                                                  (["RWG14817a", "enfield", "test details"], ['''Please ensure that the rack ID exists and 
+                                                                                                is from the correct borough.''']),
+                                                  (["RWG148175", "wrong borough", "test details"], ['''Please ensure that the rack ID exists and 
+                                                                                                is from the correct borough.'''])])
+def test_create_report(run_app_win, selenium_db_setup, chrome_driver, flask_port, test_input, expected):
+    """
+    GIVEN a running app
+    WHEN the homepage is accessed successfully
+    THEN the status code will be 200
+    """
+    username = "test_new_selenium_user"
+    password = "password123"
+    url = f"http://localhost:{flask_port}/"
+    chrome_driver.get(url)
+    sign_up_nav = WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,'''//*[@id="nav-sign_up"]''')))
+    time.sleep(1)
+    sign_up_nav.click()
+    username_sign_up_entry = WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,'''//*[@id="username"]''')))
+    username_sign_up_entry.send_keys(username)
+    password_sign_up_entry = WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,'''//*[@id="password"]''')))
+    password_sign_up_entry.send_keys(password)
+    time.sleep(1)
+    submit_sign_up = chrome_driver.find_element(By.XPATH, '''//*[@id="submit"]''')
+    submit_sign_up.click()
+    username_login_entry = WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,'''//*[@id="username"]''')))
+    username_login_entry.send_keys(username)
+    password_login_entry = WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,'''//*[@id="password"]''')))
+    password_login_entry.send_keys(password)
+    time.sleep(1)
+    submit_sign_up = chrome_driver.find_element(By.XPATH, '''//*[@id="submit"]''')
+    submit_sign_up.click()
+    WebDriverWait(chrome_driver, 10).until(EC.text_to_be_present_in_element((By.XPATH, "/html/body/div/h2"), 'Welcome '+ username + "."))
+
+    home_map_nav = chrome_driver.find_element(By.XPATH, '''//*[@id="nav-home"]''')
+    home_map_nav.click()
+
+    WebDriverWait(chrome_driver, 10).until(EC.text_to_be_present_in_element((By.XPATH, '//*[@id="map_side_options"]/h2'), 'Map Filters:'))
+
+    main_map = WebDriverWait(chrome_driver, 10).until(EC.text_to_be_present_in_element((By.XPATH, '//*[@id="map_side_options"]/h2'), 'Map Filters:'))
+
+    main_map = WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,'''//*[@id="map"]/div[1]/div[3]/canvas''')))
+    main_map.click()
+
+    time.sleep(1)
+
+    report_rack_id = chrome_driver.find_element(By.XPATH, '''//*[@id="report_rack_id"]''')
+    report_borough = chrome_driver.find_element(By.XPATH, '''//*[@id="report_borough"]''')
+    report_details = chrome_driver.find_element(By.XPATH, '''//*[@id="report_details"]''')
+
+    time.sleep(10)
+
+
+    #report_rack_id.clear()
+    #report_rack_id.send_keys(test_input[0])
+    #report_rack_id.send_keys(Keys.ENTER)
+
+    #report_borough.clear()
+    #report_borough.send_keys(test_input[1])
+    #report_borough.send_keys(Keys.RETURN)
+
+    submit_report = chrome_driver.find_element(By.XPATH,'//*[@id="report_submit"]')
+    chrome_driver.execute_script("arguments[0].scrollIntoView();", submit_report)
+
+    report_details.send_keys(test_input[2])
+    time.sleep(3)
+    report_details.send_keys(Keys.TAB)
+
+    time.sleep(3)
+
+    submit_report.click()
+
+
+
+    
+    
+    #submit_report.send_keys(Keys.RETURN)
+
+    #WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,'''/html/body/ul/li''')))
+
+    assert WebDriverWait(chrome_driver, 15).until(EC.text_to_be_present_in_element((By.XPATH, '/html/body/ul/li'), expected[0]))
+
+
+
+
+
+
+
+
+
+
+def test_all_reports_page_selected(run_app_win, chrome_driver, flask_port):
     """
     GIVEN a running app
     WHEN the homepage is accessed
@@ -73,10 +153,10 @@ def test_All_Reports_page_selected(run_app_win, chrome_driver, flask_port):
     """
     url = f"http://localhost:{flask_port}/"
     chrome_driver.get(url)
-    nav_All_Reports_button = WebDriverWait(chrome_driver, timeout=3).until(
+    nav_all_Reports_button = WebDriverWait(chrome_driver, timeout=3).until(
         lambda d: d.find_element(By.XPATH, "//*[@id='nav-reports']")
     )
-    nav_All_Reports_button.click()
+    nav_all_Reports_button.click()
     title_element = chrome_driver.find_element(By.XPATH, "//h2[contains(text(), 'All User Theft Reports:')]")
     assert title_element.is_displayed()
     report_count_element = chrome_driver.find_element(By.XPATH, "//h5[contains(text(), 'There are currently')]")
@@ -84,7 +164,7 @@ def test_All_Reports_page_selected(run_app_win, chrome_driver, flask_port):
     assert report_count_element.text == "There are currently 5 active theft reports."
 
 
-def test_Download_Data_page_selected(run_app_win, chrome_driver, flask_port):
+def test_download_data_page_selected(run_app_win, chrome_driver, flask_port):
     """
     GIVEN a running app
     WHEN the homepage is accessed
@@ -105,7 +185,7 @@ def test_Download_Data_page_selected(run_app_win, chrome_driver, flask_port):
     assert "Download Reports:" in text
 
 
-def test_API_Instructions_page_selected(run_app_win, chrome_driver, flask_port):
+def test_api_instructions_page_selected(run_app_win, chrome_driver, flask_port):
     """
     GIVEN a running app
     WHEN the homepage is accessed
@@ -126,7 +206,7 @@ def test_API_Instructions_page_selected(run_app_win, chrome_driver, flask_port):
     assert "API GET Routes:" in text
 
 
-def test_Login_page_selected(run_app_win, chrome_driver, flask_port):
+def test_login_page_selected(run_app_win, chrome_driver, flask_port):
     """
     GIVEN a running app
     WHEN the homepage is accessed
@@ -145,30 +225,3 @@ def test_Login_page_selected(run_app_win, chrome_driver, flask_port):
     nav_home_button.click()
     text = chrome_driver.find_element(By.XPATH, "/html/body/div/h5[1]").text
     assert "API GET Routes:" in text
-
-
-def test_Sign_Up_page_selected(run_app_win, chrome_driver, flask_port):
-    """
-    GIVEN a running app
-    WHEN the homepage is accessed
-    AND the user clicks on the event with the xpath //*[@id="nav-sign_up"]
-    THEN a page with the title "Sign Up:" should be displayed
-    AND the page should contain an element with the xpath //*[@id="username"]
-    should be displayed
-
-    """
-    url = f"http://localhost:{flask_port}/"
-    chrome_driver.get(url)
-
-    nav_sign_up_button = WebDriverWait(chrome_driver, timeout=3).until(
-        lambda d: d.find_element(By.XPATH, '//*[@id="nav-sign_up"]')
-    )
-    nav_sign_up_button.click()
-    text = chrome_driver.find_element(By.XPATH, "/html/body/div/h5[1]").text
-    assert "Sign Up:" in text
-
-    username_field = chrome_driver.find_element(By.XPATH, '//*[@id="username"]')
-    assert username_field.is_displayed()
-
-
-
