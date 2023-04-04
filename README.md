@@ -5,7 +5,7 @@
 [- API Routes](#api-routes)  
 [- Testing](#testing)  
 [-- API Testing Proof](#api-testing-proof)  
-[-- Selenium Testing Proof](#selenium-testing-proof)
+[-- Selenium Testing Proof](#selenium-testing-proof)  
 [-- Other Routes Testing Proof](#other-routes-testing-proof)
 
 ## General information on code and testing
