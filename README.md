@@ -168,6 +168,9 @@ JSON request body format for this request:
 
 6. Copies of the clean [cycle_parking.db](/main_flask_app/data/cycle_parking.db) database file are used for testing purposes. The database file for non-selenium tests is generated as the [test.db](/tests/test.db) file and the the database for selenium tests is the [test.db](/tests/test_selenium.db) file. Both types of tests have their own configs to define these different databases.
 
+7. Image showing integration with GitHub Actions:  
+
+![GitHub Actions](/screenshots/github_actions_full.PNG)
 
 ### API Testing Proof
 
@@ -183,6 +186,8 @@ Tests also pass on GitHub actions.
 
 ![API #4](/screenshots/tests_api_github2.PNG)
 
+![API #5](/screenshots/tests_api_github3.PNG)
+
 
 ### Other Routes Testing Proof
 
@@ -197,6 +202,14 @@ This section of testing included all non-api routes which handled views, get and
 ![Other #3](/screenshots/tests_other_passed_local3.PNG)
 
 GitHub Actions:
+
+Tests also pass on GitHub actions.
+
+![Other #4](/screenshots/tests_other_github1.PNG)
+
+![Other #5](/screenshots/tests_other_github2.PNG)
+
+![Other #6](/screenshots/tests_other_github3.PNG)
 
 
 
@@ -221,3 +234,4 @@ The proof of passing tests can be found below:
 ![Selenium #5](/screenshots/tests_selenium_passed_local5.PNG)
 
 ![Selenium #6](/screenshots/tests_selenium_passed_local6.PNG)
+
