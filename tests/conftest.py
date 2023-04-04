@@ -87,7 +87,6 @@ def chrome_driver():
   options.add_argument("--disable-gpu")
   options.add_argument("--headless=new")
   options.add_argument("--start-maximized")
-  #options.add_argument("--headless")
   options.add_argument('window-size=1920x1080')
   driver = Chrome(options=options)
   #driver.maximize_window()

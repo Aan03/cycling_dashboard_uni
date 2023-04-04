@@ -35,19 +35,19 @@ def test_sign_up_then_login(run_app_win, selenium_db_setup, chrome_driver, flask
     time.sleep(5)
     chrome_driver.get(url)
     time.sleep(10)
-    sign_up_nav = WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,'''//*[@id="nav-sign_up"]''')))
+    sign_up_nav = WebDriverWait(chrome_driver,20).until(EC.element_to_be_clickable((By.XPATH,'''//*[@id="nav-sign_up"]''')))
     sign_up_nav.click()
-    username_sign_up_entry = WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,'''//*[@id="username"]''')))
+    username_sign_up_entry = WebDriverWait(chrome_driver,20).until(EC.element_to_be_clickable((By.XPATH,'''//*[@id="username"]''')))
     username_sign_up_entry.send_keys(test_input[0])
-    password_sign_up_entry = WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,'''//*[@id="password"]''')))
+    password_sign_up_entry = WebDriverWait(chrome_driver,20).until(EC.element_to_be_clickable((By.XPATH,'''//*[@id="password"]''')))
     password_sign_up_entry.send_keys(test_input[1])
     chrome_driver.get_screenshot_as_file("screenshots/selenium_screenshots/signing_up.png")
     time.sleep(5)
     submit_sign_up = chrome_driver.find_element(By.XPATH, '''//*[@id="submit"]''')
     submit_sign_up.click()
-    username_login_entry = WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,'''//*[@id="username"]''')))
+    username_login_entry = WebDriverWait(chrome_driver,20).until(EC.element_to_be_clickable((By.XPATH,'''//*[@id="username"]''')))
     username_login_entry.send_keys(test_input[0])
-    password_login_entry = WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,'''//*[@id="password"]''')))
+    password_login_entry = WebDriverWait(chrome_driver,20).until(EC.element_to_be_clickable((By.XPATH,'''//*[@id="password"]''')))
     password_login_entry.send_keys(test_input[1])
     chrome_driver.get_screenshot_as_file("screenshots/selenium_screenshots/logging_in.png")
     time.sleep(5)
@@ -82,13 +82,13 @@ def test_create_report(run_app_win, selenium_db_setup, chrome_driver, flask_port
     time.sleep(5)
     chrome_driver.get(url)
     time.sleep(10)
-    login_nav = WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,'''//*[@id="nav-login"]''')))
+    login_nav = WebDriverWait(chrome_driver,20).until(EC.element_to_be_clickable((By.XPATH,'''//*[@id="nav-login"]''')))
     login_nav.click()
     time.sleep(10)
-    username_login_entry = WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,'''//*[@id="username"]''')))
+    username_login_entry = WebDriverWait(chrome_driver,20).until(EC.element_to_be_clickable((By.XPATH,'''//*[@id="username"]''')))
     username_login_entry.send_keys(username)
     time.sleep(2)
-    password_login_entry = WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,'''//*[@id="password"]''')))
+    password_login_entry = WebDriverWait(chrome_driver,20).until(EC.element_to_be_clickable((By.XPATH,'''//*[@id="password"]''')))
     password_login_entry.send_keys(password)
     time.sleep(2)
     submit_login = chrome_driver.find_element(By.XPATH, '''//*[@id="submit"]''')
@@ -101,7 +101,7 @@ def test_create_report(run_app_win, selenium_db_setup, chrome_driver, flask_port
     time.sleep(10)
     WebDriverWait(chrome_driver, 20).until(EC.text_to_be_present_in_element((By.XPATH, '//*[@id="map_side_options"]/h2'), 'Map Filters:'))
     main_map = WebDriverWait(chrome_driver, 10).until(EC.text_to_be_present_in_element((By.XPATH, '//*[@id="map_side_options"]/h2'), 'Map Filters:'))
-    main_map = WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,'''//*[@id="map"]/div[1]/div[3]/canvas''')))
+    main_map = WebDriverWait(chrome_driver,20).until(EC.element_to_be_clickable((By.XPATH,'''//*[@id="map"]/div[1]/div[3]/canvas''')))
     main_map.click()
     
     time.sleep(5)
@@ -137,7 +137,7 @@ def test_create_report(run_app_win, selenium_db_setup, chrome_driver, flask_port
 
  
 @pytest.mark.parametrize("test_input, expected", [(["initial report details", "edited report details"], 
-                                                   ["Report details successfully edited."])])
+                                                   "Report details successfully edited.")])
 def test_edit_report(run_app_win, selenium_db_setup, chrome_driver, flask_port, test_input, expected):
     """
     GIVEN a running app
@@ -156,38 +156,16 @@ def test_edit_report(run_app_win, selenium_db_setup, chrome_driver, flask_port, 
     
     login_nav.click()
     time.sleep(10)
-    username_login_entry = WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,'''//*[@id="username"]''')))
+    username_login_entry = WebDriverWait(chrome_driver,20).until(EC.element_to_be_clickable((By.XPATH,'''//*[@id="username"]''')))
     username_login_entry.send_keys(username)
-    password_login_entry = WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,'''//*[@id="password"]''')))
+    password_login_entry = WebDriverWait(chrome_driver,20).until(EC.element_to_be_clickable((By.XPATH,'''//*[@id="password"]''')))
     password_login_entry.send_keys(password)
     time.sleep(2)
     submit_login = chrome_driver.find_element(By.XPATH, '''//*[@id="submit"]''')
     submit_login.click()
     time.sleep(10)
     WebDriverWait(chrome_driver, 20).until(EC.text_to_be_present_in_element((By.XPATH, "/html/body/div/h2"), 'Welcome '+ username + "."))
-    home_map_nav = chrome_driver.find_element(By.XPATH, '''//*[@id="nav-home"]''')
-    home_map_nav.click()
-    time.sleep(10)
-    WebDriverWait(chrome_driver, 20).until(EC.text_to_be_present_in_element((By.XPATH, '//*[@id="map_side_options"]/h2'), 'Map Filters:'))
-    time.sleep(5)
-    main_map = WebDriverWait(chrome_driver, 10).until(EC.text_to_be_present_in_element((By.XPATH, '//*[@id="map_side_options"]/h2'), 'Map Filters:'))
-    main_map = WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,'''//*[@id="map"]/div[1]/div[3]/canvas''')))
-    main_map.click()
-
-    time.sleep(10)
-    report_details = chrome_driver.find_element(By.XPATH, '''//*[@id="report_details"]''')
-    submit_report = chrome_driver.find_element(By.XPATH,'//*[@id="report_submit"]')
-    chrome_driver.execute_script("arguments[0].scrollIntoView();", submit_report)
-    report_details.send_keys(test_input[0])
-    time.sleep(3)
-    report_details.send_keys(Keys.TAB)
-    submit_report.click()
-    time.sleep(10)
-    my_report_nav = WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,'''//*[@id="nav-my_reports"]''')))
-    my_report_nav.click()
-    time.sleep(10)
-
-    WebDriverWait(chrome_driver, 20).until(EC.text_to_be_present_in_element((By.XPATH, "/html/body/div/h2"), 'Welcome '+ username + "."))
+    
     chrome_driver.get_screenshot_as_file("screenshots/selenium_screenshots/before_report_edit.png")
     
     first_report_edit = chrome_driver.find_element(By.XPATH,'//*[@id="editable_details1"]')
@@ -199,10 +177,10 @@ def test_edit_report(run_app_win, selenium_db_setup, chrome_driver, flask_port, 
     time.sleep(10)
     chrome_driver.get_screenshot_as_file("screenshots/selenium_screenshots/after_report_edit.png")
 
-    assert WebDriverWait(chrome_driver, 15).until(EC.text_to_be_present_in_element((By.XPATH, '/html/body/ul/li'), expected[0]))
+    assert WebDriverWait(chrome_driver, 15).until(EC.text_to_be_present_in_element((By.XPATH, '/html/body/ul/li'), expected))
     
 
-@pytest.mark.parametrize("expected", [(["Report successfully deleted."])])
+@pytest.mark.parametrize("expected", [("Report successfully deleted.")])
 def test_delete_report(run_app_win, selenium_db_setup, chrome_driver, flask_port, expected):
     """
     GIVEN a running app
@@ -217,12 +195,12 @@ def test_delete_report(run_app_win, selenium_db_setup, chrome_driver, flask_port
     time.sleep(5)
     chrome_driver.get(url)
     time.sleep(10)
-    login_nav = WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,'''//*[@id="nav-login"]''')))
+    login_nav = WebDriverWait(chrome_driver,20).until(EC.element_to_be_clickable((By.XPATH,'''//*[@id="nav-login"]''')))
     login_nav.click()
     time.sleep(10)
-    username_login_entry = WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,'''//*[@id="username"]''')))
+    username_login_entry = WebDriverWait(chrome_driver,20).until(EC.element_to_be_clickable((By.XPATH,'''//*[@id="username"]''')))
     username_login_entry.send_keys(username)
-    password_login_entry = WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,'''//*[@id="password"]''')))
+    password_login_entry = WebDriverWait(chrome_driver,20).until(EC.element_to_be_clickable((By.XPATH,'''//*[@id="password"]''')))
     password_login_entry.send_keys(password)
     time.sleep(3)
     submit_login = chrome_driver.find_element(By.XPATH, '''//*[@id="submit"]''')
@@ -235,7 +213,7 @@ def test_delete_report(run_app_win, selenium_db_setup, chrome_driver, flask_port
     time.sleep(10)
     chrome_driver.get_screenshot_as_file("screenshots/selenium_screenshots/after_report_deletion.png")
 
-    assert WebDriverWait(chrome_driver, 15).until(EC.text_to_be_present_in_element((By.XPATH, '/html/body/ul/li'), expected[0]))
+    assert WebDriverWait(chrome_driver, 15).until(EC.text_to_be_present_in_element((By.XPATH, '/html/body/ul/li'), expected))
 
 
 @pytest.mark.parametrize("test_input, expected", [([pytest.test_raw_password], ["Password changed successfully."]),
@@ -253,12 +231,12 @@ def test_change_user_password(run_app_win, selenium_db_setup, chrome_driver, fla
     time.sleep(5)
     chrome_driver.get(url)
     time.sleep(10)
-    login_nav = WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,'''//*[@id="nav-login"]''')))
+    login_nav = WebDriverWait(chrome_driver,20).until(EC.element_to_be_clickable((By.XPATH,'''//*[@id="nav-login"]''')))
     login_nav.click()
     time.sleep(10)
-    username_login_entry = WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,'''//*[@id="username"]''')))
+    username_login_entry = WebDriverWait(chrome_driver,20).until(EC.element_to_be_clickable((By.XPATH,'''//*[@id="username"]''')))
     username_login_entry.send_keys(username)
-    password_login_entry = WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,'''//*[@id="password"]''')))
+    password_login_entry = WebDriverWait(chrome_driver,20).until(EC.element_to_be_clickable((By.XPATH,'''//*[@id="password"]''')))
     password_login_entry.send_keys(password)
     time.sleep(3)
     submit_login = chrome_driver.find_element(By.XPATH, '''//*[@id="submit"]''')
@@ -300,7 +278,7 @@ def test_all_check_boxes_map(run_app_win, chrome_driver, flask_port):
     chrome_driver.get(url)
     time.sleep(10)
 
-    WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,'''//*[@id="map"]/div[1]/div[3]/canvas''')))
+    WebDriverWait(chrome_driver,20).until(EC.element_to_be_clickable((By.XPATH,'''//*[@id="map"]/div[1]/div[3]/canvas''')))
 
     covered_check_box = chrome_driver.find_element(By.XPATH, '//*[@id="covered_box"]')
     secured_check_box = chrome_driver.find_element(By.XPATH, '//*[@id="secured_box"]')
@@ -396,7 +374,9 @@ def test_download_data_empty(run_app_win, chrome_driver, flask_port):
     download_submit = chrome_driver.find_element(By.XPATH, "/html/body/div/form/button")
     download_submit.click()
     time.sleep(10)
-    flash_no_data = chrome_driver.find_element(By.XPATH, "/html/body/ul/li")
+    flash_no_data = WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,
+                                                                        '''/html/body/ul/li''')))
+    
     chrome_driver.get_screenshot_as_file("screenshots/selenium_screenshots/no_reports_download.png")
     
     assert "There are no related active reports in" in flash_no_data.text
@@ -418,9 +398,11 @@ def test_download_data_page(run_app_win, chrome_driver, flask_port):
     time.sleep(5)
     chrome_driver.get(url)
     time.sleep(10)
-    nav_download_reports_button = WebDriverWait(chrome_driver, timeout=3).until(
+    nav_download_reports_button = WebDriverWait(chrome_driver, timeout=15).until(
         lambda d: d.find_element(By.XPATH, '//*[@id="nav-download_reports"]')
     )
+    time.sleep(5)
+    #nav_download_reports_button = chrome_driver.find_element(By.XPATH, "/html/body/div/form/button")
     nav_download_reports_button.click()
     time.sleep(10)
     text = chrome_driver.find_element(By.XPATH, "/html/body/div/h2").text
@@ -442,10 +424,14 @@ def test_api_instructions_page_selected(run_app_win, chrome_driver, flask_port):
     chrome_driver.get(url)
     time.sleep(10)
 
-    nav_home_button = WebDriverWait(chrome_driver, timeout=3).until(
-        lambda d: d.find_element(By.XPATH, '//*[@id="nav-api"]')
-    )
-    nav_home_button.click()
+   # nav_api_button = WebDriverWait(chrome_driver, timeout=3).until(
+   #     lambda d: d.find_element(By.XPATH, '//*[@id="nav-api"]')
+   # )
+
+    nav_api_button = WebDriverWait(chrome_driver,20).until(EC.element_to_be_clickable((By.XPATH,
+                                                                        '''//*[@id="nav-api"]''')))
+    
+    nav_api_button.click()
     time.sleep(10)
     text = chrome_driver.find_element(By.XPATH, "/html/body/div/h5[1]").text
     assert "API GET Routes:" in text
@@ -465,10 +451,15 @@ def test_login_page_selected(run_app_win, chrome_driver, flask_port):
     time.sleep(5)
     chrome_driver.get(url)
     time.sleep(10)
-    nav_home_button = WebDriverWait(chrome_driver, timeout=3).until(
+    nav_login_button = WebDriverWait(chrome_driver, timeout=3).until(
         lambda d: d.find_element(By.XPATH, '//*[@id="nav-login"]')
     )
-    nav_home_button.click()
+
+    #nav_login_button = WebDriverWait(chrome_driver,20).until(EC.element_to_be_clickable((By.XPATH,
+     #                                                                   '''//*[@id="nav-login"]''')))
+    
+
+    nav_login_button.click()
     time.sleep(10)
     text = chrome_driver.find_element(By.XPATH, "/html/body/div/div/h3")
     assert "Login:" in text.text
