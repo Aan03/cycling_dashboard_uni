@@ -30,11 +30,13 @@ db_dataset = scoped_session(sessionmaker(bind=engine))
 # Global Flask_marshmallow object
 ma = Marshmallow()
 
-
 # The default page to be shown when a 404 error is given on the site
 def page_not_found(e):
     return render_template('404.html'), 404
 
+# The default page to be shown when a 500 error is given on the site
+def internal_error(e):
+    return render_template('500.html'), 500
 
 def create_flask_app(config_selected):
     print(config_selected)
@@ -42,6 +44,7 @@ def create_flask_app(config_selected):
     app.config.from_object(config_selected)
 
     app.register_error_handler(404, page_not_found)
+    app.register_error_handler(500, internal_error)
 
     db.init_app(app)
 

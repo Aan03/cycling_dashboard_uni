@@ -17,9 +17,6 @@ main_bp = Blueprint('main_bp',
 basedir = os.path.abspath(os.path.dirname(__file__))
 maindir = os.path.abspath(os.path.join(basedir, os.pardir))
 
-
-
-
 # Querying dataset tables from the cycle_parking.db database and
 # setting up variables/arrays for later use
 all_boroughs_list = []

@@ -159,7 +159,7 @@ def new_user_api():
     new_user_username = new_user_request["username"]
     new_user_password = new_user_request["password"]
 
-    encrypted_password = sha256_crypt.encrypt(new_user_password)
+    encrypted_password = sha256_crypt.hash(new_user_password)
     user_check = Users.query.filter_by(username=new_user_username).first()
     if user_check:
         response = jsonify("A user with the username "
@@ -229,7 +229,7 @@ def change_user_password_api():
     if user_check:
         if sha256_crypt.verify(put_req_old_password,
                                user_check.password) == True:
-            new_encrypted_password = sha256_crypt.encrypt(put_req_new_password)
+            new_encrypted_password = sha256_crypt.hash(put_req_new_password)
             user_check.password = new_encrypted_password
             db.session.commit()
             response = jsonify("Password changed successfully.")

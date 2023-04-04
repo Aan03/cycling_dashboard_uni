@@ -6,6 +6,7 @@
 [- Testing](#testing)  
 [-- API Testing Proof](#api-testing-proof)  
 [-- Selenium Testing Proof](#selenium-testing-proof)
+[-- Other Routes Testing Proof](#other-routes-testing-proof)
 
 ## General information on code and testing
 1. Run the following commands from the main [/comp0034-cw2-g-team11](/) directory:
@@ -46,12 +47,15 @@ Below is are examples of API tests on Postman.co:
 
 All the API routes can be found in the [api_bp/api_routes.py](/main_flask_app/api_bp/api_routes.py) file.
 
-
 9. The API is used on the site by grabbing report data (for a specific borough or all borough) and creating a downloadable CSV file with that data.
 
 10. The [dash app](/main_flask_app/dash_app_cycling/) from COMP0034-CW1 has also been added in as a page.
 
 11. Different configurations are used for normal operations and for testing purposes. These can be found in the [main_flask_app/config.py](/main_flask_app/config.py) file.
+
+12. Examples of error handling (404 and 500 errors) in __init__.py file:
+
+![Image](/screenshots/error_handling.PNG)
 
 ## Example usage of flask app
 (all screenshots can be found in the [site usage screenshots folder.](/screenshots/site_app_usage_screenshots/))
@@ -140,11 +144,20 @@ JSON request body format for this request:
 "password" : "[Enter password of report creator]"}
 
 ## Testing
-1. Run the following command from the main [/comp0034-cw2-g-team11](/) directory to initiate all testing (using pytest):
+1. Run the following commands from the main [/comp0034-cw2-g-team11](/) directory to initiate testing (using pytest):
 
-    pytest -v -W ignore::DeprecationWarning  
+    API Routes Testing Command:  
+    pytest tests/test_api_routes.py -v --cov=main_flask_app --cov-config=tests/coverage_api_config -W ignore::DeprecationWarning
+
+    Other Routes Testing (non-API):  
+    pytest tests/test_other_routes.py -v --cov=main_flask_app --cov-config=tests/coverage_other_config -W ignore::DeprecationWarning
+
+    Selenium Testing Command:  
+    pytest tests/test_selenium.py -v -W ignore::DeprecationWarning
+
+    All Tests Command (may take up to 15-20 minutes as it involves all tests):
+    pytest -v -W ignore::DeprecationWarning
     
-
 2. The [tests/conftest.py](/tests/conftest.py) file defines fixtures such as the flask test client for routes testing and the chrome driver for selenium testing. 
 
 3. The tests for the API routes can be found in the [tests/test_api_routes.py](/tests/test_api_routes.py) file. (Non-pytest API tests can be found in the [Postman.co screenshots folder](screenshots\api_postman.co_screenshots))
@@ -155,6 +168,7 @@ JSON request body format for this request:
 
 6. Copies of the clean [cycle_parking.db](/main_flask_app/data/cycle_parking.db) database file are used for testing purposes. The database file for non-selenium tests is generated as the [test.db](/tests/test.db) file and the the database for selenium tests is the [test.db](/tests/test_selenium.db) file. Both types of tests have their own configs to define these different databases.
 
+
 ### API Testing Proof
 
 All tests pass locally and coverage is shown as 99%.
@@ -163,21 +177,38 @@ All tests pass locally and coverage is shown as 99%.
 
 ![API #2](/screenshots/tests_api_local2.PNG)
 
-Tests also pass on github actions.
+Tests also pass on GitHub actions.
 
 ![API #3](/screenshots/tests_api_github1.PNG)
 
 ![API #4](/screenshots/tests_api_github2.PNG)
 
 
+### Other Routes Testing Proof
+
+This section of testing included all non-api routes which handled views, get and post requests for any pages and forms. 
+
+![Other #1](/screenshots/tests_other_passed_local1.PNG)
+
+![Other #2](/screenshots/tests_other_passed_local2.PNG)
+
+86% coverage for non-api routes achieved:
+
+![Other #3](/screenshots/tests_other_passed_local3.PNG)
+
+GitHub Actions:
+
+
 
 ### Selenium Testing Proof
 
-All selenium tests passed locally in headless mode. On github actions, the ones that did not pass were due to timeout issues which would be fixed by increasing waits and sleep times.
+All selenium tests passed locally in headless mode. On GitHub actions, the ones that did not pass were due to driver wait and timeout issues which would be fixed by increasing waits and sleep times as in the last coursework.
 
 Screenshots were also taken during the selenium tests themselves using the web driver. This folder is the [screenshots\selenium_screenshots](screenshots/selenium_screenshots/) folder. Below is an example of a screenshot taken during a test were a new report is edited:
 
 ![Selenium ss #1](/screenshots/selenium_screenshots/after_report_edit.png)
+
+The proof of passing tests can be found below:
 
 ![Selenium #1](/screenshots/tests_selenium_passed_local1.PNG)
 

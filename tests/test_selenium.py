@@ -10,8 +10,6 @@ import time
 from main_flask_app.models import *
 from tests.test_sel_db_generate import selenium_db_setup
 
-
-
 existing_username = "existing_test_user"
 existing_password = "test_raw_password"
 

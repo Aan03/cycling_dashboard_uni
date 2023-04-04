@@ -41,6 +41,6 @@ jobs:
     - name: Other Routes Testing and Coverage Report
       run: |
         pytest tests/test_other_routes.py -v --cov=main_flask_app --cov-config=tests/coverage_other_config -W ignore::DeprecationWarning
-    - name: Selenium Testing (Tests Pass 100% Locally)
+    - name: Selenium Testing (Same tests pass 100% locally but "driver wait/timeout" issues on GitHub Actions)
       run: |
         pytest tests/test_selenium.py -v -W ignore::DeprecationWarning

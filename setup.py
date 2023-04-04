@@ -7,7 +7,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'flask',
+        'flask==2.2.3',
         'flask-sqlalechemy',
     ],
 )

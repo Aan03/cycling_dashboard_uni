@@ -1,7 +1,7 @@
 pandas
 geopandas
 openpyxl
-flask
+flask==2.2.3
 flask_sqlalchemy
 flask_wtf
 wtforms
