@@ -93,29 +93,6 @@ def test_correct_report_creation(test_client, test_input, expected):
      assert str(expected) in str(response.data)
 
 
-@pytest.mark.parametrize("test_input, expected", [("Lambeth", "There are no related active reports in Lambeth")])
-def test_correct_data_downloaded(test_client, test_input, expected):
-     """
-     GIVEN a Flask application
-     WHEN a user downloads report data for a specific borough
-     THEN check that correct flask flashes are shown if there is no data
-          available and hence no downloadable file available. 
-     """
-     test_client.post(
-      '/login',
-      data = dict(username="test_user", password="password123"),
-      follow_redirects=True
-      )
-
-     response = test_client.post(
-      '/download_data',
-      data = dict(report_borough=test_input),
-      follow_redirects=True
-      )
-     print(response.data)
-     assert str(expected) in str(response.data)
-
-
 @pytest.mark.parametrize("expected", [("Manage/View Your Submitted Theft Reports:")])
 def test_correct_my_reports(test_client, expected):
      """

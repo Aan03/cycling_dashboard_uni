@@ -192,7 +192,7 @@ This section of testing included all non-api routes which handled views, get and
 
 ![Other #2](/screenshots/tests_other_passed_local2.PNG)
 
-86% coverage for non-api routes achieved:
+82% coverage for non-api routes achieved:
 
 ![Other #3](/screenshots/tests_other_passed_local3.PNG)
 
