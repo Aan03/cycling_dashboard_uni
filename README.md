@@ -3,7 +3,9 @@
 [- General information on the flask app and API](#general-information)  
 [- Walk through of the flask website/app usage](#example-usage-of-flask-app)  
 [- API Routes](#api-routes)  
-[- Testing](#testing)
+[- Testing](#testing)  
+[-- API Testing Proof](#api-testing-proof)  
+[-- Selenium Testing Proof](#selenium-testing-proof)
 
 ## General information on code and testing
 1. Run the following commands from the main [/comp0034-cw2-g-team11](/) directory:
@@ -138,9 +140,10 @@ JSON request body format for this request:
 "password" : "[Enter password of report creator]"}
 
 ## Testing
-1. Run the following command from the main [/comp0034-cw2-g-team11](/) directory to initiate testing (using pytest):
+1. Run the following command from the main [/comp0034-cw2-g-team11](/) directory to initiate all testing (using pytest):
 
     pytest -v -W ignore::DeprecationWarning  
+    
 
 2. The [tests/conftest.py](/tests/conftest.py) file defines fixtures such as the flask test client for routes testing and the chrome driver for selenium testing. 
 
@@ -150,4 +153,40 @@ JSON request body format for this request:
 
 5. The selenium tests can be found in the [tests/test_selenium.py](/tests/test_selenium.py) file.
 
-6. A copy of the clean [cycle_parking.db](/main_flask_app/data/cycle_parking.db) database file is used for testing purposes. This test database is generated as the [test.db](/tests/test.db) file. The dataset database is also used.
+6. Copies of the clean [cycle_parking.db](/main_flask_app/data/cycle_parking.db) database file are used for testing purposes. The database file for non-selenium tests is generated as the [test.db](/tests/test.db) file and the the database for selenium tests is the [test.db](/tests/test_selenium.db) file. Both types of tests have their own configs to define these different databases.
+
+### API Testing Proof
+
+All tests pass locally and coverage is shown as 99%.
+
+![API #1](/screenshots/tests_api_local1.PNG)
+
+![API #2](/screenshots/tests_api_local2.PNG)
+
+Tests also pass on github actions.
+
+![API #3](/screenshots/tests_api_github1.PNG)
+
+![API #4](/screenshots/tests_api_github2.PNG)
+
+
+
+### Selenium Testing Proof
+
+All selenium tests passed locally in headless mode. On github actions, the ones that did not pass were due to timeout issues which would be fixed by increasing waits and sleep times.
+
+Screenshots were also taken during the selenium tests themselves using the web driver. This folder is the [screenshots\selenium_screenshots](screenshots/selenium_screenshots/) folder. Below is an example of a screenshot taken during a test were a new report is edited:
+
+![Selenium ss #1](/screenshots/selenium_screenshots/after_report_edit.png)
+
+![Selenium #1](/screenshots/tests_selenium_passed_local1.PNG)
+
+![Selenium #2](/screenshots/tests_selenium_passed_local2.PNG)
+
+![Selenium #3](/screenshots/tests_selenium_passed_local3.PNG)
+
+![Selenium #4](/screenshots/tests_selenium_passed_local4.PNG)
+
+![Selenium #5](/screenshots/tests_selenium_passed_local5.PNG)
+
+![Selenium #6](/screenshots/tests_selenium_passed_local6.PNG)

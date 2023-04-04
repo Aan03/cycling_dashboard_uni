@@ -8,7 +8,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 import time
 from main_flask_app.models import *
-from tests.test_db_generate import selenium_db_setup
+from tests.test_sel_db_generate import selenium_db_setup
 
 
 
