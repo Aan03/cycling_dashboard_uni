@@ -7,7 +7,13 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 import time
+from main_flask_app.models import *
+from tests.test_db_generate import selenium_db_setup
 
+
+
+existing_username = "existing_test_user"
+existing_password = "test_raw_password"
 
 def test_request_flask(run_app_win, flask_port):
     """
@@ -15,6 +21,7 @@ def test_request_flask(run_app_win, flask_port):
     WHEN the homepage is accessed successfully
     THEN the status code will be 200
     """
+    selenium_db_setup()
     time.sleep(5)
     url = f"http://localhost:{flask_port}/"
     time.sleep(10)
@@ -23,7 +30,7 @@ def test_request_flask(run_app_win, flask_port):
 
 
 @pytest.mark.parametrize("test_input", [(["test_new_selenium_user", "password123"])])
-def test_sign_up_then_login(run_app_win, selenium_db_setup, chrome_driver, flask_port, test_input):
+def test_sign_up_then_login(run_app_win, chrome_driver, flask_port, test_input):
     """
     Given a running app
     WHEN a user signs up
@@ -31,6 +38,8 @@ def test_sign_up_then_login(run_app_win, selenium_db_setup, chrome_driver, flask
     THEN the user should be logged in successfully 
          and be shown their personal reports page
     """
+    selenium_db_setup()
+    time.sleep(3)
     url = f"http://localhost:{flask_port}/"
     time.sleep(5)
     chrome_driver.get(url)
@@ -56,7 +65,6 @@ def test_sign_up_then_login(run_app_win, selenium_db_setup, chrome_driver, flask
     time.sleep(10)
     assert WebDriverWait(chrome_driver, 10).until(EC.text_to_be_present_in_element((By.XPATH, "/html/body/div/h2"), 'Welcome '+ test_input[0] + "."))
 
-
 @pytest.mark.parametrize("test_input, expected", [(["RWG148175", "Enfield", "test details"], ["Report created successfully."]),
                                                   (["RWG14817a", "enfield", "test details"], ["Please ensure that the rack ID "
                                                                                               "exists and is from the correct borough."
@@ -65,7 +73,7 @@ def test_sign_up_then_login(run_app_win, selenium_db_setup, chrome_driver, flask
                                                   (["RWG148175", "wrong borough", "test details"], ["Please ensure that borough is correct."
                                                                                                     " Selecting the marker is the easiest way "
                                                                                                     "to fill out the form correctly."])])
-def test_create_report(run_app_win, selenium_db_setup, chrome_driver, flask_port, test_input, expected):
+def test_create_report(run_app_win, chrome_driver, flask_port, test_input, expected):
     """
     GIVEN a running app
     WHEN an existing user logs into their account (defined in fixture)
@@ -76,8 +84,8 @@ def test_create_report(run_app_win, selenium_db_setup, chrome_driver, flask_port
         (the bike rack ID is real and the correct borough is entered) and the correct warning
         messages should be given.
     """
-    username = pytest.existing_test_user
-    password = pytest.test_raw_password
+    selenium_db_setup()
+    time.sleep(3)
     url = f"http://localhost:{flask_port}/"
     time.sleep(5)
     chrome_driver.get(url)
@@ -86,15 +94,15 @@ def test_create_report(run_app_win, selenium_db_setup, chrome_driver, flask_port
     login_nav.click()
     time.sleep(10)
     username_login_entry = WebDriverWait(chrome_driver,20).until(EC.element_to_be_clickable((By.XPATH,'''//*[@id="username"]''')))
-    username_login_entry.send_keys(username)
+    username_login_entry.send_keys(existing_username)
     time.sleep(2)
     password_login_entry = WebDriverWait(chrome_driver,20).until(EC.element_to_be_clickable((By.XPATH,'''//*[@id="password"]''')))
-    password_login_entry.send_keys(password)
+    password_login_entry.send_keys(existing_password)
     time.sleep(2)
     submit_login = chrome_driver.find_element(By.XPATH, '''//*[@id="submit"]''')
     submit_login.click()
     time.sleep(5)
-    WebDriverWait(chrome_driver, 20).until(EC.text_to_be_present_in_element((By.XPATH, "/html/body/div/h2"), 'Welcome '+ username + "."))
+    WebDriverWait(chrome_driver, 20).until(EC.text_to_be_present_in_element((By.XPATH, "/html/body/div/h2"), 'Welcome '+ existing_username + "."))
     home_map_nav = chrome_driver.find_element(By.XPATH, '''//*[@id="nav-home"]''')
     
     home_map_nav.click()
@@ -106,8 +114,6 @@ def test_create_report(run_app_win, selenium_db_setup, chrome_driver, flask_port
     
     time.sleep(5)
     chrome_driver.get_screenshot_as_file("screenshots/selenium_screenshots/clicked_map_marker.png")
-
-
 
     report_rack_id = chrome_driver.find_element(By.XPATH, '''//*[@id="report_rack_id"]''')
     report_borough = chrome_driver.find_element(By.XPATH, '''//*[@id="report_borough"]''')
@@ -131,14 +137,13 @@ def test_create_report(run_app_win, selenium_db_setup, chrome_driver, flask_port
     submit_report.click()
     time.sleep(5)
     WebDriverWait(chrome_driver,20).until(EC.visibility_of_element_located((By.XPATH,'''/html/body/ul/li''')))
-    
 
     assert WebDriverWait(chrome_driver, 20).until(EC.text_to_be_present_in_element((By.XPATH, '/html/body/ul/li'), expected[0]))
 
  
 @pytest.mark.parametrize("test_input, expected", [(["initial report details", "edited report details"], 
                                                    "Report details successfully edited.")])
-def test_edit_report(run_app_win, selenium_db_setup, chrome_driver, flask_port, test_input, expected):
+def test_edit_report(run_app_win, chrome_driver, flask_port, test_input, expected):
     """
     GIVEN a running app
     WHEN an existing user logs into their account (defined in fixture)
@@ -146,8 +151,10 @@ def test_edit_report(run_app_win, selenium_db_setup, chrome_driver, flask_port, 
     AND then goes to the "my reports" page where they edit the report details of the new report
     THEN the report should be edited successfully and a relevant flask flash message should be seen. 
     """
-    username = pytest.existing_test_user
-    password = pytest.test_raw_password
+    selenium_db_setup()
+    time.sleep(3)
+    username = existing_username
+    password = existing_password
     url = f"http://localhost:{flask_port}/"
     time.sleep(5)
     chrome_driver.get(url)
@@ -181,7 +188,7 @@ def test_edit_report(run_app_win, selenium_db_setup, chrome_driver, flask_port, 
     
 
 @pytest.mark.parametrize("expected", [("Report successfully deleted.")])
-def test_delete_report(run_app_win, selenium_db_setup, chrome_driver, flask_port, expected):
+def test_delete_report(run_app_win, chrome_driver, flask_port, expected):
     """
     GIVEN a running app
     WHEN an existing user logs into their account (defined in fixture)
@@ -189,8 +196,10 @@ def test_delete_report(run_app_win, selenium_db_setup, chrome_driver, flask_port
     AND then goes to the "my reports" page where they delete the new report
     THEN the report should be deleted successfully and a relevant flask flash message should be seen. 
     """
-    username = pytest.existing_test_user
-    password = pytest.test_raw_password
+    selenium_db_setup()
+    time.sleep(3)
+    username = existing_username
+    password = existing_password
     url = f"http://localhost:{flask_port}/"
     time.sleep(5)
     chrome_driver.get(url)
@@ -208,25 +217,27 @@ def test_delete_report(run_app_win, selenium_db_setup, chrome_driver, flask_port
     time.sleep(10)
     WebDriverWait(chrome_driver, 20).until(EC.text_to_be_present_in_element((By.XPATH, "/html/body/div/h2"), 'Welcome '+ username + "."))
     chrome_driver.get_screenshot_as_file("screenshots/selenium_screenshots/before_report_deletion.png")
-    first_report_delete = chrome_driver.find_element(By.XPATH,'/html/body/div/table/tbody/tr[2]/td[8]/input')
-    first_report_delete.click()
+    report_delete = chrome_driver.find_element(By.XPATH,'/html/body/div/table/tbody/tr[2]/td[8]/input')
+    report_delete.click()
     time.sleep(10)
     chrome_driver.get_screenshot_as_file("screenshots/selenium_screenshots/after_report_deletion.png")
 
     assert WebDriverWait(chrome_driver, 15).until(EC.text_to_be_present_in_element((By.XPATH, '/html/body/ul/li'), expected))
 
 
-@pytest.mark.parametrize("test_input, expected", [([pytest.test_raw_password], ["Password changed successfully."]),
+@pytest.mark.parametrize("test_input, expected", [([existing_password], ["Password changed successfully."]),
                                                     (["wrong password"],["Your current password was entered incorrectly. Try again."])])
-def test_change_user_password(run_app_win, selenium_db_setup, chrome_driver, flask_port, test_input, expected):
+def test_change_user_password(run_app_win, chrome_driver, flask_port, test_input, expected):
     """
     GIVEN a running app
     WHEN an existing user logs into their account (defined in fixture)
     AND then navigates to the account page where they submit the form to change their password 
     THEN the password should be changed successfully and a relevant flask flash message should be seen. 
     """
-    username = pytest.existing_test_user
-    password = pytest.test_raw_password
+    selenium_db_setup()
+    time.sleep(3)
+    username = existing_username
+    password = existing_password
     url = f"http://localhost:{flask_port}/"
     time.sleep(5)
     chrome_driver.get(url)
@@ -273,6 +284,8 @@ def test_all_check_boxes_map(run_app_win, chrome_driver, flask_port):
     THEN the map should change to reflect those filters 
          (screenshots saved in tests/selenium_screenshots)
     """
+    selenium_db_setup()
+    time.sleep(3)
     url = f"http://localhost:{flask_port}/"
     time.sleep(5)
     chrome_driver.get(url)
@@ -328,7 +341,7 @@ def test_page_not_found(run_app_win, chrome_driver, flask_port):
     assert WebDriverWait(chrome_driver, 15).until(EC.text_to_be_present_in_element((By.XPATH, '/html/body/div/h2'), "404: Page not found"))
 
 
-def test_all_reports_page_selected(run_app_win, selenium_db_setup, chrome_driver, flask_port):
+def test_all_reports_page_selected(run_app_win, chrome_driver, flask_port):
     """
     GIVEN a running app
     WHEN the homepage is accessed

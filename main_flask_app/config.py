@@ -28,3 +28,11 @@ class TestConfig(Config):
     )
     TESTING = True
     SQLALCHEMY_ECHO = True
+
+class TestSeleniumConfig(Config):
+    """Test environment config"""
+    SQLALCHEMY_DATABASE_URI = (
+        'sqlite:///' + os.path.join(basedir_pathlib.parent, "tests/test_selenium.db")
+    )
+    TESTING = True
+    SQLALCHEMY_ECHO = True

@@ -11,6 +11,10 @@ import os
 import sqlite3
 from passlib.hash import sha256_crypt
 
+# Login credentials of a test user
+pytest.existing_test_user = "exisiting_test_user"
+pytest.test_raw_password = "password123"
+
 @pytest.fixture(scope="function")
 def app():
     """Create a Flask app configured for testing"""
@@ -64,7 +68,7 @@ def run_app_win(flask_port):
         [
          "flask",
          "--app",
-         "main_flask_app:create_flask_app('main_flask_app.config.TestConfig')",
+         "main_flask_app:create_flask_app('main_flask_app.config.TestSeleniumConfig')",
          "run",
          "--port",
          str(flask_port)
@@ -92,54 +96,3 @@ def chrome_driver():
   #driver.maximize_window()
   yield driver
   driver.quit()
-
-# Login credentials of a test user
-pytest.existing_test_user = "exisiting_test_user"
-pytest.test_raw_password = "password123"
-
-
-# Fixture used to setup the default database for selenium tests
-# adds a user and a theft report
-@pytest.fixture(scope="function")
-def selenium_db_setup():
-    basedir = os.path.abspath(os.path.dirname(__file__))
-    db_file = (basedir + "/test.db")
-    connection = sqlite3.connect(db_file)
-    cursor = connection.cursor()
-    drop_users_table = """DROP TABLE IF EXISTS users;"""
-    drop_reports_table = """DROP TABLE IF EXISTS reports;"""
-    cursor.execute(drop_users_table)
-    connection.commit()
-    cursor.execute(drop_reports_table)
-    connection.commit()
-
-    create_users_table = """CREATE TABLE IF NOT EXISTS users(
-                    id INTEGER PRIMARY KEY,
-                    username TEXT NOT NULL,
-                    password TEXT NOT NULL);
-                    """
-    
-    create_reports_table = """CREATE TABLE IF NOT EXISTS reports(
-                    id INTEGER PRIMARY KEY,
-                    reporter_id INTEGER NOT NULL,
-                    rack_id TEXT NOT NULL,
-                    report_date DATETIME NOT NULL,
-                    report_borough TEXT NOT NULL,
-                    report_time DATETIME NOT NULL,
-                    report_details TEXT NOT NULL
-                    );
-                    """
-    
-    cursor.execute(create_users_table)
-    connection.commit()
-
-    cursor.execute(create_reports_table)
-    connection.commit()
-    encrypted_password = sha256_crypt.hash(pytest.test_raw_password)
-    cursor.execute("INSERT INTO users (username, password) VALUES(?, ?)", 
-                   (pytest.existing_test_user, encrypted_password))
-    connection.commit()
-    cursor.execute('''INSERT INTO reports (reporter_id, rack_id, report_date, 
-                    report_borough, report_time, report_details) VALUES(?, ?, ?, ?, ?, ?)''', 
-                   (1, "RWG004615", "2023-04-02", "Islington", "12:45", "test report"))
-    connection.commit()
