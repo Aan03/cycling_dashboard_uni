@@ -215,7 +215,7 @@ def edit_report_details(report_id):
         return make_response(response, 404)
 
 
-# Change user password
+# Changing user password
 @api_bp.route("/api/user/change_password", methods=["PUT"])
 def change_user_password_api():
     change_password_request = {"username": request.json["username"],
