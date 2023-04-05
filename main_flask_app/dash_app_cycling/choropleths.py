@@ -1,4 +1,4 @@
-# Choropleth
+# Choropleth Chart
 import pyproj
 import dash
 from dash import dcc, html, Input, Output
