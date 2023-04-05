@@ -66,7 +66,7 @@ def create_flask_app(config_selected):
         from main_flask_app.dash_app_cycling.dash_main import create_dash_app
         create_dash_app(app)
 
-    # Marshmallow needed to be initialised after the SQLAlchemy database was
+    # Marshmallow needed to be initialised after the SQLAlchemy database
     ma.init_app(app)
 
     # Authentication setup
