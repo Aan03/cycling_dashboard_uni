@@ -35,7 +35,7 @@ for i in boroughs:
     boroughs_lower.append(i.lower())
 
 
-# Get all reports for a borough
+# Obtain reports for a borough
 @api_bp.route("/api/reports/borough/<borough>", methods=["GET"])
 def get_borough_reports(borough):
     if borough.lower() in boroughs_lower:
