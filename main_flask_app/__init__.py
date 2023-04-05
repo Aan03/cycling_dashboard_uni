@@ -15,7 +15,7 @@ csv_to_sql.creating_dataset_tables()
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-# Global Flask_SQLAlchemy object
+# Global Flask_SQLAlchemy Object
 db = SQLAlchemy()
 
 # Engine and Base type declared so that pre-existing dataset tables
