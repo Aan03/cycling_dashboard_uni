@@ -87,13 +87,10 @@ class BoroughForm(FlaskForm):
 @main_bp.route('/my_reports', methods=['POST', 'GET'])
 @login_required
 def my_reports():
-    reports_request = requests.get("http://localhost:5000/api/reports")
-    reports_json = reports_request.json()
-    reports_table = reports_json["report"]
-    user_reports_count = 0
-    for x in reports_table:
-        if x["reporter_id"] == current_user.id:
-            user_reports_count = user_reports_count + 1
+    reports_table = Reports.query.order_by(
+        Reports.report_date.desc(), Reports.report_time.desc())
+    user_reports_count = Reports.query.filter_by(
+        reporter_id=current_user.id).count()
     if request.method == "GET":
         return render_template('my_reports.html', reports_table=reports_table,
                                user_reports_count=user_reports_count)
@@ -162,13 +159,13 @@ def api_instructions():
 # Viewing all reports by all users
 @main_bp.route("/reports")
 def reports_page():
-    reports_request = requests.get("http://localhost:5000/api/reports")
-    reports_json = reports_request.json()
-    reports_table = reports_json["report"]
-    user_reports_count = len(reports_table)
+    reports_table = Reports.query.order_by(Reports.report_date.desc(),
+                                           Reports.report_time.desc())
+    user_reports_count = Reports.query.count()
     return render_template("reports.html",
                            reports_table=reports_table,
                            user_reports_count=user_reports_count)
+
 
 # Index page showing the main map from where reports can be created
 @main_bp.route("/", methods=['POST', 'GET'])
@@ -179,7 +176,7 @@ def index():
                                markers_info=json.dumps(marker_data),
                                boroughs=all_boroughs_list,
                                report_form=report_form)
-    elif request.method == "POST":
+    elif request.method == "POST":#report_form.validate_on_submit():
         reporter_id = current_user.id
         rack_id_flask = request.form['report_rack_id']
         borough_flask = request.form['report_borough']
@@ -223,30 +220,37 @@ def index():
 @main_bp.route("/specific_reports/<string:specific_rack_id>", methods=['GET'])
 def specific_reports(specific_rack_id):
     if request.method == "GET":
-        specific_rack_request = requests.get("http://localhost:5000/api/reports/rack/" + str(specific_rack_id))
-        if specific_rack_request.status_code == 200:
-            reports_json = specific_rack_request.json()
-            specific_reports_to_view = reports_json["report"]
-            specific_report_count = len(specific_reports_to_view)
-            if specific_report_count > 0:
-                specific_borough = specific_reports_to_view[0]["report_borough"]
-                flash("You are now viewing reports"
-                            " specifically for bike rack " + str(
+        if specific_rack_id in feature_id_list:
+            try:
+                specific_reports_to_view = Reports.query.filter_by(
+                    rack_id=specific_rack_id).order_by(
+                    Reports.report_date.desc(),
+                    Reports.report_time.desc())
+                specific_report_count = specific_reports_to_view.count()
+                specific_borough = specific_reports_to_view.first(
+                ).report_borough
+                try:
+                    flash("You are now viewing reports"
+                          " specifically for bike rack " + str(
                             specific_rack_id) + " (" + str(
                             specific_borough) + ").")
-                return render_template(
+                    return render_template(
                         "specific_reports.html",
                         specific_reports_to_view=specific_reports_to_view,
                         specific_report_count=specific_report_count,
                         specific_rack_id=specific_rack_id,
                         specific_borough=specific_borough)
-            else:
+                except:
+                    flash("There was an error getting the reports."
+                          "Please try again later.")
+                    return redirect(url_for("main_bp.reports_page"))
+            except:
                 flash("That bike rack has no theft reports."
-                      " You have been returned to the reports page.")
+                      "You have been returned to the reports page.")
                 return redirect(url_for("main_bp.reports_page"))
         else:
             flash("A bike rack with that ID does not exist."
-                  " You have been returned to the reports page.")
+                  "You have been returned to the reports page.")
             return redirect(url_for("main_bp.reports_page"))
 
 

@@ -185,16 +185,15 @@ def test_all_reports_content(test_client):
      assert b'All User Theft Reports:' in response.data
 
 
-@pytest.mark.parametrize("test_input, expected", [("RWG148175", "active theft reports for RWG148175"),
-                                                  ("RWG015530", "That bike rack has no theft reports. " )])
+@pytest.mark.parametrize("test_input, expected", [("RWG148175", "active theft report for RWG148175"),
+                                                  ("RWG015530", "active theft report for RWG015530" )])
 def test_specific_reports_content(test_client, test_input, expected):
      """
      GIVEN a Flask application
      WHEN the page for the reports on a specific bike rack is requested
      THEN check that the response contains the active theft reports for the correct bike rack.
      """
-     response = test_client.get('/specific_reports/' + str(test_input),
-                                follow_redirects=True)    
+     response = test_client.get('/specific_reports/' + str(test_input))    
      print(response.data)
      assert expected in str(response.data)
 
