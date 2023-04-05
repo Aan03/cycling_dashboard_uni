@@ -64,7 +64,7 @@ for i in rack_id_list:
     rack_id_list_lower.append(i.lower())
 
 
-# Get all reports for a specific bike rack
+# Obtain all reports for a designated bike rack
 @api_bp.route("/api/reports/rack/<report_rack_id>", methods=["GET"])
 def get_rack_id_reports(report_rack_id):
     if str(report_rack_id.lower()) in rack_id_list_lower:
