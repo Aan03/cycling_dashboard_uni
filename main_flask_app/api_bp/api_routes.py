@@ -78,7 +78,7 @@ def get_rack_id_reports(report_rack_id):
         return make_response(response_json, 200)
     else:
         return make_response(jsonify("404: The bike rack ID is incorrect or"
-                                     "it does not exist."), 404)
+                                     " it does not exist."), 404)
 
 
 # Get all reports made by a user

@@ -162,7 +162,7 @@ JSON request body format for this request:
 
 3. The tests for the API routes can be found in the [tests/test_api_routes.py](/tests/test_api_routes.py) file. (Non-pytest API tests can be found in the [Postman.co screenshots folder](screenshots\api_postman.co_screenshots))
 
-4. The tests for the other flask routes can be found in the [tests/test_other_routes.py](/tests/test_other_routes.py) file.
+4. The tests for the other flask routes, which also includes those that use the API, can be found in the [tests/test_other_routes.py](/tests/test_other_routes.py) file.
 
 5. The selenium tests can be found in the [tests/test_selenium.py](/tests/test_selenium.py) file.
 
@@ -191,13 +191,13 @@ Tests also pass on GitHub actions.
 
 ### Other Routes Testing Proof
 
-This section of testing included all non-api routes which handled views, get and post requests for any pages and forms. 
+This section of testing included all routes which handled views, get and post requests for any pages and forms which also includes those that use the API.
 
 ![Other #1](/screenshots/tests_other_passed_local1.PNG)
 
 ![Other #2](/screenshots/tests_other_passed_local2.PNG)
 
-82% coverage for non-api routes achieved:
+83% coverage for the other routes or the routes that use the API achieved:
 
 ![Other #3](/screenshots/tests_other_passed_local3.PNG)
 
