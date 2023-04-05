@@ -11,7 +11,7 @@ import os
 import sqlite3
 from passlib.hash import sha256_crypt
 
-# Login credentials of a test user
+# Login credentials for a test user
 pytest.existing_test_user = "exisiting_test_user"
 pytest.test_raw_password = "password123"
 
