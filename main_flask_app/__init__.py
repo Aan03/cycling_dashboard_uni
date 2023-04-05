@@ -18,7 +18,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 # Global Flask_SQLAlchemy Object
 db = SQLAlchemy()
 
-# Engine and Base type declared so that pre-existing dataset tables
+# Engine and Base type declared allowing pre-existing dataset tables
 # in the SQL database could be accessed and used
 engine = create_engine(
     'sqlite:///' + os.path.join(basedir, "data/dataset_cycle_parking.db")
