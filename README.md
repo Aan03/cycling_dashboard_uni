@@ -61,6 +61,10 @@ All the API routes can be found in the [api_bp/api_routes.py](/main_flask_app/ap
 
 ![Image](/screenshots/error_handling.PNG)
 
+13. As well as using the built-in validators, custom validation for forms was also set up, an example shown here is in [main_bp](/main_flask_app/main_bp/main_bp.py).
+
+![Image](/screenshots/custom_validation_example.PNG)
+
 ## Example usage of flask app
 (all screenshots can be found in the [site usage screenshots folder.](/screenshots/site_app_usage_screenshots/))
 
