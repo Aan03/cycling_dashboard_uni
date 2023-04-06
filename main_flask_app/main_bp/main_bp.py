@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, request, flash,
 from flask_login import login_required, current_user
 from main_flask_app.dash_app_cycling import *
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, DateField, SelectField , TimeField, validators, ValidationError
+from wtforms import StringField, SubmitField, DateField, SelectField, TimeField, validators, ValidationError
 import requests
 import os
 import csv
@@ -194,7 +194,7 @@ def index():
         if (rack_id_flask.upper() in feature_id_list):
             index = feature_id_list.index((rack_id_flask).upper())
             if (borough_flask).lower() == (corresponding_borough[index]).lower():
-                try: 
+                try:
                     db.session.add(new_report)
                     db.session.commit()
                     flash("Report created successfully.")

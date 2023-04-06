@@ -15,6 +15,7 @@ from passlib.hash import sha256_crypt
 pytest.existing_test_user = "exisiting_test_user"
 pytest.test_raw_password = "password123"
 
+
 @pytest.fixture(scope="function")
 def app():
     """Create a Flask app configured for testing"""
