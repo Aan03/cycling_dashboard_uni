@@ -18,7 +18,7 @@ pytest.test_raw_password = "password123"
 @pytest.fixture(scope="function")
 def app():
     """Create a Flask app configured for testing"""
-    app = create_flask_app(config.TestConfig) 
+    app = create_flask_app(config.TestConfig)
     yield app
 
 
@@ -28,7 +28,7 @@ def app():
 # database.
 @pytest.fixture(scope="function")
 def test_client(app):
-    with app.app_context():   
+    with app.app_context():
         db.create_all()
     with app.test_client() as test_client:
         test_client.post("/api/user/sign_up",
@@ -83,15 +83,15 @@ def run_app_win(flask_port):
             print("There was an error connecting to the flask server")
     finally:
         server.terminate()
-        
+
 
 @pytest.fixture(scope="function")
 def chrome_driver():
-  options = Options()
-  options.add_argument("--disable-gpu")
-  options.add_argument("--headless=new")
-  options.add_argument("--start-maximized")
-  options.add_argument('window-size=1920x1080')
-  driver = Chrome(options=options)
-  yield driver
-  driver.quit()
+    options = Options()
+    options.add_argument("--disable-gpu")
+    options.add_argument("--headless=new")
+    options.add_argument("--start-maximized")
+    options.add_argument('window-size=1920x1080')
+    driver = Chrome(options=options)
+    yield driver
+    driver.quit()

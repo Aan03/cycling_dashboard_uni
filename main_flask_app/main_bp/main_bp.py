@@ -60,7 +60,7 @@ for x in db_dataset.query(cycle_parking_data.feature_id,
     corresponding_borough.append(x[5])
 
 
-# Classes for forms 
+# Classes for forms
 # Creating new reports
 class ReportForm(FlaskForm):
     report_rack_id = StringField("Rack ID", validators=[
@@ -176,21 +176,21 @@ def index():
                                markers_info=json.dumps(marker_data),
                                boroughs=all_boroughs_list,
                                report_form=report_form)
-    elif request.method == "POST":#report_form.validate_on_submit():
+    elif request.method == "POST":  # report_form.validate_on_submit():
         reporter_id = current_user.id
         rack_id_flask = request.form['report_rack_id']
         borough_flask = request.form['report_borough']
         date_flask = request.form['report_date']
         time_flask = request.form['report_time']
         report_details_flask = request.form['report_details']
-        
+
         new_report = Reports(reporter_id=reporter_id,
-                            report_borough=borough_flask.title(),
-                            rack_id=rack_id_flask,
-                            report_date=date_flask,
-                            report_time=time_flask,
-                            report_details=report_details_flask)
-           
+                             report_borough=borough_flask.title(),
+                             rack_id=rack_id_flask,
+                             report_date=date_flask,
+                             report_time=time_flask,
+                             report_details=report_details_flask)
+
         if (rack_id_flask.upper() in feature_id_list):
             index = feature_id_list.index((rack_id_flask).upper())
             if (borough_flask).lower() == (corresponding_borough[index]).lower():
@@ -201,9 +201,9 @@ def index():
                     return redirect(url_for('main_bp.index'))
                 except:
                     flash("There was an error submitting the report."
-                        "Please try again later.")
+                          "Please try again later.")
                     return redirect(url_for('main_bp.index'))
-                
+
             else:
                 flash("Please ensure that borough is correct."
                       " Selecting the marker is the easiest way to fill out the form correctly.")
@@ -212,7 +212,6 @@ def index():
                   "exists and is from the correct borough."
                   " Selecting the marker is the easiest way to fill out the form correctly.")
         return redirect(url_for('main_bp.index'))
-
 
 
 # From the main reports page, it is possible to view all reports for a

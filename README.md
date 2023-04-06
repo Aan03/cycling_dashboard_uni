@@ -237,3 +237,7 @@ The proof of passing tests can be found below:
 ![Selenium #5](/screenshots/tests_selenium_passed_local5.PNG)
 
 ![Selenium #6](/screenshots/tests_selenium_passed_local6.PNG)
+
+### Linting
+
+Most of the application has been linted apart from some exceptions. These included some rare cases of the line being too long, where shortening the line does not help with code readability and would make the code less concise. There are also some imports which state unused but are still needed for the application to run. Finally "except" has still been used despite not being recommended as it provides the fastest solution.
