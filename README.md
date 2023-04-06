@@ -14,6 +14,8 @@
     pip install -r requirements.txt  
     flask --app "main_flask_app:create_flask_app('main_flask_app.config.Config')" run
 
+The main configuration being used is "Config". There are two testing configs used during testing. 
+
 2. There are three blueprints being used, [auth_bp](main_flask_app/auth_bp/), [main_bp](main_flask_app/main_bp/) and [api_bp](main_flask_app/api_bp/). Auth_bp manages the account creation and management of users, while main_bp handles the rest of the user experience like viewing, creating and managing theft reports. The api_bp manages the API routes.
 
 3. The Flask app is initialised in the [__init__.py](/main_flask_app/__init__.py) file.
@@ -149,11 +151,13 @@ JSON request body format for this request:
     API Routes Testing Command:  
     pytest tests/test_api_routes.py -v --cov=main_flask_app --cov-config=tests/coverage_api_config -W ignore::DeprecationWarning
 
-    Other Routes Testing (non-API):  
+    Other Routes Testing (forms, routes using and not using the API):  
     pytest tests/test_other_routes.py -v --cov=main_flask_app --cov-config=tests/coverage_other_config -W ignore::DeprecationWarning
 
     Selenium Testing Command:  
     pytest tests/test_selenium.py -v -W ignore::DeprecationWarning
+
+    (It is not reccomended to run API and Other Routes testing at the same time as they both use the same test.db database)
 
     All Tests Command (may take up to 15-20 minutes as it involves all tests):
     pytest -v -W ignore::DeprecationWarning
@@ -191,13 +195,13 @@ Tests also pass on GitHub actions.
 
 ### Other Routes Testing Proof
 
-This section of testing included all non-api routes which handled views, get and post requests for any pages and forms. 
+This section of testing included all other routes which handled views, get and post requests for any pages and forms as well as those that may use api functions
 
 ![Other #1](/screenshots/tests_other_passed_local1.PNG)
 
 ![Other #2](/screenshots/tests_other_passed_local2.PNG)
 
-82% coverage for non-api routes achieved:
+82% coverage for other routes (forms, routes and routes that use the API too) achieved:
 
 ![Other #3](/screenshots/tests_other_passed_local3.PNG)
 
@@ -210,7 +214,6 @@ Tests also pass on GitHub actions.
 ![Other #5](/screenshots/tests_other_github2.PNG)
 
 ![Other #6](/screenshots/tests_other_github3.PNG)
-
 
 
 ### Selenium Testing Proof
@@ -234,4 +237,3 @@ The proof of passing tests can be found below:
 ![Selenium #5](/screenshots/tests_selenium_passed_local5.PNG)
 
 ![Selenium #6](/screenshots/tests_selenium_passed_local6.PNG)
-

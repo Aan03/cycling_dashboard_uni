@@ -93,6 +93,5 @@ def chrome_driver():
   options.add_argument("--start-maximized")
   options.add_argument('window-size=1920x1080')
   driver = Chrome(options=options)
-  #driver.maximize_window()
   yield driver
   driver.quit()

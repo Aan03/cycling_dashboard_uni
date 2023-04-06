@@ -35,7 +35,7 @@ for i in boroughs:
     boroughs_lower.append(i.lower())
 
 
-# Obtain reports for a borough
+# Get reports for a borough
 @api_bp.route("/api/reports/borough/<borough>", methods=["GET"])
 def get_borough_reports(borough):
     if borough.lower() in boroughs_lower:
@@ -64,7 +64,7 @@ for i in rack_id_list:
     rack_id_list_lower.append(i.lower())
 
 
-# Obtain all reports for a designated bike rack
+# Get all reports for a designated bike rack
 @api_bp.route("/api/reports/rack/<report_rack_id>", methods=["GET"])
 def get_rack_id_reports(report_rack_id):
     if str(report_rack_id.lower()) in rack_id_list_lower:
