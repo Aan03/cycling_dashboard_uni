@@ -48,7 +48,7 @@ def login():
         username_flask = (request.form['username']).lower()
         password_flask = request.form['password']
         user_check = Users.query.filter_by(username=username_flask).first()
-  
+
         if not user_check or sha256_crypt.verify(password_flask,
                                                  user_check.password) == False:
             flash('Please check your login details and try again.')

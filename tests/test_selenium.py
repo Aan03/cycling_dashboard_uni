@@ -35,7 +35,7 @@ def test_sign_up_then_login(run_app_win, chrome_driver, flask_port, test_input):
     Given a running app
     WHEN a user signs up
     AND then logins
-    THEN the user should be logged in successfully 
+    THEN the user should be logged in successfully
          and be shown their personal reports page
     """
     selenium_db_setup()

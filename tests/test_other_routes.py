@@ -82,8 +82,8 @@ def test_correct_report_creation(test_client, test_input, expected):
     """
     GIVEN a Flask application
     WHEN a user signs in and submits a report
-    THEN check that the report form was successfully filled out and if not 
-    then flash the correct warning messages. 
+    THEN check that the report form was successfully filled out and if not
+    then flash the correct warning messages.
     """
     test_client.post(
      '/login',
@@ -126,7 +126,7 @@ def test_correct_my_reports(test_client, expected):
 def test_correct_delete_report(test_client, test_input, expected):
     """
     GIVEN a Flask application
-    WHEN a user logins and deletes a report they created on the my_reports page 
+    WHEN a user logins and deletes a report they created on the my_reports page
     THEN check that the report was deleted and that the correct flash
     message was given.
     """

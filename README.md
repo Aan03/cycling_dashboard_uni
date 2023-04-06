@@ -8,6 +8,8 @@
 [-- Selenium Testing Proof](#selenium-testing-proof)  
 [-- Other Routes Testing Proof](#other-routes-testing-proof)
 
+Link to Team 11 github: https://github.com/ucl-comp0035/comp0034-cw2-g-team_11
+
 ## General information on code and testing
 1. Run the following commands from the main [/comp0034-cw2-g-team11](/) directory:
 

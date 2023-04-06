@@ -82,4 +82,6 @@ def create_flask_app(config_selected):
         return Users.query.get(int(user_id))
 
     return app
+
+
 from main_flask_app import models
